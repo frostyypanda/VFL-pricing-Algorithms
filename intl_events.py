@@ -50,12 +50,27 @@ from vfl_2026_v3 import (
 
 RNG = np.random.default_rng(2026)
 
+# Player name normalization for encoding mismatches
+PLAYER_NAME_FIXES = {
+    "Ros\x82": "Rose",
+    "Rosé": "Rose",
+    "LEVIATÁN": "LEVIATAN",
+    "LEVIAT\xb5N": "LEVIATAN",
+}
+
+
+def _normalize_player_name(name):
+    """Normalize player names for consistent matching."""
+    if not isinstance(name, str):
+        return name
+    return PLAYER_NAME_FIXES.get(name, name)
+
 # ============================================================================
 #  CONSTANTS
 # ============================================================================
 
-# International event VP range
-INTL_VP_MIN, INTL_VP_MAX = 5.5, 13.5
+# International event VP range (from actual price lists: 5.0-15.0)
+INTL_VP_MIN, INTL_VP_MAX = 5.0, 15.0
 
 # Kickoff
 KICKOFF_BUDGET = 100
@@ -63,7 +78,7 @@ KICKOFF_SQUAD = 11
 KICKOFF_BEST_N = 2  # best 2 games count
 
 # Santiago
-SANTIAGO_BUDGET = 60
+SANTIAGO_BUDGET = 50
 SANTIAGO_SQUAD = 6
 SANTIAGO_BEST_N = 2
 SANTIAGO_MAX_TRANSFERS = 2
@@ -102,6 +117,7 @@ def load_csv(year):
             df.columns = cols
     df["Year"] = year
     df["Team"] = df["Team"].apply(_normalize_team_name)
+    df["Player"] = df["Player"].apply(_normalize_player_name)
     return df
 
 
@@ -134,22 +150,16 @@ def get_event_players(csv_2026, stage, include_china=True):
     return players
 
 
-def get_manual_prices(csv_2026, stage, include_china=True):
-    """Extract manual prices (first-game Adj.VP) for an event."""
-    mask = (csv_2026["Stage"] == stage) & (csv_2026["P?"] == 1)
-    event_data = csv_2026[mask].copy()
-
-    # Get first game per player (lowest game order = first game)
-    event_data["game_ord"] = event_data["Game"].map(
-        lambda g: GAME_ORDER.get(g, 99))
-    event_data = event_data.sort_values("game_ord")
-    first_games = event_data.drop_duplicates(subset="Player", keep="first")
-
-    result = first_games[["Team", "Player", "Adj.VP"]].copy()
-    result = result.rename(columns={"Adj.VP": "manual_vp"})
-    if not include_china:
-        result = result[~result["Team"].isin(CHINA_TEAMS)]
-    return result
+def load_manual_intl_prices(event):
+    """Load manual prices from dedicated price CSV files.
+    event: 'kickoff' or 'santiago'
+    """
+    filename = f"{event}_prices_2026.csv"
+    path = os.path.join(DIR, filename)
+    df = _read_csv_safe(path)
+    df["Team"] = df["Team"].apply(_normalize_team_name)
+    df = df.rename(columns={"Price": "manual_vp"})
+    return df
 
 
 def get_player_actual_game_pts(csv_2026, stage, week=None):
@@ -1041,12 +1051,10 @@ def main():
     kickoff_train = load_data_up_to(2025, include_china=True)
     print(f"  Training data: {len(kickoff_train)} rows")
 
-    # Player pool from 2026 Kickoff
-    kickoff_players = get_event_players(csv_2026_full, "Kickoff", include_china=True)
+    # Player pool and manual prices from dedicated CSV
+    kickoff_manual = load_manual_intl_prices("kickoff")
+    kickoff_players = kickoff_manual[["Player", "Team"]].copy()
     print(f"  Kickoff player pool: {len(kickoff_players)} players")
-
-    # Manual prices
-    kickoff_manual = get_manual_prices(csv_2026_full, "Kickoff", include_china=True)
     print(f"  Kickoff manual prices: {len(kickoff_manual)} players, "
           f"range=[{kickoff_manual['manual_vp'].min():.1f}, {kickoff_manual['manual_vp'].max():.1f}]")
 
@@ -1063,17 +1071,18 @@ def main():
         # available data (it's aggregated). This is approximate.
         kickoff_pickrate = all_pickrate_dict
 
-    # Get role map from the CSV data
-    # For international events we don't have manual_prices_2026.csv role info
-    # We'll infer roles from the existing data or default to "I"
+    # Load Santiago prices early for role map
+    santiago_manual = load_manual_intl_prices("santiago")
+
+    # Build role map from both price files
+    # Santiago has full names (Duelist->D, Controller->C, Initiator->I, Sentinel->S)
+    role_name_map = {"Duelist": "D", "Controller": "C", "Initiator": "I", "Sentinel": "S",
+                     "D": "D", "C": "C", "I": "I", "S": "S"}
     role_map = {}
-    try:
-        from vfl_2026_v3 import load_manual_prices
-        manual_df = load_manual_prices()
-        for _, r in manual_df.iterrows():
-            role_map[r["Player"].lower()] = r.get("Position", "I")
-    except Exception:
-        pass
+    for _, r in kickoff_manual.iterrows():
+        role_map[r["Player"].lower()] = role_name_map.get(r.get("Role", "I"), "I")
+    for _, r in santiago_manual.iterrows():
+        role_map[r["Player"].lower()] = role_name_map.get(r.get("Role", "I"), "I")
 
     # Generate prices
     kickoff_gen = generate_intl_prices(
@@ -1095,10 +1104,8 @@ def main():
     santiago_train = load_data_up_to(2026, max_stage="Kickoff", include_china=True)
     print(f"  Training data: {len(santiago_train)} rows")
 
-    santiago_players = get_event_players(csv_2026_full, "Santiago", include_china=True)
+    santiago_players = santiago_manual[["Player", "Team"]].copy()
     print(f"  Santiago player pool: {len(santiago_players)} players")
-
-    santiago_manual = get_manual_prices(csv_2026_full, "Santiago", include_china=True)
     print(f"  Santiago manual prices: {len(santiago_manual)} players, "
           f"range=[{santiago_manual['manual_vp'].min():.1f}, {santiago_manual['manual_vp'].max():.1f}]")
 
