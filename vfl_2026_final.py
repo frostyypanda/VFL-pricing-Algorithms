@@ -210,8 +210,16 @@ def _build_initial_team(players, gw, budget, n_iter):
     return best_team
 
 
+def _slot_role_required(slot):
+    """Return the required role for a slot, or None for wildcards."""
+    if slot.startswith("W"):
+        return None  # any role
+    return slot[0]  # "D1" -> "D", "I2" -> "I", etc.
+
+
 def _optimize_transfers(all_players, current_squad, gw, budget,
                         max_transfers, n_iter, amer_bonus=0.0):
+    current_slots = current_squad.get("slots", {})  # player_name -> slot
     current_names = {p["Player"] for p in current_squad["players"]}
     current_vp = current_squad["total_vp"]
     player_lookup = {p["Player"]: p for p in all_players}
@@ -230,6 +238,8 @@ def _optimize_transfers(all_players, current_squad, gw, budget,
         squad_names = set(current_names)
         squad_vp = current_vp
         transfers_made = []
+        # Copy slot assignments — they persist and update with transfers
+        iter_slots = dict(current_slots)
 
         n_transfers = int(RNG.integers(0, max_transfers + 1))
 
@@ -239,9 +249,21 @@ def _optimize_transfers(all_players, current_squad, gw, budget,
             out_idx = squad_pts[0][0]
             out_player = squad[out_idx]
 
-            candidates = [p for p in all_players
-                         if p["Player"] not in squad_names
-                         and p["price"] <= budget - squad_vp + out_player["price"]]
+            # Determine which slot the outgoing player occupies
+            out_slot = iter_slots.get(out_player["Player"], "W1")
+            required_role = _slot_role_required(out_slot)
+
+            # Filter candidates: must fit budget AND match slot role requirement
+            candidates = []
+            for p in all_players:
+                if p["Player"] in squad_names:
+                    continue
+                if p["price"] > budget - squad_vp + out_player["price"]:
+                    continue
+                # Role check: if slot requires a specific role, candidate must match
+                if required_role is not None and p["role"] != required_role:
+                    continue
+                candidates.append(p)
 
             if not candidates:
                 continue
@@ -262,28 +284,15 @@ def _optimize_transfers(all_players, current_squad, gw, budget,
                 if team_count >= 2:
                     continue
 
-                test_squad = [p for p in squad if p["Player"] != out_player["Player"]]
-                test_squad.append(cand)
-
-                role_counts = {"D": 0, "C": 0, "I": 0, "S": 0}
-                wildcards = 0
-                valid = True
-                for tp in test_squad:
-                    role = tp["role"]
-                    if role_counts.get(role, 0) < ROLE_SLOTS.get(role, 0):
-                        role_counts[role] += 1
-                    elif wildcards < WILDCARD_SLOTS:
-                        wildcards += 1
-                    else:
-                        valid = False
-                        break
-                if not valid:
-                    continue
-
-                squad = test_squad
+                # Swap: remove outgoing, add incoming to same slot
+                squad = [p for p in squad if p["Player"] != out_player["Player"]]
+                squad.append(cand)
                 squad_names = {p["Player"] for p in squad}
                 squad_vp = new_vp
-                transfers_made.append((out_player["Player"], cand["Player"]))
+                # Transfer slot assignment
+                del iter_slots[out_player["Player"]]
+                iter_slots[cand["Player"]] = out_slot
+                transfers_made.append((out_player["Player"], cand["Player"], out_slot))
                 break
 
         total_pts = sum(p["gw_pts"] for p in squad)
@@ -303,6 +312,7 @@ def _optimize_transfers(all_players, current_squad, gw, budget,
                 "expected_pts_with_igl": round(total_with_igl, 1),
                 "igl": best_player["Player"],
                 "transfers": list(transfers_made),
+                "slots": dict(iter_slots),
             }
 
     return best_result
@@ -355,14 +365,19 @@ def run_gw_recommendations(prices_df, price_col, player_avg_ppm, team_wr,
             gw_results.append(None)
             continue
 
-        # Assign slots
-        slots = assign_slots(result["players"])
-        result["slots"] = slots
+        # GW1: assign slots from scratch; GW2+: slots come from transfer logic
+        if gw == 1:
+            slots = assign_slots(result["players"])
+            result["slots"] = slots
+        else:
+            slots = result.get("slots", assign_slots(result["players"]))
 
         print(f"\n  GW{gw} ({', '.join(GW_REGIONS[gw])}):")
         if result["transfers"]:
-            for out_p, in_p in result["transfers"]:
-                print(f"    Transfer: {out_p} -> {in_p}")
+            for transfer in result["transfers"]:
+                out_p, in_p = transfer[0], transfer[1]
+                slot = transfer[2] if len(transfer) > 2 else slots.get(in_p, "?")
+                print(f"    Transfer [{slot}]: {out_p} -> {in_p}")
 
         print(f"    {'Slot':<5} {'Player':<18} {'Team':<22} {'VP':>6} {'Exp':>7} {'IGL':>4}")
         player_by_slot = {slots[p["Player"]]: p for p in result["players"]}
@@ -459,9 +474,11 @@ def create_excel(manual_df, v3_df, manual_gw, generated_gw, role_map):
             result = gw_data[gw_idx] if gw_data and gw_idx < len(gw_data) else None
             if result:
                 if result.get("transfers"):
-                    out_names = [t[0] for t in result["transfers"]]
-                    in_names = [t[1] for t in result["transfers"]]
-                    transfers_str = f"OUT {', '.join(out_names)} -> IN {', '.join(in_names)}"
+                    parts = []
+                    for t in result["transfers"]:
+                        slot = t[2] if len(t) > 2 else "?"
+                        parts.append(f"[{slot}] {t[0]} -> {t[1]}")
+                    transfers_str = " | ".join(parts)
                 else:
                     transfers_str = "Initial squad" if gw_idx == 0 else "No transfers"
                 cell = ws1.cell(row=row, column=start_col, value=f"Transfers: {transfers_str}")
