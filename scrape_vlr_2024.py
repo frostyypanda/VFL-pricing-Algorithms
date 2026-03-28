@@ -281,19 +281,21 @@ def parse_match(match_id):
 
 def kill_threshold_points(kills_on_map):
     """VFL kill threshold points for a single map.
-    Verified from 2025 data:
-      0-4  kills -> -3
-      5-9  kills -> -1
+      0    kills -> -3
+      1-4  kills -> -1
+      5-9  kills ->  0
       10-14 kills -> +1
       15-19 kills -> +2
       20-24 kills -> +3
       25-29 kills -> +4
       30+   kills -> +1 per additional 5
     """
-    if kills_on_map < 5:
+    if kills_on_map == 0:
         return -3
-    elif kills_on_map < 10:
+    elif kills_on_map < 5:
         return -1
+    elif kills_on_map < 10:
+        return 0
     elif kills_on_map < 15:
         return 1
     elif kills_on_map < 20:

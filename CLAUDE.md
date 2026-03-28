@@ -51,7 +51,9 @@
 ### Kill Thresholds (per map)
 | Kills on map | Points |
 |---|---|
-| 0-9 | 0 |
+| 0 | -3 |
+| 1-4 | -1 |
+| 5-9 | 0 |
 | 10-14 | +1 |
 | 15-19 | +2 |
 | 20-24 | +3 |
@@ -177,7 +179,7 @@ Build pricing algorithms that generate better VFL player price lists for regular
 - China teams are in the data but NOT relevant for VFL pricing (filter them out):
   - Bilibili Gaming, Dragon Ranger Gaming, Edward Gaming, FunPlus Phoenix, JD Mall JDG Esports, Nova Esports, Titan Esports Club, Trace Esports, Wolves Esports, Xi Lai Gaming, TYLOO, All Gamers
 - 2024 data was scraped from vlr.gg via `scrape_vlr_2024.py` (parallel scraper with 4 workers)
-- Kill scoring correction: 0-4 kills = -3 pts, 5-9 kills = -1 pts (not 0 as originally documented)
+- Kill scoring: 0 kills = -3 pts, 1-4 kills = -1 pts, 5-9 kills = 0 pts, 10+ kills = +1 and up
 
 ---
 
