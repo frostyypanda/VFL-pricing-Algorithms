@@ -322,13 +322,19 @@ def compute_team_win_rates(training_df):
 # --- Pricing Algorithms ---
 
 
+def _snap_to_half(values):
+    """Round prices to nearest 0.5 VP and clip to valid range."""
+    rounded = np.round(np.asarray(values, dtype=float) * 2) / 2
+    return np.clip(rounded, VP_MIN, VP_MAX)
+
+
 def _linear_map(values, target_min=VP_MIN, target_max=VP_MAX):
-    """Linear map from value range to VP range, clipped."""
+    """Linear map from value range to VP range, clipped and snapped to 0.5."""
     vmin, vmax = values.min(), values.max()
     if vmax - vmin < 1e-9:
-        return np.full_like(values, (target_min + target_max) / 2)
+        return _snap_to_half(np.full_like(values, (target_min + target_max) / 2))
     scaled = target_min + (values - vmin) / (vmax - vmin) * (target_max - target_min)
-    return np.clip(scaled, target_min, target_max)
+    return _snap_to_half(np.clip(scaled, target_min, target_max))
 
 
 def algo_baseline_ema(features, **kwargs):
@@ -345,7 +351,7 @@ def algo_distribution_aware(features, **kwargs):
     prices = features.copy()
     ranks = prices["ema_ppm"].rank(pct=True).values
     predicted = np.interp(ranks, TARGET_QUANTILES, TARGET_VPS)
-    prices["predicted_vp"] = np.clip(predicted, VP_MIN, VP_MAX)
+    prices["predicted_vp"] = _snap_to_half(predicted)
     return prices[["Player", "Team", "predicted_vp"]]
 
 
@@ -423,7 +429,7 @@ def algo_variance_aware(features, consistency_premium=0.10, **kwargs):
     adjustment_factor = 1 + consistency_premium * (1 - 2 * cv_norm)
     adjusted_vp = base_vp * adjustment_factor
 
-    prices["predicted_vp"] = np.clip(adjusted_vp, VP_MIN, VP_MAX)
+    prices["predicted_vp"] = _snap_to_half(adjusted_vp)
     return prices[["Player", "Team", "predicted_vp"]]
 
 
@@ -525,7 +531,7 @@ def algo_combined(features, team_win_rates=None, team_new_counts=None,
     # Map to VP range using distribution-aware quantile mapping
     ranks = pd.Series(combined_score).rank(pct=True).values
     predicted = np.interp(ranks, TARGET_QUANTILES, TARGET_VPS)
-    prices["predicted_vp"] = np.clip(predicted, VP_MIN, VP_MAX)
+    prices["predicted_vp"] = _snap_to_half(predicted)
 
     return prices[["Player", "Team", "predicted_vp"]]
 
@@ -563,6 +569,8 @@ def fill_missing_players(predictions, stage1_players, features, team_win_rates=N
             vp = max(VP_MIN, team_vp - 1.0)
         else:
             vp = default_vp
+        # Snap to nearest 0.5
+        vp = round(vp * 2) / 2
 
         reasons = ["new player (no training data)"]
         new_count = team_new_counts.get(team, 0)
@@ -572,7 +580,7 @@ def fill_missing_players(predictions, stage1_players, features, team_win_rates=N
         new_rows.append({
             "Player": row["Player"],
             "Team": team,
-            "predicted_vp": round(vp, 2),
+            "predicted_vp": vp,
             "uncertainty": "HIGH",
             "uncertainty_reasons": "; ".join(reasons),
         })

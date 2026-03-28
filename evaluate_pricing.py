@@ -167,14 +167,27 @@ def find_optimal_teams(prices_df, expected_pts, n_teams=15, n_iter=10000,
 
 
 def classify_archetype(team_prices):
-    """Classify a team composition into an archetype."""
+    """Classify a team composition into an archetype.
+
+    Archetypes:
+    - Stars & Scrubs: 2+ expensive (>=12) + 3+ cheap (<=7)
+    - Top-Heavy: 1 star (>=13) + cheap filler (min<=7)
+    - Balanced: low variance (std < 1.2), everyone similar price
+    - Spread: all mid-range (7-11), no extremes
+    - Dual-Star: exactly 2 premium (>=11) + rest mid/cheap
+    - Mid-Heavy: mostly mid (8-10.5), 0-1 premium picks
+    - Budget-Heavy: mean < 8.5, mostly cheap with 1-2 splurge picks
+    """
     prices = np.array(team_prices)
     std = np.std(prices)
+    mean_p = np.mean(prices)
     max_p = np.max(prices)
     min_p = np.min(prices)
 
     n_expensive = np.sum(prices >= 12)
+    n_premium = np.sum(prices >= 11)
     n_cheap = np.sum(prices <= 7)
+    n_mid = np.sum((prices >= 8) & (prices <= 10.5))
 
     if n_expensive >= 2 and n_cheap >= 3:
         return "Stars & Scrubs"
@@ -184,6 +197,12 @@ def classify_archetype(team_prices):
         return "Balanced"
     if np.all((prices >= 7) & (prices <= 11)):
         return "Spread"
+    if n_premium == 2 and n_mid >= 5:
+        return "Dual-Star"
+    if n_mid >= 7 and n_expensive <= 1:
+        return "Mid-Heavy"
+    if mean_p < 8.5 and n_cheap >= 5:
+        return "Budget-Heavy"
     return "Mixed"
 
 
