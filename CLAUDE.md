@@ -214,6 +214,38 @@ Build pricing algorithms that generate better VFL player price lists for regular
 - Volatile players get a discount (boom-or-bust)
 - Re-clip to [6, 15]
 
+### 6. Combined Pricing (recommended)
+- Blends ALL available signals with performance-dominant weighting:
+  - 60% EMA performance (core) + role adjustment
+  - 12% Team strength (win rate, discounted by roster changes)
+  - 8% Pickrate popularity (supply/demand — popular players cost more)
+  - 8% Team brand popularity (fan-favorite teams have inflated demand)
+  - 7% Opponent strength (facing weaker schedule = slight boost)
+  - 5% Consistency premium
+- Uses distribution-aware quantile mapping for the final VP assignment
+- Closest median to ideal 9.09 (median ~8.97)
+- New-player team strength discount: 1 new=0.67x, 2=0.33x, 3+=ignore
+- All players tagged with uncertainty (HIGH/MEDIUM/LOW) for manual review
+
+### Pickrate Data (`pickrate_data.csv`, `pickrate_summary.csv`)
+Historical VFL manager pick data from 5 events:
+- **Event 1**: 2025 Toronto (Masters 2) — 60 players, 3 gameweeks
+- **Event 2**: 2025 Stage 2 — 183 players, 5 gameweeks
+- **Event 3**: 2025 Champions — 135 players, 3 gameweeks
+- **Event 4**: 2026 Kickoff — 180 players, 1 gameweek
+- **Event 5**: 2026 Santiago (Masters 1) — 60 players, 3 gameweeks
+
+Used to compute:
+- **Player pickrate**: avg pick % across events (popular players should cost more)
+- **Team brand popularity**: avg pick % of all players on a team (fan-favorite bias)
+- No IGL rate data in these files (only Name + pickcount)
+
+### Opponent Strength
+- In group stages, team matchups are known in advance
+- Opponent quality affects expected T.Pts (map wins/losses)
+- Currently uses team win rate as a proxy for opponent strength
+- Future: could use actual group-stage matchup data for per-gameweek pricing
+
 ## Evaluation Framework (`evaluate_pricing.py`)
 
 - **Price accuracy**: MAE, RMSE, correlation vs actual 2025 Stage 1 Game Start VP
