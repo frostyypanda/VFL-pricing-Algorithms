@@ -119,6 +119,37 @@ def _check_role_validity(squad):
     return all(role_counts[r] >= 2 for r in ROLE_SLOTS)
 
 
+def assign_slots(players):
+    """Assign each player to a slot: D1/D2, I1/I2, C1/C2, S1/S2, W1/W2/W3.
+
+    Fill mandatory role slots first (highest expected pts gets priority),
+    then remaining players become wildcards.
+    """
+    # Sort by expected pts descending so best players fill role slots first
+    sorted_by_pts = sorted(players, key=lambda p: p["gw_pts"], reverse=True)
+
+    role_filled = {"D": 0, "C": 0, "I": 0, "S": 0}
+    slot_assignments = {}  # player_name -> slot string
+    wildcards = []
+
+    for p in sorted_by_pts:
+        role = p.get("role", "I")
+        if role in role_filled and role_filled[role] < ROLE_SLOTS[role]:
+            role_filled[role] += 1
+            slot_assignments[p["Player"]] = f"{role}{role_filled[role]}"
+        else:
+            wildcards.append(p)
+
+    for i, p in enumerate(wildcards, 1):
+        slot_assignments[p["Player"]] = f"W{i}"
+
+    return slot_assignments
+
+
+# Canonical slot ordering for display
+SLOT_ORDER = ["D1", "D2", "I1", "I2", "C1", "C2", "S1", "S2", "W1", "W2", "W3"]
+
+
 def _build_initial_team(players, gw, budget, n_iter):
     best_team = None
     best_score = -1
@@ -324,17 +355,23 @@ def run_gw_recommendations(prices_df, price_col, player_avg_ppm, team_wr,
             gw_results.append(None)
             continue
 
+        # Assign slots
+        slots = assign_slots(result["players"])
+        result["slots"] = slots
+
         print(f"\n  GW{gw} ({', '.join(GW_REGIONS[gw])}):")
         if result["transfers"]:
             for out_p, in_p in result["transfers"]:
                 print(f"    Transfer: {out_p} -> {in_p}")
 
-        print(f"    {'Player':<18} {'Team':<22} {'VP':>6} {'Role':>4} {'Exp':>7} {'IGL':>4}")
-        sorted_p = sorted(result["players"], key=lambda p: p["gw_pts"], reverse=True)
-        for p in sorted_p:
-            igl = "*" if p["Player"] == result["igl"] else ""
-            print(f"    {p['Player']:<18} {p['Team']:<22} {p['price']:>6.1f} "
-                  f"{p['role']:>4} {p['gw_pts']:>7.1f} {igl:>4}")
+        print(f"    {'Slot':<5} {'Player':<18} {'Team':<22} {'VP':>6} {'Exp':>7} {'IGL':>4}")
+        player_by_slot = {slots[p["Player"]]: p for p in result["players"]}
+        for slot in SLOT_ORDER:
+            if slot in player_by_slot:
+                p = player_by_slot[slot]
+                igl = "*" if p["Player"] == result["igl"] else ""
+                print(f"    {slot:<5} {p['Player']:<18} {p['Team']:<22} {p['price']:>6.1f} "
+                      f"{p['gw_pts']:>7.1f} {igl:>4}")
         print(f"    Total VP: {result['total_vp']:.1f}  |  "
               f"Exp: {result['expected_pts']:.1f}  |  "
               f"With IGL: {result['expected_pts_with_igl']:.1f}")
@@ -377,7 +414,7 @@ def create_excel(manual_df, v3_df, manual_gw, generated_gw, role_map):
         top=Side(style='thin'), bottom=Side(style='thin')
     )
 
-    section_cols = ["Player", "Team", "VP", "Role", "Exp Pts", "IGL"]
+    section_cols = ["Slot", "Player", "Team", "VP", "Exp Pts", "IGL"]
     section_width = len(section_cols)
     sections = [
         ("MANUAL PRICING", header_fill_manual, manual_gw),
@@ -433,28 +470,35 @@ def create_excel(manual_df, v3_df, manual_gw, generated_gw, role_map):
                                end_row=row, end_column=start_col + section_width - 1)
         row += 1
 
-        for player_idx in range(SQUAD_SIZE):
+        for slot_idx, slot in enumerate(SLOT_ORDER):
             for sec_idx, (_, _, gw_data) in enumerate(sections):
                 start_col = sec_idx * (section_width + 1) + 1
                 result = gw_data[gw_idx] if gw_data and gw_idx < len(gw_data) else None
-                if result and player_idx < len(result["players"]):
-                    sorted_players = sorted(result["players"],
-                                           key=lambda p: p["gw_pts"], reverse=True)
-                    p = sorted_players[player_idx]
-                    is_igl = p["Player"] == result["igl"]
+                if result:
+                    slots = result.get("slots", {})
+                    # Find the player assigned to this slot
+                    p = None
+                    for pl in result["players"]:
+                        if slots.get(pl["Player"]) == slot:
+                            p = pl
+                            break
 
-                    ws1.cell(row=row, column=start_col, value=p["Player"]).border = thin_border
-                    ws1.cell(row=row, column=start_col + 1, value=p["Team"]).border = thin_border
-                    ws1.cell(row=row, column=start_col + 2, value=p["price"]).border = thin_border
-                    ws1.cell(row=row, column=start_col + 3, value=p["role"]).border = thin_border
-                    ws1.cell(row=row, column=start_col + 4,
-                            value=round(p["gw_pts"], 1)).border = thin_border
-                    igl_cell = ws1.cell(row=row, column=start_col + 5,
-                                       value="IGL" if is_igl else "")
-                    igl_cell.border = thin_border
-                    if is_igl:
-                        igl_cell.font = Font(bold=True, color="FF0000")
-                        igl_cell.fill = igl_fill
+                    if p:
+                        is_igl = p["Player"] == result["igl"]
+                        slot_cell = ws1.cell(row=row, column=start_col, value=slot)
+                        slot_cell.border = thin_border
+                        slot_cell.font = Font(bold=True, size=10)
+                        ws1.cell(row=row, column=start_col + 1, value=p["Player"]).border = thin_border
+                        ws1.cell(row=row, column=start_col + 2, value=p["Team"]).border = thin_border
+                        ws1.cell(row=row, column=start_col + 3, value=p["price"]).border = thin_border
+                        ws1.cell(row=row, column=start_col + 4,
+                                value=round(p["gw_pts"], 1)).border = thin_border
+                        igl_cell = ws1.cell(row=row, column=start_col + 5,
+                                           value="IGL" if is_igl else "")
+                        igl_cell.border = thin_border
+                        if is_igl:
+                            igl_cell.font = Font(bold=True, color="FF0000")
+                            igl_cell.fill = igl_fill
             row += 1
 
         for sec_idx, (_, sec_fill, gw_data) in enumerate(sections):
@@ -473,12 +517,12 @@ def create_excel(manual_df, v3_df, manual_gw, generated_gw, role_map):
 
     for sec_idx in range(2):
         base = sec_idx * (section_width + 1) + 1
-        ws1.column_dimensions[get_column_letter(base)].width = 18
-        ws1.column_dimensions[get_column_letter(base + 1)].width = 22
-        ws1.column_dimensions[get_column_letter(base + 2)].width = 7
-        ws1.column_dimensions[get_column_letter(base + 3)].width = 6
-        ws1.column_dimensions[get_column_letter(base + 4)].width = 9
-        ws1.column_dimensions[get_column_letter(base + 5)].width = 12
+        ws1.column_dimensions[get_column_letter(base)].width = 6       # Slot
+        ws1.column_dimensions[get_column_letter(base + 1)].width = 18  # Player
+        ws1.column_dimensions[get_column_letter(base + 2)].width = 22  # Team
+        ws1.column_dimensions[get_column_letter(base + 3)].width = 7   # VP
+        ws1.column_dimensions[get_column_letter(base + 4)].width = 9   # Exp Pts
+        ws1.column_dimensions[get_column_letter(base + 5)].width = 6   # IGL
         if sec_idx < 1:
             ws1.column_dimensions[get_column_letter(base + 6)].width = 2
 
