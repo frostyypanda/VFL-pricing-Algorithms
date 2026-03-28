@@ -818,9 +818,13 @@ def santiago_transfers(current_team, available_players, player_expected_pts,
         # Force transfers for eliminated players first, then random extras
         n_forced = min(len(eliminated_players), max_transfers)
         n_extra = int(RNG.integers(0, max(0, max_transfers - n_forced) + 1))
-        n_transfers = n_forced + n_extra
+        target_transfers = n_forced + n_extra
+        transfers_done = 0
 
-        for t_idx in range(n_transfers):
+        # Try more attempts than target to handle failed swaps
+        for t_idx in range(target_transfers + 3):
+            if transfers_done >= target_transfers:
+                break
             # Sort by expected pts (worst first) with noise
             # Eliminated players get -999 to ensure they're picked first
             squad_scored = [(i, p["expected_best2"] + float(RNG.normal(0, 1.5))
@@ -831,17 +835,22 @@ def santiago_transfers(current_team, available_players, player_expected_pts,
             out_player = squad[out_idx]
 
             out_role = iter_roles.get(out_player["Player"], "W")
-            required_role = out_role if out_role != "W" else None
 
-            candidates = []
-            for c in all_candidates:
-                if c["Player"] in {p["Player"] for p in squad}:
-                    continue
-                if c["price"] > budget - squad_vp + out_player["price"]:
-                    continue
-                if required_role and c["role"] != required_role:
-                    continue
-                candidates.append(c)
+            # For mandatory role slots, first try same-role replacement.
+            # If none available, allow any role (the remaining squad still has
+            # enough role coverage since we have wildcard slots).
+            for try_strict in [True, False]:
+                candidates = []
+                for c in all_candidates:
+                    if c["Player"] in {p["Player"] for p in squad}:
+                        continue
+                    if c["price"] > budget - squad_vp + out_player["price"]:
+                        continue
+                    if try_strict and out_role != "W" and c["role"] != out_role:
+                        continue
+                    candidates.append(c)
+                if candidates:
+                    break
 
             if not candidates:
                 continue
@@ -866,6 +875,7 @@ def santiago_transfers(current_team, available_players, player_expected_pts,
                 del iter_roles[out_player["Player"]]
                 iter_roles[cand["Player"]] = out_role
                 transfers_made.append((out_player["Player"], cand["Player"]))
+                transfers_done += 1
                 break
 
         total_pts = sum(p["expected_best2"] for p in squad)
@@ -944,8 +954,14 @@ def compute_santiago_expected_pts(player_pool, historical_games, team_wr,
 # ============================================================================
 
 def create_intl_excel(event_name, gen_prices_df, manual_prices_df,
-                      actual_pts, team_data, eval_results):
-    """Create Excel output for an international event."""
+                      actual_pts, team_data, eval_results,
+                      per_gw_pts=None):
+    """Create Excel output for an international event.
+
+    per_gw_pts: optional list of (label, pts_dict) for per-GW columns in Prices sheet.
+                e.g. [("GW1", gw1_pts), ("GW2", gw2_pts), ("GW3", gw3_pts)]
+                If None, uses single column from actual_pts.
+    """
     from openpyxl import Workbook
     from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
 
@@ -959,9 +975,18 @@ def create_intl_excel(event_name, gen_prices_df, manual_prices_df,
     ws1 = wb.active
     ws1.title = "Prices"
 
-    headers = ["Player", "Team", "Role", "Manual VP", "Generated VP", "Diff",
-               "Actual Best-2 Pts", "Pick%", "Uncertainty"]
+    best_n = eval_results.get("best_n", 2)
     header_fill = PatternFill(start_color="37474F", end_color="37474F", fill_type="solid")
+
+    # Build headers dynamically based on per_gw_pts
+    base_headers = ["Player", "Team", "Role", "Manual VP", "Generated VP", "Diff"]
+    if per_gw_pts:
+        pts_headers = [f"Best-{best_n} {label}" for label, _ in per_gw_pts]
+    else:
+        pts_headers = [f"Actual Best-{best_n} Pts"]
+    end_headers = ["Pick%", "Uncertainty"]
+    headers = base_headers + pts_headers + end_headers
+
     for col_idx, header in enumerate(headers, 1):
         cell = ws1.cell(row=1, column=col_idx, value=header)
         cell.font = Font(bold=True, size=11, color="FFFFFF")
@@ -972,9 +997,19 @@ def create_intl_excel(event_name, gen_prices_df, manual_prices_df,
     merged = gen_prices_df[["Player", "Team", "Role", "generated_vp", "uncertainty"]].merge(
         manual_prices_df[["Player", "manual_vp"]], on="Player", how="left"
     )
-    best_n = eval_results.get("best_n", 2)
-    merged["actual_best2"] = merged["Player"].map(
-        lambda p: compute_best_n_total(actual_pts.get(p, []), best_n))
+
+    # Compute per-GW or single actual points columns
+    if per_gw_pts:
+        for label, gw_pts in per_gw_pts:
+            col_name = f"pts_{label}"
+            merged[col_name] = merged["Player"].map(
+                lambda p, gp=gw_pts: compute_best_n_total(gp.get(p, []), best_n))
+        pts_col_names = [f"pts_{label}" for label, _ in per_gw_pts]
+    else:
+        merged["pts_all"] = merged["Player"].map(
+            lambda p: compute_best_n_total(actual_pts.get(p, []), best_n))
+        pts_col_names = ["pts_all"]
+
     pr_dict = eval_results.get("pickrate_dict", {})
     merged["pickrate"] = merged["Player"].map(
         lambda p: pr_dict.get(p.lower(), {}).get("avg_pickpct", 0))
@@ -985,24 +1020,32 @@ def create_intl_excel(event_name, gen_prices_df, manual_prices_df,
     light_green = PatternFill(start_color="C8E6C9", end_color="C8E6C9", fill_type="solid")
 
     for i, (_, row) in enumerate(merged.iterrows(), 2):
-        ws1.cell(row=i, column=1, value=row["Player"]).border = thin_border
-        ws1.cell(row=i, column=2, value=row["Team"]).border = thin_border
-        ws1.cell(row=i, column=3, value=row["Role"]).border = thin_border
-        ws1.cell(row=i, column=4, value=row.get("manual_vp", "")).border = thin_border
-        ws1.cell(row=i, column=5, value=row["generated_vp"]).border = thin_border
-        c_diff = ws1.cell(row=i, column=6, value=round(row["diff"], 1) if pd.notna(row["diff"]) else "")
+        col = 1
+        ws1.cell(row=i, column=col, value=row["Player"]).border = thin_border; col += 1
+        ws1.cell(row=i, column=col, value=row["Team"]).border = thin_border; col += 1
+        ws1.cell(row=i, column=col, value=row["Role"]).border = thin_border; col += 1
+        ws1.cell(row=i, column=col, value=row.get("manual_vp", "")).border = thin_border; col += 1
+        ws1.cell(row=i, column=col, value=row["generated_vp"]).border = thin_border; col += 1
+        c_diff = ws1.cell(row=i, column=col, value=round(row["diff"], 1) if pd.notna(row["diff"]) else "")
         c_diff.border = thin_border
         if pd.notna(row["diff"]):
             if abs(row["diff"]) > 2:
                 c_diff.fill = light_red
             elif abs(row["diff"]) <= 1:
                 c_diff.fill = light_green
-        ws1.cell(row=i, column=7, value=round(row["actual_best2"], 1)).border = thin_border
-        ws1.cell(row=i, column=8, value=round(row["pickrate"], 1)).border = thin_border
-        ws1.cell(row=i, column=9, value=row["uncertainty"] if pd.notna(row["uncertainty"]) else "").border = thin_border
+        col += 1
+        # Points columns (1 or 3)
+        for pc in pts_col_names:
+            ws1.cell(row=i, column=col, value=round(row[pc], 1)).border = thin_border
+            col += 1
+        ws1.cell(row=i, column=col, value=round(row["pickrate"], 1)).border = thin_border; col += 1
+        ws1.cell(row=i, column=col, value=row["uncertainty"] if pd.notna(row["uncertainty"]) else "").border = thin_border
 
     from openpyxl.utils import get_column_letter
-    widths = [18, 20, 6, 10, 12, 8, 14, 8, 30]
+    base_widths = [18, 20, 6, 10, 12, 8]
+    pts_widths = [14] * len(pts_col_names)
+    end_widths = [8, 30]
+    widths = base_widths + pts_widths + end_widths
     for i, w in enumerate(widths, 1):
         ws1.column_dimensions[get_column_letter(i)].width = w
 
@@ -1022,8 +1065,9 @@ def create_intl_excel(event_name, gen_prices_df, manual_prices_df,
         row_num += 1
 
         # Column headers
-        cols = ["Player", "Team", "Role", "VP", "Expected Best-2",
-                "Actual Best-2", "IGL", "Transfers"]
+        gw_best_n = td.get("best_n", 2)
+        cols = ["Player", "Team", "Role", "VP", f"Expected Best-{gw_best_n}",
+                f"Actual Best-{gw_best_n}", "IGL", "Transfers"]
         subheader_fill = PatternFill(start_color="E0E0E0", end_color="E0E0E0", fill_type="solid")
         for col_idx, col_name in enumerate(cols, 1):
             cell = ws2.cell(row=row_num, column=col_idx, value=col_name)
@@ -1290,10 +1334,28 @@ def main():
     print(f"  Swiss player pool: {len(swiss_players)} players")
 
     # Estimate expected best-2-of-3 for Swiss (3 rounds)
+    # CRITICAL: For GW1, heavily boost players from strong teams that will advance
+    # to GW2/GW3. Picking a weak team player means 0 pts in future GWs and wasted
+    # transfer slots. We add a "tournament longevity" multiplier on top.
     gw1_expected = compute_santiago_expected_pts(
         swiss_players, santiago_hist_games, santiago_team_wr,
         n_games=3, n_best=2
     )
+    # Apply tournament longevity bonus: players from strong teams will score
+    # in GW2+GW3 too, while weak team players become dead weight eating transfers.
+    # This is THE most important factor for GW1 picks.
+    avg_wr = np.mean(list(santiago_team_wr.values())) if santiago_team_wr else 0.5
+    for player in gw1_expected:
+        team = swiss_players[swiss_players["Player"] == player]["Team"].values
+        if len(team) > 0:
+            wr = santiago_team_wr.get(team[0], 0.5)
+            # Very aggressive: top teams get 3x, bottom teams get 0.3x
+            # A weak team player scoring 20 in GW1 is worth less than a strong
+            # team player scoring 15, because the strong team player will also
+            # score in GW2+GW3 without costing a transfer
+            longevity = 1.0 + (wr - avg_wr) * 8.0
+            longevity = max(0.2, min(3.5, longevity))
+            gw1_expected[player] *= longevity
 
     gw1_team = build_santiago_team(
         swiss_players, gw1_expected, role_map,
@@ -1436,7 +1498,7 @@ def main():
     if current_gw_team:
         gw3_result = santiago_transfers(
             current_gw_team, w3_players, gw3_expected, role_map,
-            budget=SANTIAGO_BUDGET, max_transfers=SANTIAGO_MAX_TRANSFERS, n_iter=10000
+            budget=SANTIAGO_BUDGET, max_transfers=SANTIAGO_MAX_TRANSFERS, n_iter=30000
         )
     else:
         gw3_result = build_santiago_team(
@@ -1486,17 +1548,23 @@ def main():
     print("  STEP 5: CREATE EXCEL FILES")
     print("=" * 70)
 
-    # Kickoff Excel
-    kickoff_team_data = [{"label": "Kickoff Team (Manual Prices)", "team": kickoff_team}]
+    # Kickoff Excel (single best-3 column)
+    kickoff_team_data = [{"label": "Kickoff Team (Manual Prices)", "team": kickoff_team,
+                          "best_n": KICKOFF_BEST_N}]
     create_intl_excel(
         "Kickoff", kickoff_gen, kickoff_manual, kickoff_actual_pts,
         kickoff_team_data, kickoff_eval
     )
 
-    # Santiago Excel
+    # Santiago Excel (3 per-GW columns: Best-2 GW1, Best-2 GW2, Best-2 GW3)
+    gw1_pts = get_player_actual_game_pts(csv_2026_full, "Santiago", week="W1")
+    gw2_pts = get_player_actual_game_pts(csv_2026_full, "Santiago", week="W2")
+    gw3_pts = get_player_actual_game_pts(csv_2026_full, "Santiago", week="W3")
+    santiago_per_gw = [("GW1", gw1_pts), ("GW2", gw2_pts), ("GW3", gw3_pts)]
     create_intl_excel(
         "Santiago", santiago_gen, santiago_manual, santiago_actual_pts,
-        santiago_gw_teams, santiago_eval
+        santiago_gw_teams, santiago_eval,
+        per_gw_pts=santiago_per_gw
     )
 
     print("\n" + "=" * 70)
