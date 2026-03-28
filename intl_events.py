@@ -495,6 +495,24 @@ def estimate_expected_best_n(player_games, n_best, n_expected_games,
     return total / n_simulations
 
 
+def estimate_ceiling_best_n(player_games, n_best, n_expected_games,
+                            n_simulations=5000, percentile=90):
+    """Bootstrap estimate of ceiling (e.g. 90th percentile) best-N score.
+    Used for IGL selection — we want the player most likely to pop off."""
+    if not player_games:
+        return 0.0
+    pts_history = [g["pts"] for g in player_games]
+    if len(pts_history) == 0:
+        return 0.0
+
+    scores = []
+    for _ in range(n_simulations):
+        sampled = RNG.choice(pts_history, size=n_expected_games, replace=True)
+        top_n = np.sort(sampled)[-n_best:]
+        scores.append(top_n.sum())
+    return float(np.percentile(scores, percentile))
+
+
 def estimate_team_games(team_wr, bracket_type="kickoff"):
     """Estimate expected games based on team win rate."""
     wr = team_wr
@@ -509,11 +527,63 @@ def estimate_team_games(team_wr, bracket_type="kickoff"):
     return 3
 
 
+def compute_pool_expected_pts(player_pool, historical_games, team_wr,
+                               n_best, bracket_type="kickoff",
+                               fixed_n_games=None, role_map=None):
+    """Compute expected points for ALL players in a pool.
+
+    Args:
+        player_pool: DataFrame with Player, Team columns
+        historical_games: dict player_lower -> list of game dicts
+        team_wr: dict team -> win rate
+        n_best: how many best games to count (None = all games count)
+        bracket_type: "kickoff" for bracket estimation of games
+        fixed_n_games: if set, every player plays this many games (e.g. 5 for Stage 1)
+        role_map: dict player_lower -> role letter
+
+    Returns:
+        dict: player_name -> expected_pts
+    """
+    result = {}
+    for _, row in player_pool.iterrows():
+        player = row["Player"]
+        team = row["Team"]
+        pl = player.lower()
+
+        hist = historical_games.get(pl, [])
+        if not hist:
+            result[player] = 0.0
+            continue
+
+        if fixed_n_games is not None:
+            n_games = fixed_n_games
+        else:
+            wr = team_wr.get(team, 0.5)
+            n_games = estimate_team_games(wr, bracket_type)
+
+        if n_best is not None:
+            expected = estimate_expected_best_n(hist, n_best, n_games)
+        else:
+            # All games count — bootstrap n_games, sum all
+            pts_history = [g["pts"] for g in hist]
+            total = 0.0
+            n_sim = 5000
+            for _ in range(n_sim):
+                sampled = RNG.choice(pts_history, size=n_games, replace=True)
+                total += sampled.sum()
+            expected = total / n_sim
+
+        result[player] = expected
+    return result
+
+
 def build_kickoff_team(player_pool_with_prices, player_historical_games,
-                       team_wr, role_map, budget=100, n_iter=10000):
+                       team_wr, role_map, budget=100, n_iter=15000,
+                       pickrate_dict=None):
     """Build optimal 11-player team for Kickoff.
 
-    Uses bootstrap estimation of best-2-of-N games.
+    Uses value-ratio (expected/price) scoring — the correct knapsack heuristic.
+    Runs multiple random seeds and keeps the best team found across all seeds.
     """
     # Estimate expected points for each player
     players = []
@@ -529,8 +599,9 @@ def build_kickoff_team(player_pool_with_prices, player_historical_games,
         hist_games = player_historical_games.get(pl, [])
 
         expected = estimate_expected_best_n(hist_games, KICKOFF_BEST_N, n_games)
+        ceiling = estimate_ceiling_best_n(hist_games, KICKOFF_BEST_N, n_games)
 
-        # Skip China players — inflated regional stats
+        # Skip China players
         if team in CHINA_TEAMS_INTL:
             continue
 
@@ -540,72 +611,77 @@ def build_kickoff_team(player_pool_with_prices, player_historical_games,
             "price": price,
             "role": role,
             "expected_best2": expected,
+            "ceiling_best3": ceiling,
             "est_games": n_games,
         })
 
-    # Greedy optimizer with random restarts
+    # Run optimizer with multiple random seeds to explore diverse compositions
     best_team = None
     best_score = -1
 
-    for iteration in range(n_iter):
-        noise = RNG.normal(0, 0.5, len(players))
-        scored = [(p, p["expected_best2"] / (p["price"] + 0.1) + noise[i])
-                  for i, p in enumerate(players)]
-        scored.sort(key=lambda x: x[1], reverse=True)
+    for seed_offset in range(5):
+        rng = np.random.default_rng(2026 + seed_offset * 1000)
 
-        team = []
-        team_vp = 0.0
-        team_counts = {}
-        role_counts = {"D": 0, "C": 0, "I": 0, "S": 0}
-        wc_used = 0
+        for iteration in range(n_iter):
+            noise = rng.normal(0, 0.5, len(players))
+            scored = [(p, p["expected_best2"] / (p["price"] + 0.1) + noise[i])
+                      for i, p in enumerate(players)]
+            scored.sort(key=lambda x: x[1], reverse=True)
 
-        for p, _ in scored:
-            if len(team) >= KICKOFF_SQUAD:
-                break
-            vp = p["price"]
-            t = p["Team"]
-            role = p["role"]
+            team = []
+            team_vp = 0.0
+            team_counts = {}
+            role_counts = {"D": 0, "C": 0, "I": 0, "S": 0}
+            wc_used = 0
 
-            if team_vp + vp > budget:
-                continue
-            if team_counts.get(t, 0) >= 2:
-                continue
-            remaining = KICKOFF_SQUAD - len(team) - 1
-            if remaining > 0 and (budget - team_vp - vp) < remaining * INTL_VP_MIN:
-                continue
+            for p, _ in scored:
+                if len(team) >= KICKOFF_SQUAD:
+                    break
+                vp = p["price"]
+                t = p["Team"]
+                role = p["role"]
 
-            if role_counts.get(role, 0) < KICKOFF_ROLE_SLOTS.get(role, 0):
-                role_counts[role] += 1
-            elif wc_used < KICKOFF_WC_SLOTS:
-                wc_used += 1
-            else:
-                continue
+                if team_vp + vp > budget:
+                    continue
+                if team_counts.get(t, 0) >= 2:
+                    continue
+                remaining = KICKOFF_SQUAD - len(team) - 1
+                if remaining > 0 and (budget - team_vp - vp) < remaining * INTL_VP_MIN:
+                    continue
 
-            team.append(p)
-            team_vp += vp
-            team_counts[t] = team_counts.get(t, 0) + 1
+                if role_counts.get(role, 0) < KICKOFF_ROLE_SLOTS.get(role, 0):
+                    role_counts[role] += 1
+                elif wc_used < KICKOFF_WC_SLOTS:
+                    wc_used += 1
+                else:
+                    continue
 
-        if len(team) == KICKOFF_SQUAD:
-            # Check role validity
-            rc = {"D": 0, "C": 0, "I": 0, "S": 0}
-            for p in team:
-                r = p["role"]
-                if r in rc:
-                    rc[r] += 1
-            if all(rc[r] >= KICKOFF_ROLE_SLOTS[r] for r in KICKOFF_ROLE_SLOTS):
-                total_pts = sum(p["expected_best2"] for p in team)
-                igl = max(team, key=lambda p: p["expected_best2"])
-                total_with_igl = total_pts + igl["expected_best2"]
+                team.append(p)
+                team_vp += vp
+                team_counts[t] = team_counts.get(t, 0) + 1
 
-                if total_with_igl > best_score:
-                    best_score = total_with_igl
-                    best_team = {
-                        "players": list(team),
-                        "total_vp": round(team_vp, 2),
-                        "expected_pts": round(total_pts, 1),
-                        "expected_pts_with_igl": round(total_with_igl, 1),
-                        "igl": igl["Player"],
-                    }
+            if len(team) == KICKOFF_SQUAD:
+                rc = {"D": 0, "C": 0, "I": 0, "S": 0}
+                for p in team:
+                    r = p["role"]
+                    if r in rc:
+                        rc[r] += 1
+                if all(rc[r] >= KICKOFF_ROLE_SLOTS[r] for r in KICKOFF_ROLE_SLOTS):
+                    total_pts = sum(p["expected_best2"] for p in team)
+                    # Try top 3 IGL candidates (highest ceiling)
+                    candidates = sorted(team, key=lambda p: p.get("ceiling_best3",
+                                        p["expected_best2"]), reverse=True)[:3]
+                    for igl_cand in candidates:
+                        score = total_pts + igl_cand["expected_best2"]
+                        if score > best_score:
+                            best_score = score
+                            best_team = {
+                                "players": list(team),
+                                "total_vp": round(team_vp, 2),
+                                "expected_pts": round(total_pts, 1),
+                                "expected_pts_with_igl": round(score, 1),
+                                "igl": igl_cand["Player"],
+                            }
 
     return best_team
 
@@ -638,8 +714,13 @@ def score_team_actual(team, actual_pts, n_best=2, igl_player=None):
 # ============================================================================
 
 def build_santiago_team(player_pool_with_prices, player_expected_pts,
-                        role_map, budget=50, n_iter=8000):
-    """Build optimal 6-player Santiago team."""
+                        role_map, budget=50, n_iter=8000, max_china=1):
+    """Build optimal 6-player Santiago team.
+
+    Each player is assigned a 'slot': their role letter (D/C/I/S) for mandatory
+    role slots, or 'W' for wildcard slots. Transfers must respect slots.
+    China players are limited to max_china (default 1) as budget fillers only.
+    """
     players = []
     for _, row in player_pool_with_prices.iterrows():
         player = row["Player"]
@@ -648,8 +729,10 @@ def build_santiago_team(player_pool_with_prices, player_expected_pts,
         price = row["manual_vp"]
         role = role_map.get(pl, "I")
         exp = player_expected_pts.get(player, 0)
-        # China players included but with near-zero expected (budget fillers only)
-        if team in CHINA_TEAMS_INTL:
+
+        # China players: heavily penalized but included as budget fillers
+        is_china = team in CHINA_TEAMS_INTL
+        if is_china:
             exp = 0.1
 
         players.append({
@@ -658,10 +741,14 @@ def build_santiago_team(player_pool_with_prices, player_expected_pts,
             "price": price,
             "role": role,
             "expected_best2": exp,
+            "is_china": is_china,
         })
 
+    if not players:
+        return None
+
     # Compute actual minimum price in pool for budget floor check
-    pool_min_price = min(p["price"] for p in players) if players else INTL_VP_MIN
+    pool_min_price = min(p["price"] for p in players)
 
     best_team = None
     best_score = -1
@@ -669,29 +756,25 @@ def build_santiago_team(player_pool_with_prices, player_expected_pts,
     for iter_n in range(n_iter):
         # Phase 1: Fill mandatory role slots first (1D, 1C, 1I, 1S)
         # Phase 2: Fill wildcards with best remaining
-        noise = RNG.normal(0, 0.3, len(players))
-
         team = []
         team_vp = 0.0
         team_counts = {}
         used_players = set()
+        china_count = 0
+        slot_assignments = {}  # Player -> slot ("D"/"C"/"I"/"S"/"W")
 
         # Phase 1: pick one player per mandatory role
-        # Sort roles by scarcity (most expensive role first to reserve budget)
-        role_order = sorted(["D", "C", "I", "S"],
-                           key=lambda r: min((p["price"] for p in players if p["role"] == r), default=99),
-                           reverse=True)
-        # Shuffle with some randomness
+        role_order = list(["D", "C", "I", "S"])
         if RNG.random() > 0.3:
             RNG.shuffle(role_order)
 
         for role in role_order:
             candidates = [p for p in players
                          if p["role"] == role and p["Player"] not in used_players
-                         and team_counts.get(p["Team"], 0) < 2]
+                         and team_counts.get(p["Team"], 0) < 2
+                         and not (p.get("is_china") and china_count >= max_china)]
             if not candidates:
                 break
-            # Score with noise, budget-aware
             scored_c = [(p, p["expected_best2"] / (p["price"] + 0.1)
                         + float(RNG.normal(0, 0.3)))
                        for p in candidates]
@@ -709,6 +792,9 @@ def build_santiago_team(player_pool_with_prices, player_expected_pts,
                 team_vp += p["price"]
                 team_counts[p["Team"]] = team_counts.get(p["Team"], 0) + 1
                 used_players.add(p["Player"])
+                slot_assignments[p["Player"]] = role  # assigned to role slot
+                if p.get("is_china"):
+                    china_count += 1
                 picked = True
                 break
             if not picked:
@@ -720,7 +806,8 @@ def build_santiago_team(player_pool_with_prices, player_expected_pts,
         # Phase 2: fill remaining wildcard slots
         wc_candidates = [p for p in players
                         if p["Player"] not in used_players
-                        and team_counts.get(p["Team"], 0) < 2]
+                        and team_counts.get(p["Team"], 0) < 2
+                        and not (p.get("is_china") and china_count >= max_china)]
         scored_wc = [(p, p["expected_best2"] / (p["price"] + 0.1)
                      + float(RNG.normal(0, 0.3)))
                     for p in wc_candidates]
@@ -733,6 +820,8 @@ def build_santiago_team(player_pool_with_prices, player_expected_pts,
                 continue
             if team_counts.get(p["Team"], 0) >= 2:
                 continue
+            if p.get("is_china") and china_count >= max_china:
+                continue
             remaining = SANTIAGO_SQUAD - len(team) - 1
             if remaining > 0 and (budget - team_vp - p["price"]) < remaining * pool_min_price:
                 continue
@@ -740,8 +829,15 @@ def build_santiago_team(player_pool_with_prices, player_expected_pts,
             team_vp += p["price"]
             team_counts[p["Team"]] = team_counts.get(p["Team"], 0) + 1
             used_players.add(p["Player"])
+            slot_assignments[p["Player"]] = "W"  # wildcard slot
+            if p.get("is_china"):
+                china_count += 1
 
         if len(team) == SANTIAGO_SQUAD:
+            # Tag each player dict with their slot
+            for p in team:
+                p["slot"] = slot_assignments[p["Player"]]
+
             total_pts = sum(p["expected_best2"] for p in team)
             igl = max(team, key=lambda p: p["expected_best2"])
             total_with_igl = total_pts + igl["expected_best2"]
@@ -749,7 +845,7 @@ def build_santiago_team(player_pool_with_prices, player_expected_pts,
             if total_with_igl > best_score:
                 best_score = total_with_igl
                 best_team = {
-                    "players": list(team),
+                    "players": [dict(p) for p in team],
                     "total_vp": round(team_vp, 2),
                     "expected_pts": round(total_pts, 1),
                     "expected_pts_with_igl": round(total_with_igl, 1),
@@ -760,31 +856,32 @@ def build_santiago_team(player_pool_with_prices, player_expected_pts,
 
 
 def santiago_transfers(current_team, available_players, player_expected_pts,
-                       role_map, budget=50, max_transfers=2, n_iter=8000):
-    """Optimize transfers for Santiago GW2/GW3."""
+                       role_map, budget=50, max_transfers=2, n_iter=8000,
+                       gw_teams=None):
+    """Optimize transfers for Santiago GW2/GW3.
+
+    Key rules:
+    - Transfers must respect slot assignments: a role-slot player (D/C/I/S)
+      can only be replaced by a player of the SAME role. A wildcard-slot player
+      (W) can be replaced by any role.
+    - Eliminated players (team not in current GW's team list) MUST be transferred out.
+    - China players are excluded as replacement candidates.
+    - A player transferred IN cannot be transferred OUT in the same GW.
+
+    gw_teams: set of team names playing in this GW (for eliminated detection)
+    """
     current_names = {p["Player"] for p in current_team["players"]}
     current_vp = current_team["total_vp"]
 
-    # Build current slot mapping (role assignments)
-    current_roles = {}
-    role_counts = {"D": 0, "C": 0, "I": 0, "S": 0}
-    wc_players = []
-    for p in current_team["players"]:
-        role = p["role"]
-        if role in role_counts and role_counts[role] < SANTIAGO_ROLE_SLOTS.get(role, 0):
-            role_counts[role] += 1
-            current_roles[p["Player"]] = role
-        else:
-            wc_players.append(p["Player"])
-            current_roles[p["Player"]] = "W"
-
-    # Build candidate list (China included but near-zero expected)
+    # Build candidate list (exclude current team and China)
     all_candidates = []
     for _, row in available_players.iterrows():
         player = row["Player"]
         if player in current_names:
             continue
         team = row["Team"]
+        if team in CHINA_TEAMS_INTL:
+            continue
         pl = player.lower()
         price = row["manual_vp"]
         role = role_map.get(pl, "I")
@@ -801,10 +898,18 @@ def santiago_transfers(current_team, available_players, player_expected_pts,
     for p in current_team["players"]:
         p["expected_best2"] = player_expected_pts.get(p["Player"], 0)
 
-    # Identify players whose teams are eliminated (expected 0 pts)
-    # These MUST be transferred out first
-    eliminated_players = [p["Player"] for p in current_team["players"]
-                         if player_expected_pts.get(p["Player"], 0) == 0]
+    # Identify eliminated players: team not in this GW's active teams
+    # OR expected 0 pts (covers China players from previous GW)
+    eliminated_players = set()
+    for p in current_team["players"]:
+        if gw_teams and p["Team"] not in gw_teams:
+            eliminated_players.add(p["Player"])
+        elif p["Team"] in CHINA_TEAMS_INTL:
+            eliminated_players.add(p["Player"])
+        elif player_expected_pts.get(p["Player"], 0) == 0:
+            eliminated_players.add(p["Player"])
+
+    print(f"    Eliminated: {eliminated_players or 'none'}")
 
     best_result = None
     best_score = -1
@@ -813,46 +918,64 @@ def santiago_transfers(current_team, available_players, player_expected_pts,
         squad = [dict(p) for p in current_team["players"]]
         squad_vp = current_vp
         transfers_made = []
-        iter_roles = dict(current_roles)
+        already_transferred_out = set()
+        transferred_in = set()  # prevent transfer-in-then-out
 
-        # Force transfers for eliminated players first, then random extras
+        # Force transfers for eliminated players first, then consider optional upgrades
         n_forced = min(len(eliminated_players), max_transfers)
         n_extra = int(RNG.integers(0, max(0, max_transfers - n_forced) + 1))
         target_transfers = n_forced + n_extra
         transfers_done = 0
 
-        # Try more attempts than target to handle failed swaps
-        for t_idx in range(target_transfers + 3):
-            if transfers_done >= target_transfers:
+        for attempt in range(target_transfers + 5):
+            if transfers_done >= min(target_transfers, max_transfers):
                 break
-            # Sort by expected pts (worst first) with noise
-            # Eliminated players get -999 to ensure they're picked first
-            squad_scored = [(i, p["expected_best2"] + float(RNG.normal(0, 1.5))
-                            + (-999 if p["Player"] in eliminated_players and t_idx < n_forced else 0))
-                           for i, p in enumerate(squad)]
-            squad_scored.sort(key=lambda x: x[1])
-            out_idx = squad_scored[0][0]
-            out_player = squad[out_idx]
 
-            out_role = iter_roles.get(out_player["Player"], "W")
-
-            # For mandatory role slots, first try same-role replacement.
-            # If none available, allow any role (the remaining squad still has
-            # enough role coverage since we have wildcard slots).
-            for try_strict in [True, False]:
-                candidates = []
-                for c in all_candidates:
-                    if c["Player"] in {p["Player"] for p in squad}:
-                        continue
-                    if c["price"] > budget - squad_vp + out_player["price"]:
-                        continue
-                    if try_strict and out_role != "W" and c["role"] != out_role:
-                        continue
-                    candidates.append(c)
-                if candidates:
+            # Pick who to transfer out (never transfer out someone we just brought in)
+            remaining_elim = [p for p in squad
+                             if p["Player"] in eliminated_players
+                             and p["Player"] not in already_transferred_out
+                             and p["Player"] not in transferred_in]
+            if remaining_elim:
+                remaining_elim.sort(key=lambda p: (0 if p.get("slot") == "W" else 1,
+                                                    p["expected_best2"]))
+                out_player = remaining_elim[0]
+            elif transfers_done < target_transfers:
+                non_elim = [p for p in squad
+                           if p["Player"] not in already_transferred_out
+                           and p["Player"] not in eliminated_players
+                           and p["Player"] not in transferred_in]
+                if not non_elim:
                     break
+                non_elim_scored = [(p, p["expected_best2"] + float(RNG.normal(0, 1.0)))
+                                   for p in non_elim]
+                non_elim_scored.sort(key=lambda x: x[1])
+                out_player = non_elim_scored[0][0]
+            else:
+                break
+
+            out_slot = out_player.get("slot", "W")
+
+            # Find valid replacements respecting slot constraints
+            candidates = []
+            squad_names = {p["Player"] for p in squad}
+            for c in all_candidates:
+                if c["Player"] in squad_names:
+                    continue
+                if c["price"] > budget - squad_vp + out_player["price"]:
+                    continue
+                # Slot constraint: role slot requires same role, wildcard allows any
+                if out_slot != "W" and c["role"] != out_slot:
+                    continue
+                # Team limit
+                tc = sum(1 for p in squad if p["Team"] == c["Team"]
+                        and p["Player"] != out_player["Player"])
+                if tc >= 2:
+                    continue
+                candidates.append(c)
 
             if not candidates:
+                already_transferred_out.add(out_player["Player"])
                 continue
 
             noise = RNG.normal(0, 0.8, len(candidates))
@@ -860,23 +983,25 @@ def santiago_transfers(current_team, available_players, player_expected_pts,
                            for i, c in enumerate(candidates)]
             scored_cands.sort(key=lambda x: x[1], reverse=True)
 
+            swapped = False
             for cand, _ in scored_cands[:5]:
                 new_vp = squad_vp - out_player["price"] + cand["price"]
                 if new_vp > budget:
                     continue
-                tc = sum(1 for p in squad if p["Team"] == cand["Team"]
-                        and p["Player"] != out_player["Player"])
-                if tc >= 2:
-                    continue
-
+                cand_copy = dict(cand)
+                cand_copy["slot"] = out_slot
                 squad = [p for p in squad if p["Player"] != out_player["Player"]]
-                squad.append(cand)
+                squad.append(cand_copy)
                 squad_vp = new_vp
-                del iter_roles[out_player["Player"]]
-                iter_roles[cand["Player"]] = out_role
                 transfers_made.append((out_player["Player"], cand["Player"]))
+                already_transferred_out.add(out_player["Player"])
+                transferred_in.add(cand["Player"])
                 transfers_done += 1
+                swapped = True
                 break
+
+            if not swapped:
+                already_transferred_out.add(out_player["Player"])
 
         total_pts = sum(p["expected_best2"] for p in squad)
         if squad:
@@ -902,7 +1027,8 @@ def santiago_transfers(current_team, available_players, player_expected_pts,
 
 def compute_santiago_expected_pts(player_pool, historical_games, team_wr,
                                   n_games=3, n_best=2,
-                                  tournament_games=None, tournament_weight=0.0):
+                                  tournament_games=None, tournament_weight=0.0,
+                                  avoid_china=True):
     """Estimate expected best-2-of-N for Santiago players.
 
     Heavily factors in team strength: stronger teams advance further,
@@ -921,7 +1047,7 @@ def compute_santiago_expected_pts(player_pool, historical_games, team_wr,
         pl = player.lower()
 
         # Skip China players
-        if team in CHINA_TEAMS_INTL:
+        if avoid_china and team in CHINA_TEAMS_INTL:
             result[player] = 0.0
             continue
 
@@ -955,12 +1081,13 @@ def compute_santiago_expected_pts(player_pool, historical_games, team_wr,
 
 def create_intl_excel(event_name, gen_prices_df, manual_prices_df,
                       actual_pts, team_data, eval_results,
-                      per_gw_pts=None):
+                      per_gw_pts=None, expected_pts_dict=None):
     """Create Excel output for an international event.
 
     per_gw_pts: optional list of (label, pts_dict) for per-GW columns in Prices sheet.
                 e.g. [("GW1", gw1_pts), ("GW2", gw2_pts), ("GW3", gw3_pts)]
                 If None, uses single column from actual_pts.
+    expected_pts_dict: optional dict player -> expected total pts for "Expected Pts" column.
     """
     from openpyxl import Workbook
     from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
@@ -980,12 +1107,13 @@ def create_intl_excel(event_name, gen_prices_df, manual_prices_df,
 
     # Build headers dynamically based on per_gw_pts
     base_headers = ["Player", "Team", "Role", "Manual VP", "Generated VP", "Diff"]
+    exp_headers = ["Expected Pts"] if expected_pts_dict else []
     if per_gw_pts:
         pts_headers = [f"Best-{best_n} {label}" for label, _ in per_gw_pts]
     else:
         pts_headers = [f"Actual Best-{best_n} Pts"]
     end_headers = ["Pick%", "Uncertainty"]
-    headers = base_headers + pts_headers + end_headers
+    headers = base_headers + exp_headers + pts_headers + end_headers
 
     for col_idx, header in enumerate(headers, 1):
         cell = ws1.cell(row=1, column=col_idx, value=header)
@@ -1009,6 +1137,10 @@ def create_intl_excel(event_name, gen_prices_df, manual_prices_df,
         merged["pts_all"] = merged["Player"].map(
             lambda p: compute_best_n_total(actual_pts.get(p, []), best_n))
         pts_col_names = ["pts_all"]
+
+    if expected_pts_dict:
+        merged["expected_pts"] = merged["Player"].map(
+            lambda p: expected_pts_dict.get(p, 0.0))
 
     pr_dict = eval_results.get("pickrate_dict", {})
     merged["pickrate"] = merged["Player"].map(
@@ -1034,6 +1166,11 @@ def create_intl_excel(event_name, gen_prices_df, manual_prices_df,
             elif abs(row["diff"]) <= 1:
                 c_diff.fill = light_green
         col += 1
+        # Expected pts column (if provided)
+        if expected_pts_dict:
+            ws1.cell(row=i, column=col,
+                     value=round(row.get("expected_pts", 0), 1)).border = thin_border
+            col += 1
         # Points columns (1 or 3)
         for pc in pts_col_names:
             ws1.cell(row=i, column=col, value=round(row[pc], 1)).border = thin_border
@@ -1043,9 +1180,10 @@ def create_intl_excel(event_name, gen_prices_df, manual_prices_df,
 
     from openpyxl.utils import get_column_letter
     base_widths = [18, 20, 6, 10, 12, 8]
+    exp_widths = [14] if expected_pts_dict else []
     pts_widths = [14] * len(pts_col_names)
     end_widths = [8, 30]
-    widths = base_widths + pts_widths + end_widths
+    widths = base_widths + exp_widths + pts_widths + end_widths
     for i, w in enumerate(widths, 1):
         ws1.column_dimensions[get_column_letter(i)].width = w
 
@@ -1060,13 +1198,13 @@ def create_intl_excel(event_name, gen_prices_df, manual_prices_df,
         cell = ws2.cell(row=row_num, column=1, value=label)
         cell.font = Font(bold=True, size=12, color="FFFFFF")
         cell.fill = team_header_fill
-        for c in range(2, 9):
+        for c in range(2, 10):
             ws2.cell(row=row_num, column=c).fill = team_header_fill
         row_num += 1
 
         # Column headers
         gw_best_n = td.get("best_n", 2)
-        cols = ["Player", "Team", "Role", "VP", f"Expected Best-{gw_best_n}",
+        cols = ["Player", "Team", "Slot", "Role", "VP", f"Expected Best-{gw_best_n}",
                 f"Actual Best-{gw_best_n}", "IGL", "Transfers"]
         subheader_fill = PatternFill(start_color="E0E0E0", end_color="E0E0E0", fill_type="solid")
         for col_idx, col_name in enumerate(cols, 1):
@@ -1100,11 +1238,12 @@ def create_intl_excel(event_name, gen_prices_df, manual_prices_df,
 
             ws2.cell(row=row_num, column=1, value=p["Player"]).border = thin_border
             ws2.cell(row=row_num, column=2, value=p["Team"]).border = thin_border
-            ws2.cell(row=row_num, column=3, value=p["role"]).border = thin_border
-            ws2.cell(row=row_num, column=4, value=p["price"]).border = thin_border
-            ws2.cell(row=row_num, column=5, value=round(p.get("expected_best2", 0), 1)).border = thin_border
-            ws2.cell(row=row_num, column=6, value=round(actual_best2, 1)).border = thin_border
-            igl_cell = ws2.cell(row=row_num, column=7, value="IGL" if is_igl else "")
+            ws2.cell(row=row_num, column=3, value=p.get("slot", "?")).border = thin_border
+            ws2.cell(row=row_num, column=4, value=p["role"]).border = thin_border
+            ws2.cell(row=row_num, column=5, value=p["price"]).border = thin_border
+            ws2.cell(row=row_num, column=6, value=round(p.get("expected_best2", 0), 1)).border = thin_border
+            ws2.cell(row=row_num, column=7, value=round(actual_best2, 1)).border = thin_border
+            igl_cell = ws2.cell(row=row_num, column=8, value="IGL" if is_igl else "")
             igl_cell.border = thin_border
             if is_igl:
                 igl_cell.font = Font(bold=True, color="FF0000")
@@ -1114,14 +1253,14 @@ def create_intl_excel(event_name, gen_prices_df, manual_prices_df,
         # Totals row
         actual_total, _ = score_team_actual(team_info, gw_actual, 2)
         ws2.cell(row=row_num, column=1, value="TOTAL").font = Font(bold=True)
-        ws2.cell(row=row_num, column=4, value=team_info["total_vp"]).font = Font(bold=True)
-        ws2.cell(row=row_num, column=5, value=team_info["expected_pts_with_igl"]).font = Font(bold=True)
-        ws2.cell(row=row_num, column=6, value=round(actual_total, 1)).font = Font(bold=True, color="0000FF")
+        ws2.cell(row=row_num, column=5, value=team_info["total_vp"]).font = Font(bold=True)
+        ws2.cell(row=row_num, column=6, value=team_info["expected_pts_with_igl"]).font = Font(bold=True)
+        ws2.cell(row=row_num, column=7, value=round(actual_total, 1)).font = Font(bold=True, color="0000FF")
         if transfers_str:
-            ws2.cell(row=row_num, column=8, value=transfers_str).font = Font(italic=True, size=9)
+            ws2.cell(row=row_num, column=9, value=transfers_str).font = Font(italic=True, size=9)
         row_num += 2
 
-    widths2 = [18, 20, 6, 7, 14, 14, 6, 40]
+    widths2 = [18, 20, 6, 6, 7, 14, 14, 6, 40]
     for i, w in enumerate(widths2, 1):
         ws2.column_dimensions[get_column_letter(i)].width = w
 
@@ -1277,7 +1416,8 @@ def main():
 
     kickoff_team = build_kickoff_team(
         kickoff_manual, player_historical_games, kickoff_team_wr,
-        role_map, budget=KICKOFF_BUDGET, n_iter=15000
+        role_map, budget=KICKOFF_BUDGET, n_iter=15000,
+        pickrate_dict=all_pickrate_dict
     )
 
     if kickoff_team:
@@ -1369,13 +1509,14 @@ def main():
         actual_gw1, gw1_scores = score_team_actual(gw1_team, gw1_actual_pts, 2)
 
         print(f"\n  GW1 Team:")
-        print(f"    {'Player':<16} {'Team':<18} {'Role':>4} {'VP':>6} {'ExpB2':>7} {'ActB2':>7}")
-        print(f"    {'-'*62}")
+        print(f"    {'Player':<16} {'Team':<18} {'Slot':>4} {'Role':>4} {'VP':>6} {'ExpB2':>7} {'ActB2':>7}")
+        print(f"    {'-'*68}")
         for p in gw1_team["players"]:
             games = gw1_actual_pts.get(p["Player"], [])
             act = compute_best_n_total(games, 2)
             igl = " *IGL*" if p["Player"] == gw1_team["igl"] else ""
-            print(f"    {p['Player']:<16} {p['Team']:<18} {p['role']:>4} "
+            slot = p.get("slot", "?")
+            print(f"    {p['Player']:<16} {p['Team']:<18} {slot:>4} {p['role']:>4} "
                   f"{p['price']:>6.1f} {p['expected_best2']:>7.1f} {act:>7.1f}{igl}")
         print(f"    Total VP: {gw1_team['total_vp']:.1f}  |  "
               f"Actual GW1: {actual_gw1:.1f}")
@@ -1410,10 +1551,12 @@ def main():
         tournament_games=gw1_tournament_pts, tournament_weight=0.4
     )
 
+    w2_teams_set = set(w2_teams)
     if gw1_team:
         gw2_result = santiago_transfers(
             gw1_team, w2_players, gw2_expected, role_map,
-            budget=SANTIAGO_BUDGET, max_transfers=SANTIAGO_MAX_TRANSFERS, n_iter=10000
+            budget=SANTIAGO_BUDGET, max_transfers=SANTIAGO_MAX_TRANSFERS, n_iter=10000,
+            gw_teams=w2_teams_set
         )
     else:
         gw2_result = build_santiago_team(
@@ -1429,13 +1572,14 @@ def main():
         if gw2_result.get("transfers"):
             for t in gw2_result["transfers"]:
                 print(f"    Transfer: {t[0]} -> {t[1]}")
-        print(f"    {'Player':<16} {'Team':<18} {'Role':>4} {'VP':>6} {'ExpB2':>7} {'ActB2':>7}")
-        print(f"    {'-'*62}")
+        print(f"    {'Player':<16} {'Team':<18} {'Slot':>4} {'Role':>4} {'VP':>6} {'ExpB2':>7} {'ActB2':>7}")
+        print(f"    {'-'*68}")
         for p in gw2_result["players"]:
             games = gw2_actual_pts.get(p["Player"], [])
             act = compute_best_n_total(games, 2)
             igl = " *IGL*" if p["Player"] == gw2_result["igl"] else ""
-            print(f"    {p['Player']:<16} {p['Team']:<18} {p['role']:>4} "
+            slot = p.get("slot", "?")
+            print(f"    {p['Player']:<16} {p['Team']:<18} {slot:>4} {p['role']:>4} "
                   f"{p['price']:>6.1f} {p['expected_best2']:>7.1f} {act:>7.1f}{igl}")
         print(f"    Total VP: {gw2_result['total_vp']:.1f}  |  "
               f"Actual GW2: {actual_gw2:.1f}")
@@ -1495,10 +1639,12 @@ def main():
                 gw3_expected[player] *= 0.6
 
     current_gw_team = gw2_result if gw2_result else gw1_team
+    w3_teams_set = set(w3_teams)
     if current_gw_team:
         gw3_result = santiago_transfers(
             current_gw_team, w3_players, gw3_expected, role_map,
-            budget=SANTIAGO_BUDGET, max_transfers=SANTIAGO_MAX_TRANSFERS, n_iter=30000
+            budget=SANTIAGO_BUDGET, max_transfers=SANTIAGO_MAX_TRANSFERS, n_iter=30000,
+            gw_teams=w3_teams_set
         )
     else:
         gw3_result = build_santiago_team(
@@ -1514,13 +1660,14 @@ def main():
         if gw3_result.get("transfers"):
             for t in gw3_result["transfers"]:
                 print(f"    Transfer: {t[0]} -> {t[1]}")
-        print(f"    {'Player':<16} {'Team':<18} {'Role':>4} {'VP':>6} {'ExpB2':>7} {'ActB2':>7}")
-        print(f"    {'-'*62}")
+        print(f"    {'Player':<16} {'Team':<18} {'Slot':>4} {'Role':>4} {'VP':>6} {'ExpB2':>7} {'ActB2':>7}")
+        print(f"    {'-'*68}")
         for p in gw3_result["players"]:
             games = gw3_actual_pts.get(p["Player"], [])
             act = compute_best_n_total(games, 2)
             igl = " *IGL*" if p["Player"] == gw3_result["igl"] else ""
-            print(f"    {p['Player']:<16} {p['Team']:<18} {p['role']:>4} "
+            slot = p.get("slot", "?")
+            print(f"    {p['Player']:<16} {p['Team']:<18} {slot:>4} {p['role']:>4} "
                   f"{p['price']:>6.1f} {p['expected_best2']:>7.1f} {act:>7.1f}{igl}")
         print(f"    Total VP: {gw3_result['total_vp']:.1f}  |  "
               f"Actual GW3: {actual_gw3:.1f}")
@@ -1542,18 +1689,124 @@ def main():
     print(f"\n  TOTAL SANTIAGO POINTS: {total_santiago:.1f}")
 
     # ================================================================
-    #  STEP 5: CREATE EXCEL FILES
+    #  STEP 5: EXPECTED POINTS TABLES
     # ================================================================
     print("\n" + "=" * 70)
-    print("  STEP 5: CREATE EXCEL FILES")
+    print("  STEP 5: EXPECTED POINTS (Kickoff + Stage 1)")
     print("=" * 70)
 
-    # Kickoff Excel (single best-3 column)
+    # --- Kickoff expected pts (best 3 of N games, bootstrap) ---
+    print("\n  Computing expected points for all Kickoff players...")
+    kickoff_expected_pts = compute_pool_expected_pts(
+        kickoff_manual, player_historical_games, kickoff_team_wr,
+        n_best=KICKOFF_BEST_N, bracket_type="kickoff"
+    )
+
+    # Print top 20 Kickoff players by expected pts with actual comparison
+    kickoff_exp_list = []
+    for player, exp in kickoff_expected_pts.items():
+        actual_games = kickoff_actual_pts.get(player, [])
+        actual = compute_best_n_total(actual_games, KICKOFF_BEST_N)
+        manual_vp = kickoff_manual[kickoff_manual["Player"] == player]["manual_vp"].values
+        manual_vp = manual_vp[0] if len(manual_vp) > 0 else 0
+        team = kickoff_manual[kickoff_manual["Player"] == player]["Team"].values
+        team = team[0] if len(team) > 0 else "?"
+        kickoff_exp_list.append({
+            "Player": player, "Team": team, "VP": manual_vp,
+            "Expected": exp, "Actual": actual, "Diff": actual - exp
+        })
+    kickoff_exp_list.sort(key=lambda x: x["Expected"], reverse=True)
+
+    print(f"\n  KICKOFF: Expected vs Actual Best-{KICKOFF_BEST_N} Points (Top 30)")
+    print(f"    {'Player':<16} {'Team':<18} {'VP':>5} {'Expected':>9} {'Actual':>7} {'Diff':>7}")
+    print(f"    {'-'*65}")
+    for p in kickoff_exp_list[:30]:
+        diff_str = f"{p['Diff']:+.1f}" if p['Actual'] > 0 else "N/A"
+        print(f"    {p['Player']:<16} {p['Team']:<18} {p['VP']:>5.1f} "
+              f"{p['Expected']:>9.1f} {p['Actual']:>7.1f} {diff_str:>7}")
+
+    # Correlation of expected vs actual
+    exp_vals = [p["Expected"] for p in kickoff_exp_list if p["Actual"] > 0]
+    act_vals = [p["Actual"] for p in kickoff_exp_list if p["Actual"] > 0]
+    if len(exp_vals) > 5:
+        corr = np.corrcoef(exp_vals, act_vals)[0, 1]
+        mae = np.mean(np.abs(np.array(exp_vals) - np.array(act_vals)))
+        print(f"\n  Kickoff Expected-to-Actual Correlation: {corr:.3f}")
+        print(f"  Kickoff Expected-to-Actual MAE: {mae:.1f}")
+
+    # --- Stage 1 expected pts (all 5 games count) ---
+    print("\n  Computing expected points for Stage 1 (all 5 gameweeks)...")
+
+    # Training data: everything through Santiago
+    stage1_train = load_data_up_to(2026, max_stage="Santiago", include_china=False)
+    print(f"  Stage 1 training data: {len(stage1_train)} rows")
+
+    # Build historical games for Stage 1
+    stage1_hist_train = stage1_train[stage1_train["P?"] == 1]
+    stage1_hist_games = {}
+    for (player,), grp in stage1_hist_train.groupby(["Player"]):
+        pl = player.lower()
+        games = []
+        for _, r in grp.iterrows():
+            games.append({"pts": r["Pts"], "ppm": r["PPM"]})
+        stage1_hist_games[pl] = games
+
+    # Player pool = kickoff prices (the 180 non-China players)
+    stage1_players = kickoff_manual.copy()
+    # Filter out China teams
+    stage1_players = stage1_players[~stage1_players["Team"].isin(CHINA_TEAMS_INTL)]
+
+    # Team win rates from full training data
+    stage1_team_wr = compute_team_win_rates(stage1_hist_train)
+
+    # Compute expected total pts: 5 games, all count (n_best=None)
+    stage1_expected_pts = compute_pool_expected_pts(
+        stage1_players, stage1_hist_games, stage1_team_wr,
+        n_best=None, fixed_n_games=5
+    )
+
+    # Print top 30
+    stage1_exp_list = []
+    for player, exp in stage1_expected_pts.items():
+        manual_vp = stage1_players[stage1_players["Player"] == player]["manual_vp"].values
+        manual_vp = manual_vp[0] if len(manual_vp) > 0 else 0
+        team = stage1_players[stage1_players["Player"] == player]["Team"].values
+        team = team[0] if len(team) > 0 else "?"
+        role = role_map.get(player.lower(), "?")
+        stage1_exp_list.append({
+            "Player": player, "Team": team, "Role": role,
+            "VP": manual_vp, "Expected": exp,
+        })
+    stage1_exp_list.sort(key=lambda x: x["Expected"], reverse=True)
+
+    print(f"\n  STAGE 1: Expected Total Points (5 Gameweeks) — Top 30")
+    print(f"    {'Player':<16} {'Team':<18} {'Role':>4} {'VP':>5} {'Expected':>9}")
+    print(f"    {'-'*55}")
+    for p in stage1_exp_list[:30]:
+        print(f"    {p['Player']:<16} {p['Team']:<18} {p['Role']:>4} "
+              f"{p['VP']:>5.1f} {p['Expected']:>9.1f}")
+
+    # Summary stats
+    all_exp = [p["Expected"] for p in stage1_exp_list]
+    print(f"\n  Stage 1 Expected Points Summary:")
+    print(f"    Players: {len(all_exp)}")
+    print(f"    Mean: {np.mean(all_exp):.1f}, Median: {np.median(all_exp):.1f}")
+    print(f"    Min: {np.min(all_exp):.1f}, Max: {np.max(all_exp):.1f}")
+
+    # ================================================================
+    #  STEP 6: CREATE EXCEL FILES
+    # ================================================================
+    print("\n" + "=" * 70)
+    print("  STEP 6: CREATE EXCEL FILES")
+    print("=" * 70)
+
+    # Kickoff Excel (single best-3 column + expected pts)
     kickoff_team_data = [{"label": "Kickoff Team (Manual Prices)", "team": kickoff_team,
                           "best_n": KICKOFF_BEST_N}]
     create_intl_excel(
         "Kickoff", kickoff_gen, kickoff_manual, kickoff_actual_pts,
-        kickoff_team_data, kickoff_eval
+        kickoff_team_data, kickoff_eval,
+        expected_pts_dict=kickoff_expected_pts
     )
 
     # Santiago Excel (3 per-GW columns: Best-2 GW1, Best-2 GW2, Best-2 GW3)
@@ -1565,6 +1818,22 @@ def main():
         "Santiago", santiago_gen, santiago_manual, santiago_actual_pts,
         santiago_gw_teams, santiago_eval,
         per_gw_pts=santiago_per_gw
+    )
+
+    # Stage 1 Expected Points Excel
+    stage1_gen = generate_intl_prices(
+        stage1_train, stage1_players, all_pickrate_dict, santiago_team_pop,
+        stage1_team_wr, target_mean=100 / 11,
+        vp_min=6.0, vp_max=15.0, role_map=role_map,
+    )
+    stage1_eval = {"pickrate_dict": all_pickrate_dict, "best_n": 5}
+    # No actual pts yet (Stage 1 hasn't happened), pass empty
+    stage1_actual_empty = {}
+    create_intl_excel(
+        "Stage1_Predictions", stage1_gen, stage1_players, stage1_actual_empty,
+        [],  # no team data
+        stage1_eval,
+        expected_pts_dict=stage1_expected_pts
     )
 
     print("\n" + "=" * 70)
