@@ -75,7 +75,7 @@ INTL_VP_MIN, INTL_VP_MAX = 5.0, 15.0
 # Kickoff
 KICKOFF_BUDGET = 100
 KICKOFF_SQUAD = 11
-KICKOFF_BEST_N = 2  # best 2 games count
+KICKOFF_BEST_N = 3  # best 3 games count
 
 # Santiago
 SANTIAGO_BUDGET = 50
@@ -89,12 +89,9 @@ SANTIAGO_SWISS_TEAMS = [
     "G2 Esports", "NRG Esports", "Xi Lai Gaming", "EDward Gaming",
 ]
 
-# China teams play in inflated region — avoid for team building
-CHINA_DISCOUNT = 0.15  # multiply expected pts by this factor (near-zero)
-# Extended China team list (including name variants from CSVs)
-CHINA_TEAMS_INTL = set(CHINA_TEAMS) | {
-    "EDward Gaming", "EDWard Gaming", "Xi Lai Gaming",
-    "All Gamers", "TYLOO",
+# China teams in international events (only the 3 that actually compete)
+CHINA_TEAMS_INTL = {
+    "Xi Lai Gaming", "EDward Gaming", "Edward Gaming", "All Gamers",
 }
 
 # Role slot configs
@@ -395,7 +392,7 @@ def generate_intl_prices(all_data, player_pool, pickrate_dict, team_pop,
 # ============================================================================
 
 def evaluate_pricing(gen_prices, manual_prices, actual_pts, pickrate_dict,
-                     event_name):
+                     event_name, best_n=2):
     """Evaluate generated vs manual pricing accuracy."""
     print(f"\n{'='*70}")
     print(f"  PRICING EVALUATION: {event_name}")
@@ -406,9 +403,9 @@ def evaluate_pricing(gen_prices, manual_prices, actual_pts, pickrate_dict,
     if "Team_gen" in merged.columns:
         merged["Team"] = merged["Team_gen"]
 
-    # Add actual performance
+    # Add actual performance (best N games)
     merged["actual_best2_pts"] = merged["Player"].map(
-        lambda p: compute_best_n_total(actual_pts.get(p, []), 2))
+        lambda p: compute_best_n_total(actual_pts.get(p, []), best_n))
 
     # Price accuracy: generated vs manual
     diff_gen = merged["generated_vp"] - merged["manual_vp"]
@@ -533,9 +530,9 @@ def build_kickoff_team(player_pool_with_prices, player_historical_games,
 
         expected = estimate_expected_best_n(hist_games, KICKOFF_BEST_N, n_games)
 
-        # Discount China players — inflated regional stats
+        # Skip China players — inflated regional stats
         if team in CHINA_TEAMS_INTL:
-            expected *= CHINA_DISCOUNT
+            continue
 
         players.append({
             "Player": player,
@@ -651,6 +648,9 @@ def build_santiago_team(player_pool_with_prices, player_expected_pts,
         price = row["manual_vp"]
         role = role_map.get(pl, "I")
         exp = player_expected_pts.get(player, 0)
+        # China players included but with near-zero expected (budget fillers only)
+        if team in CHINA_TEAMS_INTL:
+            exp = 0.1
 
         players.append({
             "Player": player,
@@ -660,67 +660,101 @@ def build_santiago_team(player_pool_with_prices, player_expected_pts,
             "expected_best2": exp,
         })
 
+    # Compute actual minimum price in pool for budget floor check
+    pool_min_price = min(p["price"] for p in players) if players else INTL_VP_MIN
+
     best_team = None
     best_score = -1
 
-    for _ in range(n_iter):
-        noise = RNG.normal(0, 0.4, len(players))
-        scored = [(p, p["expected_best2"] / (p["price"] + 0.1) + noise[i])
-                  for i, p in enumerate(players)]
-        scored.sort(key=lambda x: x[1], reverse=True)
+    for iter_n in range(n_iter):
+        # Phase 1: Fill mandatory role slots first (1D, 1C, 1I, 1S)
+        # Phase 2: Fill wildcards with best remaining
+        noise = RNG.normal(0, 0.3, len(players))
 
         team = []
         team_vp = 0.0
         team_counts = {}
-        role_counts = {"D": 0, "C": 0, "I": 0, "S": 0}
-        wc_used = 0
+        used_players = set()
 
-        for p, _ in scored:
+        # Phase 1: pick one player per mandatory role
+        # Sort roles by scarcity (most expensive role first to reserve budget)
+        role_order = sorted(["D", "C", "I", "S"],
+                           key=lambda r: min((p["price"] for p in players if p["role"] == r), default=99),
+                           reverse=True)
+        # Shuffle with some randomness
+        if RNG.random() > 0.3:
+            RNG.shuffle(role_order)
+
+        for role in role_order:
+            candidates = [p for p in players
+                         if p["role"] == role and p["Player"] not in used_players
+                         and team_counts.get(p["Team"], 0) < 2]
+            if not candidates:
+                break
+            # Score with noise, budget-aware
+            scored_c = [(p, p["expected_best2"] / (p["price"] + 0.1)
+                        + float(RNG.normal(0, 0.3)))
+                       for p in candidates]
+            scored_c.sort(key=lambda x: x[1], reverse=True)
+
+            picked = False
+            for p, _ in scored_c:
+                remaining_after = SANTIAGO_SQUAD - len(team) - 1
+                budget_left = budget - team_vp - p["price"]
+                if budget_left < 0:
+                    continue
+                if remaining_after > 0 and budget_left < remaining_after * pool_min_price:
+                    continue
+                team.append(p)
+                team_vp += p["price"]
+                team_counts[p["Team"]] = team_counts.get(p["Team"], 0) + 1
+                used_players.add(p["Player"])
+                picked = True
+                break
+            if not picked:
+                break
+
+        if len(team) < 4:  # couldn't fill all 4 mandatory roles
+            continue
+
+        # Phase 2: fill remaining wildcard slots
+        wc_candidates = [p for p in players
+                        if p["Player"] not in used_players
+                        and team_counts.get(p["Team"], 0) < 2]
+        scored_wc = [(p, p["expected_best2"] / (p["price"] + 0.1)
+                     + float(RNG.normal(0, 0.3)))
+                    for p in wc_candidates]
+        scored_wc.sort(key=lambda x: x[1], reverse=True)
+
+        for p, _ in scored_wc:
             if len(team) >= SANTIAGO_SQUAD:
                 break
-            vp = p["price"]
-            t = p["Team"]
-            role = p["role"]
-
-            if team_vp + vp > budget:
+            if team_vp + p["price"] > budget:
                 continue
-            if team_counts.get(t, 0) >= 2:
+            if team_counts.get(p["Team"], 0) >= 2:
                 continue
             remaining = SANTIAGO_SQUAD - len(team) - 1
-            if remaining > 0 and (budget - team_vp - vp) < remaining * INTL_VP_MIN:
+            if remaining > 0 and (budget - team_vp - p["price"]) < remaining * pool_min_price:
                 continue
-
-            if role_counts.get(role, 0) < SANTIAGO_ROLE_SLOTS.get(role, 0):
-                role_counts[role] += 1
-            elif wc_used < SANTIAGO_WC_SLOTS:
-                wc_used += 1
-            else:
-                continue
-
             team.append(p)
-            team_vp += vp
-            team_counts[t] = team_counts.get(t, 0) + 1
+            team_vp += p["price"]
+            team_counts[p["Team"]] = team_counts.get(p["Team"], 0) + 1
+            used_players.add(p["Player"])
 
         if len(team) == SANTIAGO_SQUAD:
-            rc = {"D": 0, "C": 0, "I": 0, "S": 0}
-            for p in team:
-                r = p["role"]
-                if r in rc:
-                    rc[r] += 1
-            if all(rc[r] >= SANTIAGO_ROLE_SLOTS[r] for r in SANTIAGO_ROLE_SLOTS):
-                total_pts = sum(p["expected_best2"] for p in team)
-                igl = max(team, key=lambda p: p["expected_best2"])
-                total_with_igl = total_pts + igl["expected_best2"]
+            total_pts = sum(p["expected_best2"] for p in team)
+            igl = max(team, key=lambda p: p["expected_best2"])
+            total_with_igl = total_pts + igl["expected_best2"]
 
-                if total_with_igl > best_score:
-                    best_score = total_with_igl
-                    best_team = {
-                        "players": list(team),
-                        "total_vp": round(team_vp, 2),
-                        "expected_pts": round(total_pts, 1),
-                        "expected_pts_with_igl": round(total_with_igl, 1),
-                        "igl": igl["Player"],
-                    }
+            if total_with_igl > best_score:
+                best_score = total_with_igl
+                best_team = {
+                    "players": list(team),
+                    "total_vp": round(team_vp, 2),
+                    "expected_pts": round(total_pts, 1),
+                    "expected_pts_with_igl": round(total_with_igl, 1),
+                    "igl": igl["Player"],
+                }
 
     return best_team
 
@@ -744,7 +778,7 @@ def santiago_transfers(current_team, available_players, player_expected_pts,
             wc_players.append(p["Player"])
             current_roles[p["Player"]] = "W"
 
-    # Build candidate list
+    # Build candidate list (China included but near-zero expected)
     all_candidates = []
     for _, row in available_players.iterrows():
         player = row["Player"]
@@ -856,19 +890,31 @@ def santiago_transfers(current_team, available_players, player_expected_pts,
     return best_result
 
 
-def compute_santiago_expected_pts(player_pool, historical_games, n_games=3,
-                                  n_best=2, tournament_games=None,
-                                  tournament_weight=0.0):
+def compute_santiago_expected_pts(player_pool, historical_games, team_wr,
+                                  n_games=3, n_best=2,
+                                  tournament_games=None, tournament_weight=0.0):
     """Estimate expected best-2-of-N for Santiago players.
+
+    Heavily factors in team strength: stronger teams advance further,
+    play more games, and are more likely to be available in future GWs.
 
     tournament_games: dict of player -> list of game dicts from prior Santiago GWs
     tournament_weight: how much to weight tournament form (0-1)
+    team_wr: dict team -> win rate (0-1)
     """
     result = {}
+    avg_wr = np.mean(list(team_wr.values())) if team_wr else 0.5
+
     for _, row in player_pool.iterrows():
         player = row["Player"]
         team = row["Team"]
         pl = player.lower()
+
+        # Skip China players
+        if team in CHINA_TEAMS_INTL:
+            result[player] = 0.0
+            continue
+
         hist = historical_games.get(pl, [])
 
         # Historical estimate
@@ -881,18 +927,15 @@ def compute_santiago_expected_pts(player_pool, historical_games, n_games=3,
                 tourn_avg = np.mean(tourn_pts)
                 tourn_expected = tourn_avg * min(n_games, len(tourn_pts)) * 0.85
                 tourn_expected = max(tourn_expected, sum(sorted(tourn_pts, reverse=True)[:n_best]))
+                hist_expected = (1 - tournament_weight) * hist_expected + tournament_weight * tourn_expected
 
-                final = (1 - tournament_weight) * hist_expected + tournament_weight * tourn_expected
-                # Discount China players — inflated regional stats
-                if team in CHINA_TEAMS_INTL:
-                    final *= CHINA_DISCOUNT
-                result[player] = final
-                continue
+        # Team strength multiplier: strong teams advance, weak teams go home
+        # Scale: wr=0.6+ -> 1.25x, wr=0.5 -> 1.0x, wr=0.3 -> 0.7x
+        wr = team_wr.get(team, 0.5)
+        team_mult = 1.0 + (wr - avg_wr) * 1.5
+        team_mult = max(0.6, min(1.4, team_mult))
 
-        # Discount China players
-        if team in CHINA_TEAMS_INTL:
-            hist_expected *= CHINA_DISCOUNT
-        result[player] = hist_expected
+        result[player] = hist_expected * team_mult
     return result
 
 
@@ -929,8 +972,9 @@ def create_intl_excel(event_name, gen_prices_df, manual_prices_df,
     merged = gen_prices_df[["Player", "Team", "Role", "generated_vp", "uncertainty"]].merge(
         manual_prices_df[["Player", "manual_vp"]], on="Player", how="left"
     )
+    best_n = eval_results.get("best_n", 2)
     merged["actual_best2"] = merged["Player"].map(
-        lambda p: compute_best_n_total(actual_pts.get(p, []), 2))
+        lambda p: compute_best_n_total(actual_pts.get(p, []), best_n))
     pr_dict = eval_results.get("pickrate_dict", {})
     merged["pickrate"] = merged["Player"].map(
         lambda p: pr_dict.get(p.lower(), {}).get("avg_pickpct", 0))
@@ -1002,8 +1046,11 @@ def create_intl_excel(event_name, gen_prices_df, manual_prices_df,
 
         igl_fill = PatternFill(start_color="FFFDE7", end_color="FFFDE7", fill_type="solid")
 
+        # Use per-GW actual_pts if provided, otherwise fall back to event-wide
+        gw_actual = td.get("actual_pts", actual_pts)
+
         for p in team_info["players"]:
-            games = actual_pts.get(p["Player"], [])
+            games = gw_actual.get(p["Player"], [])
             actual_best2 = compute_best_n_total(games, 2)
             is_igl = p["Player"] == team_info.get("igl")
 
@@ -1021,7 +1068,7 @@ def create_intl_excel(event_name, gen_prices_df, manual_prices_df,
             row_num += 1
 
         # Totals row
-        actual_total, _ = score_team_actual(team_info, actual_pts, 2)
+        actual_total, _ = score_team_actual(team_info, gw_actual, 2)
         ws2.cell(row=row_num, column=1, value="TOTAL").font = Font(bold=True)
         ws2.cell(row=row_num, column=4, value=team_info["total_vp"]).font = Font(bold=True)
         ws2.cell(row=row_num, column=5, value=team_info["expected_pts_with_igl"]).font = Font(bold=True)
@@ -1152,15 +1199,17 @@ def main():
 
     kickoff_eval = evaluate_pricing(
         kickoff_gen, kickoff_manual, kickoff_actual_pts,
-        all_pickrate_dict, "KICKOFF 2026"
+        all_pickrate_dict, "KICKOFF 2026", best_n=KICKOFF_BEST_N
     )
     kickoff_eval["pickrate_dict"] = all_pickrate_dict
+    kickoff_eval["best_n"] = KICKOFF_BEST_N
 
     santiago_eval = evaluate_pricing(
         santiago_gen, santiago_manual, santiago_actual_pts,
         all_pickrate_dict, "SANTIAGO 2026"
     )
     santiago_eval["pickrate_dict"] = all_pickrate_dict
+    santiago_eval["best_n"] = SANTIAGO_BEST_N
 
     # ================================================================
     #  STEP 3: BUILD KICKOFF TEAM
@@ -1180,7 +1229,7 @@ def main():
         player_historical_games[pl] = games
 
     print(f"  Historical game data: {len(player_historical_games)} players")
-    print(f"  Building team (11 players, 100 VP, best 2 games)...")
+    print(f"  Building team (11 players, 100 VP, best 3 games)...")
 
     kickoff_team = build_kickoff_team(
         kickoff_manual, player_historical_games, kickoff_team_wr,
@@ -1242,12 +1291,13 @@ def main():
 
     # Estimate expected best-2-of-3 for Swiss (3 rounds)
     gw1_expected = compute_santiago_expected_pts(
-        swiss_players, santiago_hist_games, n_games=3, n_best=2
+        swiss_players, santiago_hist_games, santiago_team_wr,
+        n_games=3, n_best=2
     )
 
     gw1_team = build_santiago_team(
         swiss_players, gw1_expected, role_map,
-        budget=SANTIAGO_BUDGET, n_iter=10000
+        budget=SANTIAGO_BUDGET, n_iter=30000
     )
 
     santiago_gw_teams = []
@@ -1267,7 +1317,8 @@ def main():
                   f"{p['price']:>6.1f} {p['expected_best2']:>7.1f} {act:>7.1f}{igl}")
         print(f"    Total VP: {gw1_team['total_vp']:.1f}  |  "
               f"Actual GW1: {actual_gw1:.1f}")
-        santiago_gw_teams.append({"label": "Santiago GW1 (Swiss)", "team": gw1_team})
+        santiago_gw_teams.append({"label": "Santiago GW1 (Swiss)", "team": gw1_team,
+                                  "actual_pts": gw1_actual_pts})
     else:
         print("  FAILED to build GW1 team!")
         santiago_gw_teams.append({"label": "Santiago GW1 (Swiss)", "team": None})
@@ -1292,7 +1343,8 @@ def main():
     gw1_tournament_pts = get_player_actual_game_pts(csv_2026_full, "Santiago", week="W1")
 
     gw2_expected = compute_santiago_expected_pts(
-        w2_players, santiago_hist_games, n_games=3, n_best=2,
+        w2_players, santiago_hist_games, santiago_team_wr,
+        n_games=3, n_best=2,
         tournament_games=gw1_tournament_pts, tournament_weight=0.4
     )
 
@@ -1325,7 +1377,8 @@ def main():
                   f"{p['price']:>6.1f} {p['expected_best2']:>7.1f} {act:>7.1f}{igl}")
         print(f"    Total VP: {gw2_result['total_vp']:.1f}  |  "
               f"Actual GW2: {actual_gw2:.1f}")
-        santiago_gw_teams.append({"label": "Santiago GW2 (Playoffs)", "team": gw2_result})
+        santiago_gw_teams.append({"label": "Santiago GW2 (Playoffs)", "team": gw2_result,
+                                  "actual_pts": gw2_actual_pts})
     else:
         print("  FAILED to build GW2 team!")
         santiago_gw_teams.append({"label": "Santiago GW2 (Playoffs)", "team": None})
@@ -1365,7 +1418,8 @@ def main():
         gw12_filtered[player] = [g for g in games if g["week"] in ["W1", "W2"]]
 
     gw3_expected = compute_santiago_expected_pts(
-        w3_players, santiago_hist_games, n_games=2, n_best=2,
+        w3_players, santiago_hist_games, santiago_team_wr,
+        n_games=2, n_best=2,
         tournament_games=gw12_filtered, tournament_weight=0.5
     )
 
@@ -1408,7 +1462,8 @@ def main():
                   f"{p['price']:>6.1f} {p['expected_best2']:>7.1f} {act:>7.1f}{igl}")
         print(f"    Total VP: {gw3_result['total_vp']:.1f}  |  "
               f"Actual GW3: {actual_gw3:.1f}")
-        santiago_gw_teams.append({"label": "Santiago GW3 (Final Four)", "team": gw3_result})
+        santiago_gw_teams.append({"label": "Santiago GW3 (Final Four)", "team": gw3_result,
+                                  "actual_pts": gw3_actual_pts})
     else:
         print("  FAILED to build GW3 team!")
         santiago_gw_teams.append({"label": "Santiago GW3 (Final Four)", "team": None})
