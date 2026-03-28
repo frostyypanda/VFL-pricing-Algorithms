@@ -90,17 +90,18 @@
 ## Available Data
 
 ### CSV Files
-Two CSV files with per-game, per-player scoring data:
+Three standardized CSV files (UTF-8, 36 identical columns) with per-game, per-player scoring data:
 
-- **`2025 VFL.csv`** — 2025 VCT season (18,618 rows, 301 players, 48 teams including China)
-- **`2026 VFL.csv`** — 2026 VCT season (18,951 rows, 250 players, 48 teams including China)
+- **`2024 VFL.csv`** — 2024 VCT season scraped from vlr.gg (20,057 rows, 218 players, 39 teams)
+- **`2025 VFL.csv`** — 2025 VCT season (18,255 rows, 301 players, 48 teams including China)
+- **`2026 VFL.csv`** — 2026 VCT season (18,701 rows, 250 players, 48 teams including China)
 
-### CSV Columns
+### CSV Columns (all files share identical format)
 | Column | Description |
 |---|---|
-| Col 1 (unnamed) | Team name |
-| Col 2 (unnamed) | Player name |
-| Stage | Tournament stage (Kickoff, Stage 1, Stage 2, bangkok, Toronto, Champions, etc.) |
+| Team | Team name |
+| Player | Player name |
+| Stage | Tournament stage (Kickoff, Stage 1, Stage 2, bangkok/Madrid/Santiago, Toronto/Shanghai/London, Champions) |
 | Wk | Week number (W1, W2, W3) |
 | Game | Game identifier (G1-G5 for stage, UR1/UQF/USF/UF/LR1-4/LF/GF for playoffs, SR1-3 for swiss) |
 | Pts | Total fantasy points scored |
@@ -110,12 +111,22 @@ Two CSV files with per-game, per-player scoring data:
 | Adj.VP | Adjusted VP (dynamically calculated price) |
 | P? | Played flag (1 = played, 0 = did not play) |
 | 0k-50k | Kill bracket counts per map (how many maps the player hit each kill threshold) |
-| 4ks, 5ks | Number of 4K and 5K rounds |
+| 4ks, 5ks, 6ks, 7ks | Number of multi-kill rounds (6ks/7ks are 0 in 2024/2025 — impossible in 5v5) |
 | TOP3/TOP2/TOP1 | Whether player was top 3/2/1 VLR rating in the game |
 | 1.5R2/1.75R2/2.0R2 | Whether player achieved 1.5+/1.75+/2.0+ VLR rating |
 | PR Avg. | Running average points (performance rating) |
 | W/L | Match result (W/L) |
 | Game Start VP / Game End VP | Player's VP price before and after the game |
+
+### Upcoming Data
+- **Pickrate data** — historical pick rates for players across recent VFL tournaments (how often each player was selected by managers)
+- **IGL rate data** — how often each player was designated as IGL (captain) by managers
+- This data will be used to inform pricing: highly-picked players may need price adjustments, and IGL-worthy players (high-ceiling) should be priced to reflect their captain potential
+
+### IGL & Benching Rules
+- When a player on your roster is **benched** (not fielded by their VCT team), they score 0 points
+- IGL designation persists for the gameweek — if your IGL's team doesn't play or the player is benched, you lose the 2x multiplier entirely
+- This makes **roster stability** a pricing factor: players on teams with frequent roster changes carry risk
 
 ### Image
 - **`vfl price stats.webp`** — Bar chart showing price distribution across multiple splits/stages (4 colored series). Shows player count at each 0.5 VP price point from 5 to 15. Key observation: heavy clustering around 7-8.5 VP, with the median consistently below 9 VP.
@@ -146,11 +157,9 @@ Build pricing algorithms that generate better VFL player price lists for regular
 ### Approach
 - Build multiple different algorithms to explore different strategies
 - Use recency-weighted historical data (more weight on recent performances)
-- Test algorithms by backtesting:
-  - Predict Stage 2 2025 prices using Stage 1 2025 + all 2024 data
-  - Predict Kickoff prices using prior year data
-- Consider fetching 2024 data from vlr.gg to supplement the CSV data
-- May convert CSVs to JSON if easier to work with
+- **Primary backtest**: Train on all 2024 + 2025 Kickoff + 2025 Bangkok (Masters 1) -> predict 2025 Stage 1 prices -> simulate optimal teams -> compare against actual Stage 1 results
+- Secondary backtests: Predict Stage 2 prices using Stage 1 data, etc.
+- 2024 data scraped from vlr.gg (complete VCT season including all 3 regions)
 
 ### Success Criteria
 - Backtest accuracy against actual VFL prices
@@ -162,20 +171,52 @@ Build pricing algorithms that generate better VFL player price lists for regular
 
 ## Technical Notes
 
-- CSVs use latin-1 encoding (special characters in team names like LEVIATaN)
+- All 3 CSVs are standardized to UTF-8 encoding with identical 36 columns (via `standardize_csvs.py`)
 - Rows with `P? = 0` and all-zero stats indicate the player did not participate in that game (team eliminated, bye week, etc.)
-- The `Game Start VP` and `Game End VP` columns show how VFL's current dynamic pricing moves after each game
-- China teams are in the data but NOT relevant for VFL pricing (filter them out)
-- 2026 CSV has additional columns vs 2025: `6ks`, `7ks` multi-kill categories, and a `START` row per player
+- The `Game Start VP` and `Game End VP` columns show how VFL's current dynamic pricing moves after each game (2024 scraped data does NOT have VP prices — only 2025/2026 do)
+- China teams are in the data but NOT relevant for VFL pricing (filter them out):
+  - Bilibili Gaming, Dragon Ranger Gaming, Edward Gaming, FunPlus Phoenix, JD Mall JDG Esports, Nova Esports, Titan Esports Club, Trace Esports, Wolves Esports, Xi Lai Gaming, TYLOO, All Gamers
+- 2024 data was scraped from vlr.gg via `scrape_vlr_2024.py` (parallel scraper with 4 workers)
+- Kill scoring correction: 0-4 kills = -3 pts, 5-9 kills = -1 pts (not 0 as originally documented)
 
 ---
 
-## Algorithms to Explore
+## Algorithms (implemented in `pricing_algorithms.py`)
 
-*(To be expanded as we develop them)*
+### 1. Baseline EMA (Exponential Moving Average)
+- Compute EMA of PPM with alpha=0.3, 2024 data weighted at 0.5x
+- Bayesian shrinkage for players with < 4 games (blend toward population mean)
+- Linear map from EMA PPM to [6, 15] VP range
+- Simplest approach — serves as the baseline to beat
 
-1. **Baseline EMA (Exponential Moving Average):** Recency-weighted average of PPM, map to 6-15 VP range
-2. **Distribution-aware pricing:** Optimize for composition diversity by targeting a specific price distribution shape
-3. **Role-adjusted pricing:** Account for role-based scoring differences (duelists naturally score higher)
-4. **Team strength multiplier:** Factor in team win rates since team points are a significant scoring component
-5. **Variance-aware pricing:** Consider consistency vs. volatility in player performance
+### 2. Distribution-Aware Pricing
+- Same EMA PPM scores, but force a healthy price distribution
+- Percentile-rank players, then map to target quantiles: 10th->6.5, 25th->7.5, 50th->9.0, 75th->10.5, 90th->12.5, 95th->13.5
+- Fixes the median-below-9 problem and reduces clustering at 8-10 VP
+- Goal: enable multiple viable team archetypes
+
+### 3. Role-Adjusted Pricing
+- Proxy player roles from scoring patterns (kill ratio, P.Pts/Pts ratio, high kill bracket rate, rating bonus frequency)
+- Duelist-like players: discount raw PPM by 5-10% (they naturally score higher from kills)
+- Support-like players: boost by 5% (they contribute more than their raw PPM suggests)
+- Hook for real role data when pickrate/IGL data arrives
+
+### 4. Team Strength Multiplier
+- Decompose expected points into P.Pts (personal) + T.Pts (team-based)
+- Predict T.Pts from team win rate (strong teams give ~1.5 extra pts/game)
+- Predict P.Pts from personal EMA
+- Combine for total expected PPM, then price
+
+### 5. Variance-Aware Pricing
+- Start from baseline EMA price
+- Adjust by coefficient of variation (std/mean of PPM)
+- Consistent players get up to +10% premium (reliable weekly scorers)
+- Volatile players get a discount (boom-or-bust)
+- Re-clip to [6, 15]
+
+## Evaluation Framework (`evaluate_pricing.py`)
+
+- **Price accuracy**: MAE, RMSE, correlation vs actual 2025 Stage 1 Game Start VP
+- **Composition simulation**: greedy optimizer with 10K random restarts (11 players, ≤100 VP, max 2/team)
+- **Archetype diversity**: classify generated teams as top-heavy, balanced, spread, stars-and-scrubs
+- **Backtest**: score top 15 teams against actual Stage 1 results, compare vs actual-price teams and random teams

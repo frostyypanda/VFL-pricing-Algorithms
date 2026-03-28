@@ -1,0 +1,1001 @@
+Player,Team,predicted_vp,algorithm
+2GE,Team Secret,8.37131366441465,Baseline EMA
+ANGE1,Natus Vincere,8.092335586248218,Baseline EMA
+Adverso,KR Esports,10.235474207274569,Baseline EMA
+Akame,Detonation FocusMe,10.176622159641063,Baseline EMA
+Art,Detonation FocusMe,9.04492839411397,Baseline EMA
+Artzin,MIBR,9.453221014034973,Baseline EMA
+Asuna,100 Thieves,10.701007869444755,Baseline EMA
+AtaKaptan,FUT Esports,9.400906294190428,Baseline EMA
+Avez,Karmine Corp,10.022538369824904,Baseline EMA
+Avova,Apeks,8.594496126947792,Baseline EMA
+BeYN,DRX,9.448585120305426,Baseline EMA
+BerserX,BOOM Esports,9.718080336763085,Baseline EMA
+Boaster,FNATIC,9.295931430599833,Baseline EMA
+Boo,Team Heretics,7.378214589418706,Baseline EMA
+Boostio,100 Thieves,8.028059394488125,Baseline EMA
+Buzz,T1,14.057542340837612,Baseline EMA
+C0M,LEVIATµN,9.413955335539857,Baseline EMA
+CLZ,Zeta Division,7.4297626506029495,Baseline EMA
+Carpe,T1,8.113207144801423,Baseline EMA
+Cauanzin,LOUD,9.887830699916314,Baseline EMA
+Chronicle,FNATIC,9.562753366668977,Baseline EMA
+Click,Gentle Mates,10.440614527786522,Baseline EMA
+Cloud,GIANTX,10.035763896133282,Baseline EMA
+Cortezia,MIBR,9.572514981453171,Baseline EMA
+Crashies,FNATIC,8.961452629735092,Baseline EMA
+Crws,TALON,6.4071742821095485,Baseline EMA
+Cryocells,100 Thieves,11.519598339900224,Baseline EMA
+Dambi,Nongshim RedForce,10.935177487666365,Baseline EMA
+Demon1,LEVIATµN,10.656458728195478,Baseline EMA
+Dep,Zeta Division,9.312864678226347,Baseline EMA
+Derke,Team Vitality,13.951014919050554,Baseline EMA
+Derrek,Evil Geniuses,9.612338230165545,Baseline EMA
+Deryeon,Global Esports,8.05263103020843,Baseline EMA
+Dos9,BOOM Esports,8.302266590068458,Baseline EMA
+Elite,Karmine Corp,8.838505725058958,Baseline EMA
+Estrella,Rex Regum Qeon,10.583855260320249,Baseline EMA
+Famouz,BOOM Esports,9.976135059067031,Baseline EMA
+Filu,KOI,9.39586065648086,Baseline EMA
+Flashback,DRX,9.75619851291841,Baseline EMA
+Flyuh,KOI,7.883102027623398,Baseline EMA
+Foxy9,Gen.G,12.112174163681571,Baseline EMA
+Francis,Nongshim RedForce,10.98153173437888,Baseline EMA
+Free1ng,DRX,11.662622680625695,Baseline EMA
+Gobera,2Game Esports,8.266696885102238,Baseline EMA
+Governor,TALON,7.154236384045154,Baseline EMA
+Grubinho,KOI,8.210203824273536,Baseline EMA
+Gyen,Detonation FocusMe,9.787075613799999,Baseline EMA
+HYUNMIN,DRX,11.086269082841742,Baseline EMA
+INVY,Team Secret,8.44036073876084,Baseline EMA
+Ivy,Nongshim RedForce,11.657462875334405,Baseline EMA
+Jamppi,BBL Esports,9.619190257414827,Baseline EMA
+Jawgemo,G2 Esports,14.77649511670438,Baseline EMA
+Jemkin,Rex Regum Qeon,13.77739127836712,Baseline EMA
+JessieVash,Team Secret,10.41552553217916,Baseline EMA
+Jinboong,Detonation FocusMe,10.071303254293,Baseline EMA
+Jinggg,Paper Rex,10.55782414514825,Baseline EMA
+JitboyS,TALON,7.940126055752414,Baseline EMA
+JohnQT,Sentinels,7.634512852080622,Baseline EMA
+JonahP,G2 Esports,13.393972977042207,Baseline EMA
+Jremy,Team Secret,9.18662709785604,Baseline EMA
+Kaajak,FNATIC,12.818511793995485,Baseline EMA
+Kada,Gentle Mates,9.970470934312763,Baseline EMA
+Kamo,Team Liquid,10.81713568360017,Baseline EMA
+Kamyk,Team Liquid,8.610555159118658,Baseline EMA
+Karon,Gen.G,13.584132068362802,Baseline EMA
+Keiko,Team Liquid,11.267183173423405,Baseline EMA
+KellyS,Global Esports,9.283997137551731,Baseline EMA
+Keznit,KR Esports,11.403451579667326,Baseline EMA
+Khalil,FURIA,9.52209823685117,Baseline EMA
+Kicks,Team Vitality,9.488768132069263,Baseline EMA
+Koalanoob,Natus Vincere,8.971813977667887,Baseline EMA
+Kr1stal,Global Esports,9.25225587441162,Baseline EMA
+Kushy,Rex Regum Qeon,11.543717721141796,Baseline EMA
+Leaf,G2 Esports,14.40894804619547,Baseline EMA
+Less,Team Vitality,10.502809733701511,Baseline EMA
+LewN,BBL Esports,9.213782684428343,Baseline EMA
+MOLSI,Apeks,7.869153123715077,Baseline EMA
+MaKo,DRX,8.57068192836853,Baseline EMA
+Margaret,Nongshim RedForce,9.989586484436433,Baseline EMA
+Marteen,Karmine Corp,10.134398479180511,Baseline EMA
+Mazino,KR Esports,11.129637293744434,Baseline EMA
+Meiy,Detonation FocusMe,13.140296156135605,Baseline EMA
+Melser,KR Esports,13.047370556660995,Baseline EMA
+Meteor,T1,13.694590243291184,Baseline EMA
+Mindfreak,Paper Rex,8.65752483873377,Baseline EMA
+Miniboo,Team Heretics,9.293481010735402,Baseline EMA
+Minny,Gentle Mates,10.13813863162688,Baseline EMA
+Mitch,Cloud9,8.154049934583737,Baseline EMA
+Monyet,Rex Regum Qeon,10.657353813732485,Baseline EMA
+MrFalin,FUT Esports,8.909418069232792,Baseline EMA
+Munchkin,Gen.G,12.513554196406739,Baseline EMA
+N4RRATE,Sentinels,8.95780926034944,Baseline EMA
+Nats,Team Liquid,12.76067741618478,Baseline EMA
+NaturE,Evil Geniuses,9.292141277436365,Baseline EMA
+NcSlasher,BOOM Esports,7.980046909786233,Baseline EMA
+NeT,Cloud9,9.107679989451077,Baseline EMA
+OXY,Cloud9,11.157636567249844,Baseline EMA
+PROFEK,BBL Esports,9.91829594860333,Baseline EMA
+PaTiTek,Team Liquid,6.649550270790399,Baseline EMA
+Papi,Global Esports,8.938323644670621,Baseline EMA
+Persia,Nongshim RedForce,11.085705866998445,Baseline EMA
+Primmie,TALON,10.20335911907876,Baseline EMA
+Purp0,GIANTX,10.671076415167896,Baseline EMA
+Riens,Team Heretics,8.92262505996344,Baseline EMA
+RobbieBK,Gentle Mates,7.167302949568671,Baseline EMA
+RunneR,GIANTX,8.402341789015255,Baseline EMA
+Ruxic,Natus Vincere,9.439102258596657,Baseline EMA
+SUYGETSU,Karmine Corp,9.896547829729291,Baseline EMA
+Saadhak,Karmine Corp,9.373791500382305,Baseline EMA
+Sayf,Team Vitality,8.99793218093427,Baseline EMA
+Shao,Natus Vincere,10.07238249603445,Baseline EMA
+Sheydos,KOI,7.721992187482285,Baseline EMA
+Shiro,BOOM Esports,7.980046909786233,Baseline EMA
+Shyy,KR Esports,13.494273951368978,Baseline EMA
+Sociablee,BBL Esports,11.05427970420827,Baseline EMA
+Something,Paper Rex,10.22370558577867,Baseline EMA
+Soulcas,KOI,9.04783550396824,Baseline EMA
+Stax,T1,10.067257592858187,Baseline EMA
+SugarZ3ro,Zeta Division,8.37131366441465,Baseline EMA
+Supamen,Evil Geniuses,9.81420152645133,Baseline EMA
+Sylvan,T1,10.571684397460054,Baseline EMA
+Syouta,Zeta Division,8.58054722303947,Baseline EMA
+T3xture,Gen.G,13.817411863651596,Baseline EMA
+Trent,G2 Esports,14.919214653737399,Baseline EMA
+Trexx,Team Vitality,10.339945873902577,Baseline EMA
+Udotan,Global Esports,9.533889976746895,Baseline EMA
+Vakk,BBL Esports,8.55330676520956,Baseline EMA
+Valyn,G2 Esports,13.088584166488896,Baseline EMA
+Verno,NRG Esports,8.786786956389877,Baseline EMA
+Westside,GIANTX,7.870257983219201,Baseline EMA
+Wild0reoo,Team Secret,7.980046909786233,Baseline EMA
+Wo0t,Team Heretics,8.613823008222557,Baseline EMA
+Xdll,Zeta Division,7.883102027623398,Baseline EMA
+Xenom,MIBR,10.001989808376264,Baseline EMA
+Xeppaa,Cloud9,10.628615514914678,Baseline EMA
+Xeus,FUT Esports,13.652279440073976,Baseline EMA
+Xffero,Rex Regum Qeon,10.361625348775474,Baseline EMA
+Yay,Evil Geniuses,8.770081028421398,Baseline EMA
+Yetujey,FUT Esports,12.425665255786848,Baseline EMA
+Yoman,Gen.G,12.555169692302368,Baseline EMA
+Zander,100 Thieves,9.024846429940702,Baseline EMA
+Zekken,Sentinels,9.13261440220452,Baseline EMA
+Zellsis,Sentinels,7.552194415544927,Baseline EMA
+Zyppan,Gentle Mates,8.367517194915216,Baseline EMA
+alfajer,FNATIC,11.203474465524337,Baseline EMA
+aspas,MIBR,14.336382521773874,Baseline EMA
+ban,TALON,8.116851178926467,Baseline EMA
+bang,Sentinels,8.123085457633437,Baseline EMA
+batujnax,Apeks,9.15469652454393,Baseline EMA
+benjyfishy,Team Heretics,7.447022940912774,Baseline EMA
+d4v41,Paper Rex,9.520664450438517,Baseline EMA
+dgzin,LOUD,12.616643537484672,Baseline EMA
+eeiu,100 Thieves,11.475049198650947,Baseline EMA
+ethan,NRG Esports,9.84622122172425,Baseline EMA
+f0rsaken,Paper Rex,10.20518984894694,Baseline EMA
+finesse,NRG Esports,7.506695225805178,Baseline EMA
+florescent,Apeks,11.40520026447457,Baseline EMA
+havoc,FURIA,8.720036262122687,Baseline EMA
+heat,FURIA,8.231824625331434,Baseline EMA
+hiro,Natus Vincere,8.649594297385661,Baseline EMA
+hype,Apeks,8.594496126947792,Baseline EMA
+iZu,T1,12.87242548111788,Baseline EMA
+icy,Evil Geniuses,9.849005543052328,Baseline EMA
+kingg,LEVIATµN,11.255087813732638,Baseline EMA
+lz,2Game Esports,7.5343794299153615,Baseline EMA
+mada,NRG Esports,15.0,Baseline EMA
+mwzera,FURIA,7.5343794299153615,Baseline EMA
+natank,LEVIATµN,9.922093977914425,Baseline EMA
+nzr,MIBR,8.693034534100033,Baseline EMA
+oderus,Apeks,9.033759527658782,Baseline EMA
+pancada,LOUD,10.889062426758583,Baseline EMA
+pryze,2Game Esports,6.348722597708036,Baseline EMA
+qRaxs,FUT Esports,9.71054387591374,Baseline EMA
+raafa,FURIA,7.638996209227772,Baseline EMA
+s0m,NRG Esports,10.130221997188391,Baseline EMA
+silentzz,2Game Esports,7.081040052894913,Baseline EMA
+tex,LEVIATµN,10.44763462858949,Baseline EMA
+tomaszy,GIANTX,9.00556500474375,Baseline EMA
+tuyz,LOUD,8.75424821535331,Baseline EMA
+v1c,Cloud9,9.612338230165545,Baseline EMA
+v1nny,LOUD,8.413366025043407,Baseline EMA
+zap,2Game Esports,6.0,Baseline EMA
+Askia,2Game Esports,6.05,Baseline EMA
+PxS,2Game Esports,6.05,Baseline EMA
+spike,2Game Esports,6.05,Baseline EMA
+rossy,LEVIATµN,9.34,Baseline EMA
+Lukxo,LOUD,9.11,Baseline EMA
+brawk,NRG Esports,9.25,Baseline EMA
+MAGNUM,BBL Esports,8.67,Baseline EMA
+ara,GIANTX,8.2,Baseline EMA
+Flickless,GIANTX,8.2,Baseline EMA
+Serial,Team Liquid,9.02,Baseline EMA
+Cyvoph,Team Vitality,9.66,Baseline EMA
+Ash,Gen.G,11.92,Baseline EMA
+Suggest,Gen.G,11.92,Baseline EMA
+Patmen,Paper Rex,8.83,Baseline EMA
+CrazyGuy,Rex Regum Qeon,10.38,Baseline EMA
+Killua,TALON,6.96,Baseline EMA
+Thyy,TALON,6.96,Baseline EMA
+PatrickWHO,Global Esports,8.01,Baseline EMA
+2GE,Team Secret,7.292307692307692,Distribution-Aware
+ANGE1,Natus Vincere,6.876923076923077,Distribution-Aware
+Adverso,KR Esports,10.069230769230769,Distribution-Aware
+Akame,Detonation FocusMe,9.915384615384616,Distribution-Aware
+Art,Detonation FocusMe,8.441758241758242,Distribution-Aware
+Artzin,MIBR,8.912087912087912,Distribution-Aware
+Asuna,100 Thieves,10.665934065934065,Distribution-Aware
+AtaKaptan,FUT Esports,8.824175824175825,Distribution-Aware
+Avez,Karmine Corp,9.607692307692307,Distribution-Aware
+Avova,Apeks,7.6439560439560434,Distribution-Aware
+BeYN,DRX,8.89010989010989,Distribution-Aware
+BerserX,BOOM Esports,9.192307692307692,Distribution-Aware
+Boaster,FNATIC,8.736263736263735,Distribution-Aware
+Boo,Team Heretics,6.263736263736264,Distribution-Aware
+Boostio,100 Thieves,6.8,Distribution-Aware
+Buzz,T1,14.175824175824177,Distribution-Aware
+C0M,LEVIATµN,8.846153846153847,Distribution-Aware
+CLZ,Zeta Division,6.2967032967032965,Distribution-Aware
+Carpe,T1,6.915384615384616,Distribution-Aware
+Cauanzin,LOUD,9.357142857142858,Distribution-Aware
+Chronicle,FNATIC,9.027472527472527,Distribution-Aware
+Click,Gentle Mates,10.226373626373626,Distribution-Aware
+Cloud,GIANTX,9.646153846153846,Distribution-Aware
+Cortezia,MIBR,9.054945054945055,Distribution-Aware
+Crashies,FNATIC,8.243956043956043,Distribution-Aware
+Crws,TALON,6.0989010989010985,Distribution-Aware
+Cryocells,100 Thieves,11.692307692307692,Distribution-Aware
+Dambi,Nongshim RedForce,10.797802197802199,Distribution-Aware
+Demon1,LEVIATµN,10.534065934065934,Distribution-Aware
+Dep,Zeta Division,8.758241758241757,Distribution-Aware
+Derke,Team Vitality,14.010989010989013,Distribution-Aware
+Derrek,Evil Geniuses,9.096153846153847,Distribution-Aware
+Deryeon,Global Esports,6.838461538461538,Distribution-Aware
+Dos9,BOOM Esports,7.184615384615385,Distribution-Aware
+Elite,Karmine Corp,8.079120879120879,Distribution-Aware
+Estrella,Rex Regum Qeon,10.446153846153845,Distribution-Aware
+Famouz,BOOM Esports,9.494505494505495,Distribution-Aware
+Filu,KOI,8.802197802197803,Distribution-Aware
+Flashback,DRX,9.219780219780219,Distribution-Aware
+Flyuh,KOI,6.588461538461538,Distribution-Aware
+Foxy9,Gen.G,12.021978021978022,Distribution-Aware
+Francis,Nongshim RedForce,10.841758241758242,Distribution-Aware
+Free1ng,DRX,11.93956043956044,Distribution-Aware
+Gobera,2Game Esports,7.1461538461538465,Distribution-Aware
+Governor,TALON,6.197802197802198,Distribution-Aware
+Grubinho,KOI,7.069230769230769,Distribution-Aware
+Gyen,Detonation FocusMe,9.247252747252748,Distribution-Aware
+HYUNMIN,DRX,10.973626373626374,Distribution-Aware
+INVY,Team Secret,7.446153846153846,Distribution-Aware
+Ivy,Nongshim RedForce,11.857142857142856,Distribution-Aware
+Jamppi,BBL Esports,9.137362637362637,Distribution-Aware
+Jawgemo,G2 Esports,14.670329670329672,Distribution-Aware
+Jemkin,Rex Regum Qeon,13.681318681318684,Distribution-Aware
+JessieVash,Team Secret,10.184615384615384,Distribution-Aware
+Jinboong,Detonation FocusMe,9.723076923076922,Distribution-Aware
+Jinggg,Paper Rex,10.358241758241757,Distribution-Aware
+JitboyS,TALON,6.6461538461538465,Distribution-Aware
+JohnQT,Sentinels,6.42967032967033,Distribution-Aware
+JonahP,G2 Esports,13.071428571428573,Distribution-Aware
+Jremy,Team Secret,8.604395604395604,Distribution-Aware
+Kaajak,FNATIC,12.521978021978022,Distribution-Aware
+Kada,Gentle Mates,9.467032967032967,Distribution-Aware
+Kamo,Team Liquid,10.70989010989011,Distribution-Aware
+Kamyk,Team Liquid,7.70989010989011,Distribution-Aware
+Karon,Gen.G,13.291208791208792,Distribution-Aware
+Keiko,Team Liquid,11.362637362637361,Distribution-Aware
+KellyS,Global Esports,8.67032967032967,Distribution-Aware
+Keznit,KR Esports,11.445054945054945,Distribution-Aware
+Khalil,FURIA,8.978021978021978,Distribution-Aware
+Kicks,Team Vitality,8.934065934065934,Distribution-Aware
+Koalanoob,Natus Vincere,8.276923076923076,Distribution-Aware
+Kr1stal,Global Esports,8.648351648351648,Distribution-Aware
+Kushy,Rex Regum Qeon,11.774725274725274,Distribution-Aware
+Leaf,G2 Esports,14.505494505494504,Distribution-Aware
+Less,Team Vitality,10.314285714285713,Distribution-Aware
+LewN,BBL Esports,8.626373626373626,Distribution-Aware
+MOLSI,Apeks,6.495604395604396,Distribution-Aware
+MaKo,DRX,7.534065934065934,Distribution-Aware
+Margaret,Nongshim RedForce,9.53076923076923,Distribution-Aware
+Marteen,Karmine Corp,9.838461538461539,Distribution-Aware
+Mazino,KR Esports,11.032967032967033,Distribution-Aware
+Meiy,Detonation FocusMe,12.961538461538463,Distribution-Aware
+Melser,KR Esports,12.741758241758241,Distribution-Aware
+Meteor,T1,13.516483516483516,Distribution-Aware
+Mindfreak,Paper Rex,7.841758241758242,Distribution-Aware
+Miniboo,Team Heretics,8.714285714285714,Distribution-Aware
+Minny,Gentle Mates,9.876923076923077,Distribution-Aware
+Mitch,Cloud9,7.030769230769231,Distribution-Aware
+Monyet,Rex Regum Qeon,10.578021978021978,Distribution-Aware
+MrFalin,FUT Esports,8.112087912087912,Distribution-Aware
+Munchkin,Gen.G,12.186813186813186,Distribution-Aware
+N4RRATE,Sentinels,8.21098901098901,Distribution-Aware
+Nats,Team Liquid,12.434065934065934,Distribution-Aware
+NaturE,Evil Geniuses,8.692307692307692,Distribution-Aware
+NcSlasher,BOOM Esports,6.723076923076923,Distribution-Aware
+NeT,Cloud9,8.507692307692308,Distribution-Aware
+OXY,Cloud9,11.115384615384615,Distribution-Aware
+PROFEK,BBL Esports,9.412087912087912,Distribution-Aware
+PaTiTek,Team Liquid,6.131868131868131,Distribution-Aware
+Papi,Global Esports,8.178021978021977,Distribution-Aware
+Persia,Nongshim RedForce,10.92967032967033,Distribution-Aware
+Primmie,TALON,9.953846153846154,Distribution-Aware
+Purp0,GIANTX,10.621978021978022,Distribution-Aware
+Riens,Team Heretics,8.145054945054945,Distribution-Aware
+RobbieBK,Gentle Mates,6.230769230769231,Distribution-Aware
+RunneR,GIANTX,7.358241758241759,Distribution-Aware
+Ruxic,Natus Vincere,8.868131868131869,Distribution-Aware
+SUYGETSU,Karmine Corp,9.384615384615385,Distribution-Aware
+Saadhak,Karmine Corp,8.78021978021978,Distribution-Aware
+Sayf,Team Vitality,8.30989010989011,Distribution-Aware
+Shao,Natus Vincere,9.76153846153846,Distribution-Aware
+Sheydos,KOI,6.473626373626374,Distribution-Aware
+Shiro,BOOM Esports,6.723076923076923,Distribution-Aware
+Shyy,KR Esports,13.181318681318682,Distribution-Aware
+Sociablee,BBL Esports,10.885714285714286,Distribution-Aware
+Something,Paper Rex,10.03076923076923,Distribution-Aware
+Soulcas,KOI,8.474725274725275,Distribution-Aware
+Stax,T1,9.684615384615384,Distribution-Aware
+SugarZ3ro,Zeta Division,7.292307692307692,Distribution-Aware
+Supamen,Evil Geniuses,9.274725274725276,Distribution-Aware
+Sylvan,T1,10.4021978021978,Distribution-Aware
+Syouta,Zeta Division,7.578021978021978,Distribution-Aware
+T3xture,Gen.G,13.846153846153848,Distribution-Aware
+Trent,G2 Esports,14.835164835164836,Distribution-Aware
+Trexx,Team Vitality,10.107692307692307,Distribution-Aware
+Udotan,Global Esports,9.0,Distribution-Aware
+Vakk,BBL Esports,7.49010989010989,Distribution-Aware
+Valyn,G2 Esports,12.85164835164835,Distribution-Aware
+Verno,NRG Esports,8.046153846153846,Distribution-Aware
+Westside,GIANTX,6.530769230769231,Distribution-Aware
+Wild0reoo,Team Secret,6.723076923076923,Distribution-Aware
+Wo0t,Team Heretics,7.753846153846154,Distribution-Aware
+Xdll,Zeta Division,6.588461538461538,Distribution-Aware
+Xenom,MIBR,9.569230769230769,Distribution-Aware
+Xeppaa,Cloud9,10.49010989010989,Distribution-Aware
+Xeus,FUT Esports,13.401098901098901,Distribution-Aware
+Xffero,Rex Regum Qeon,10.146153846153846,Distribution-Aware
+Yay,Evil Geniuses,8.013186813186813,Distribution-Aware
+Yetujey,FUT Esports,12.104395604395604,Distribution-Aware
+Yoman,Gen.G,12.269230769230768,Distribution-Aware
+Zander,100 Thieves,8.375824175824176,Distribution-Aware
+Zekken,Sentinels,8.54065934065934,Distribution-Aware
+Zellsis,Sentinels,6.407692307692308,Distribution-Aware
+Zyppan,Gentle Mates,7.2263736263736265,Distribution-Aware
+alfajer,FNATIC,11.197802197802197,Distribution-Aware
+aspas,MIBR,14.34065934065934,Distribution-Aware
+ban,TALON,6.953846153846154,Distribution-Aware
+bang,Sentinels,6.992307692307692,Distribution-Aware
+batujnax,Apeks,8.573626373626373,Distribution-Aware
+benjyfishy,Team Heretics,6.3197802197802195,Distribution-Aware
+d4v41,Paper Rex,8.956043956043956,Distribution-Aware
+dgzin,LOUD,12.35164835164835,Distribution-Aware
+eeiu,100 Thieves,11.60989010989011,Distribution-Aware
+ethan,NRG Esports,9.302197802197803,Distribution-Aware
+f0rsaken,Paper Rex,9.992307692307692,Distribution-Aware
+finesse,NRG Esports,6.341758241758241,Distribution-Aware
+florescent,Apeks,11.527472527472527,Distribution-Aware
+havoc,FURIA,7.92967032967033,Distribution-Aware
+heat,FURIA,7.107692307692308,Distribution-Aware
+hiro,Natus Vincere,7.7978021978021985,Distribution-Aware
+hype,Apeks,7.6439560439560434,Distribution-Aware
+iZu,T1,12.631868131868131,Distribution-Aware
+icy,Evil Geniuses,9.32967032967033,Distribution-Aware
+kingg,LEVIATµN,11.28021978021978,Distribution-Aware
+lz,2Game Esports,6.374725274725274,Distribution-Aware
+mada,NRG Esports,15.0,Distribution-Aware
+mwzera,FURIA,6.374725274725274,Distribution-Aware
+natank,LEVIATµN,9.43956043956044,Distribution-Aware
+nzr,MIBR,7.885714285714286,Distribution-Aware
+oderus,Apeks,8.40879120879121,Distribution-Aware
+pancada,LOUD,10.753846153846155,Distribution-Aware
+pryze,2Game Esports,6.065934065934066,Distribution-Aware
+qRaxs,FUT Esports,9.164835164835164,Distribution-Aware
+raafa,FURIA,6.451648351648352,Distribution-Aware
+s0m,NRG Esports,9.8,Distribution-Aware
+silentzz,2Game Esports,6.164835164835165,Distribution-Aware
+tex,LEVIATµN,10.27032967032967,Distribution-Aware
+tomaszy,GIANTX,8.342857142857143,Distribution-Aware
+tuyz,LOUD,7.973626373626374,Distribution-Aware
+v1c,Cloud9,9.096153846153847,Distribution-Aware
+v1nny,LOUD,7.4021978021978025,Distribution-Aware
+zap,2Game Esports,6.032967032967033,Distribution-Aware
+Askia,2Game Esports,6.0,Distribution-Aware
+PxS,2Game Esports,6.0,Distribution-Aware
+spike,2Game Esports,6.0,Distribution-Aware
+rossy,LEVIATµN,9.07,Distribution-Aware
+Lukxo,LOUD,8.57,Distribution-Aware
+brawk,NRG Esports,8.7,Distribution-Aware
+MAGNUM,BBL Esports,8.11,Distribution-Aware
+ara,GIANTX,7.5,Distribution-Aware
+Flickless,GIANTX,7.5,Distribution-Aware
+Serial,Team Liquid,8.67,Distribution-Aware
+Cyvoph,Team Vitality,9.34,Distribution-Aware
+Ash,Gen.G,11.72,Distribution-Aware
+Suggest,Gen.G,11.72,Distribution-Aware
+Patmen,Paper Rex,8.44,Distribution-Aware
+CrazyGuy,Rex Regum Qeon,10.33,Distribution-Aware
+Killua,TALON,6.17,Distribution-Aware
+Thyy,TALON,6.17,Distribution-Aware
+PatrickWHO,Global Esports,7.27,Distribution-Aware
+2GE,Team Secret,8.594590950418935,Role-Adjusted
+ANGE1,Natus Vincere,8.289344956252,Role-Adjusted
+Adverso,KR Esports,10.634276440877375,Role-Adjusted
+Akame,Detonation FocusMe,10.057958298905865,Role-Adjusted
+Art,Detonation FocusMe,9.331631649831504,Role-Adjusted
+Artzin,MIBR,9.304134597490467,Role-Adjusted
+Asuna,100 Thieves,10.604396992201497,Role-Adjusted
+AtaKaptan,FUT Esports,9.721127587019343,Role-Adjusted
+Avez,Karmine Corp,9.191939381261154,Role-Adjusted
+Avova,Apeks,8.409296129493265,Role-Adjusted
+BeYN,DRX,9.773295738631251,Role-Adjusted
+BerserX,BOOM Esports,8.896885737779709,Role-Adjusted
+Boaster,FNATIC,9.140230217881252,Role-Adjusted
+Boo,Team Heretics,7.507984015401784,Role-Adjusted
+Boostio,100 Thieves,8.219016670301984,Role-Adjusted
+Buzz,T1,13.10230630814618,Role-Adjusted
+C0M,LEVIATµN,9.26321760519434,Role-Adjusted
+CLZ,Zeta Division,7.195579914591411,Role-Adjusted
+Carpe,T1,7.9077665920081515,Role-Adjusted
+Cauanzin,LOUD,9.757021746027624,Role-Adjusted
+Chronicle,FNATIC,9.418273321196972,Role-Adjusted
+Click,Gentle Mates,9.597101604831892,Role-Adjusted
+Cloud,GIANTX,9.911176256580761,Role-Adjusted
+Cortezia,MIBR,9.428445459619905,Role-Adjusted
+Crashies,FNATIC,9.240296004915798,Role-Adjusted
+Crws,TALON,6.129986704456003,Role-Adjusted
+Cryocells,100 Thieves,10.642756737725058,Role-Adjusted
+Dambi,Nongshim RedForce,10.848414588025111,Role-Adjusted
+Demon1,LEVIATµN,10.557974341704767,Role-Adjusted
+Dep,Zeta Division,8.50418676628395,Role-Adjusted
+Derke,Team Vitality,12.999069406781274,Role-Adjusted
+Derrek,Evil Geniuses,9.469943470687603,Role-Adjusted
+Deryeon,Global Esports,8.24590191312482,Role-Adjusted
+Dos9,BOOM Esports,7.524804993999343,Role-Adjusted
+Elite,Karmine Corp,9.105772710489683,Role-Adjusted
+Estrella,Rex Regum Qeon,10.482317542953854,Role-Adjusted
+Famouz,BOOM Esports,9.146969420143618,Role-Adjusted
+Filu,KOI,8.584619085746937,Role-Adjusted
+Flashback,DRX,9.619853781847768,Role-Adjusted
+Flyuh,KOI,7.66798442937357,Role-Adjusted
+Foxy9,Gen.G,12.074909730113987,Role-Adjusted
+Francis,Nongshim RedForce,10.896718257497287,Role-Adjusted
+Free1ng,DRX,10.781363206449807,Role-Adjusted
+Gobera,2Game Esports,7.490333999943777,Role-Adjusted
+Governor,TALON,7.26291655196407,Role-Adjusted
+Grubinho,KOI,7.435585950561409,Role-Adjusted
+Gyen,Detonation FocusMe,10.143657696394712,Role-Adjusted
+HYUNMIN,DRX,10.222812567303867,Role-Adjusted
+INVY,Team Secret,8.24867859446733,Role-Adjusted
+Ivy,Nongshim RedForce,11.601075608424786,Role-Adjusted
+Jamppi,BBL Esports,9.47708365919107,Role-Adjusted
+Jawgemo,G2 Esports,14.851278408495771,Role-Adjusted
+Jemkin,Rex Regum Qeon,12.830808818407311,Role-Adjusted
+JessieVash,Team Secret,9.572787582006491,Role-Adjusted
+Jinboong,Detonation FocusMe,9.948210218548626,Role-Adjusted
+Jinggg,Paper Rex,10.455191692089345,Role-Adjusted
+JitboyS,TALON,7.7274065967490655,Role-Adjusted
+JohnQT,Sentinels,7.408940863327717,Role-Adjusted
+JonahP,G2 Esports,14.090171984317161,Role-Adjusted
+Jremy,Team Secret,9.026329103416423,Role-Adjusted
+Kaajak,FNATIC,11.901548116437212,Role-Adjusted
+Kada,Gentle Mates,10.344321086519887,Role-Adjusted
+Kamo,Team Liquid,10.725408548840065,Role-Adjusted
+Kamyk,Team Liquid,8.426030522500135,Role-Adjusted
+Karon,Gen.G,13.60877066297828,Role-Adjusted
+Keiko,Team Liquid,10.398138411218827,Role-Adjusted
+KellyS,Global Esports,9.127794029448403,Role-Adjusted
+Keznit,KR Esports,11.912227800151637,Role-Adjusted
+Khalil,FURIA,9.375908444355222,Role-Adjusted
+Kicks,Team Vitality,9.81726228774181,Role-Adjusted
+Koalanoob,Natus Vincere,8.173670764457054,Role-Adjusted
+Kr1stal,Global Esports,9.09471789096948,Role-Adjusted
+Kushy,Rex Regum Qeon,10.66613109655631,Role-Adjusted
+Leaf,G2 Esports,14.468274186262644,Role-Adjusted
+Less,Team Vitality,10.397863655605212,Role-Adjusted
+LewN,BBL Esports,9.054626715202605,Role-Adjusted
+MOLSI,Apeks,7.653448905841812,Role-Adjusted
+MaKo,DRX,8.384480427405565,Role-Adjusted
+Margaret,Nongshim RedForce,10.365236511631057,Role-Adjusted
+Marteen,Karmine Corp,9.300344249064079,Role-Adjusted
+Mazino,KR Esports,11.05105237991231,Role-Adjusted
+Meiy,Detonation FocusMe,12.213392896849093,Role-Adjusted
+Melser,KR Esports,13.710934299817763,Role-Adjusted
+Meteor,T1,13.723874144334175,Role-Adjusted
+Mindfreak,Paper Rex,8.90775109196456,Role-Adjusted
+Miniboo,Team Heretics,9.137676745878274,Role-Adjusted
+Minny,Gentle Mates,10.017856350343328,Role-Adjusted
+Mitch,Cloud9,8.35687018165986,Role-Adjusted
+Monyet,Rex Regum Qeon,10.558907069965827,Role-Adjusted
+MrFalin,FUT Esports,9.183361993268873,Role-Adjusted
+Munchkin,Gen.G,12.493169756077336,Role-Adjusted
+N4RRATE,Sentinels,8.787888356858616,Role-Adjusted
+Nats,Team Liquid,12.750685715749608,Role-Adjusted
+NaturE,Evil Geniuses,9.136280670242336,Role-Adjusted
+NcSlasher,BOOM Esports,7.769006317919294,Role-Adjusted
+NeT,Cloud9,9.40029178696532,Role-Adjusted
+OXY,Cloud9,10.291975584909123,Role-Adjusted
+PROFEK,BBL Esports,9.788768207405628,Role-Adjusted
+PaTiTek,Team Liquid,6.710710387970101,Role-Adjusted
+Papi,Global Esports,8.767583275750319,Role-Adjusted
+Persia,Nongshim RedForce,11.00527342183453,Role-Adjusted
+Primmie,TALON,9.367174767064105,Role-Adjusted
+Purp0,GIANTX,9.820444766027705,Role-Adjusted
+Riens,Team Heretics,8.751224488785674,Role-Adjusted
+RobbieBK,Gentle Mates,7.277213434392207,Role-Adjusted
+RunneR,GIANTX,8.209060761961508,Role-Adjusted
+Ruxic,Natus Vincere,9.289422079341257,Role-Adjusted
+SUYGETSU,Karmine Corp,9.766105473778472,Role-Adjusted
+Saadhak,Karmine Corp,9.691459728358225,Role-Adjusted
+Sayf,Team Vitality,8.829698642466488,Role-Adjusted
+Shao,Natus Vincere,9.240243874646914,Role-Adjusted
+Sheydos,KOI,7.500099132581757,Role-Adjusted
+Shiro,BOOM Esports,7.769006317919294,Role-Adjusted
+Shyy,KR Esports,13.515133572733214,Role-Adjusted
+Sociablee,BBL Esports,10.191811307052681,Role-Adjusted
+Something,Paper Rex,10.107021813363852,Role-Adjusted
+Soulcas,KOI,8.247344065477773,Role-Adjusted
+Stax,T1,10.450220947913902,Role-Adjusted
+SugarZ3ro,Zeta Division,8.176727752985126,Role-Adjusted
+Supamen,Evil Geniuses,9.68029610575092,Role-Adjusted
+Sylvan,T1,11.002143387365543,Role-Adjusted
+Syouta,Zeta Division,8.394760605961507,Role-Adjusted
+T3xture,Gen.G,12.869593209752466,Role-Adjusted
+Trent,G2 Esports,15.0,Role-Adjusted
+Trexx,Team Vitality,10.228150574051313,Role-Adjusted
+Udotan,Global Esports,8.718384824959644,Role-Adjusted
+Vakk,BBL Esports,8.366374553666292,Role-Adjusted
+Valyn,G2 Esports,13.092382548460929,Role-Adjusted
+Verno,NRG Esports,7.994359033964755,Role-Adjusted
+Westside,GIANTX,8.046357051380271,Role-Adjusted
+Wild0reoo,Team Secret,8.16648344359981,Role-Adjusted
+Wo0t,Team Heretics,8.42943580063956,Role-Adjusted
+Xdll,Zeta Division,7.66798442937357,Role-Adjusted
+Xenom,MIBR,9.8759818032687,Role-Adjusted
+Xeppaa,Cloud9,9.779295438485834,Role-Adjusted
+Xeus,FUT Esports,12.709561553686402,Role-Adjusted
+Xffero,Rex Regum Qeon,10.250741776861389,Role-Adjusted
+Yay,Evil Geniuses,9.030905306254994,Role-Adjusted
+Yetujey,FUT Esports,12.401584655702557,Role-Adjusted
+Yoman,Gen.G,13.172388966225842,Role-Adjusted
+Zander,100 Thieves,9.309658815409593,Role-Adjusted
+Zekken,Sentinels,8.329504232392726,Role-Adjusted
+Zellsis,Sentinels,7.323160533975219,Role-Adjusted
+Zyppan,Gentle Mates,8.17277162337743,Role-Adjusted
+alfajer,FNATIC,11.12799476585025,Role-Adjusted
+aspas,MIBR,13.372533408107651,Role-Adjusted
+ban,TALON,7.911563875588513,Role-Adjusted
+bang,Sentinels,7.918060336202501,Role-Adjusted
+batujnax,Apeks,8.35090426111433,Role-Adjusted
+benjyfishy,Team Heretics,7.213566084516474,Role-Adjusted
+d4v41,Paper Rex,9.374414360212294,Role-Adjusted
+dgzin,LOUD,11.705915358819453,Role-Adjusted
+eeiu,100 Thieves,11.410990544582226,Role-Adjusted
+ethan,NRG Esports,9.021068485091394,Role-Adjusted
+f0rsaken,Paper Rex,9.368948947605194,Role-Adjusted
+finesse,NRG Esports,7.275747880802983,Role-Adjusted
+florescent,Apeks,10.531892298964294,Role-Adjusted
+havoc,FURIA,8.540115841279095,Role-Adjusted
+heat,FURIA,8.031372517667538,Role-Adjusted
+hiro,Natus Vincere,7.861404112424281,Role-Adjusted
+hype,Apeks,7.808007866730365,Role-Adjusted
+iZu,T1,12.867133333292843,Role-Adjusted
+icy,Evil Geniuses,9.71656380145149,Role-Adjusted
+kingg,LEVIATµN,11.181778707754606,Role-Adjusted
+lz,2Game Esports,7.304596341079602,Role-Adjusted
+mada,NRG Esports,14.015652437878273,Role-Adjusted
+mwzera,FURIA,7.304596341079602,Role-Adjusted
+natank,LEVIATµN,9.792725962422693,Role-Adjusted
+nzr,MIBR,8.94660429625889,Role-Adjusted
+oderus,Apeks,8.233702881325405,Role-Adjusted
+pancada,LOUD,10.800360163290442,Role-Adjusted
+pryze,2Game Esports,6.381557492708667,Role-Adjusted
+qRaxs,FUT Esports,10.05991991108214,Role-Adjusted
+raafa,FURIA,7.413612767567792,Role-Adjusted
+s0m,NRG Esports,10.009606782712115,Role-Adjusted
+silentzz,2Game Esports,6.832191826297443,Role-Adjusted
+tex,LEVIATµN,10.866413385660952,Role-Adjusted
+tomaszy,GIANTX,8.206379257676385,Role-Adjusted
+tuyz,LOUD,9.013581712956224,Role-Adjusted
+v1c,Cloud9,9.469943470687603,Role-Adjusted
+v1nny,LOUD,8.640602861862149,Role-Adjusted
+zap,2Game Esports,6.0,Role-Adjusted
+Askia,2Game Esports,6.0,Role-Adjusted
+PxS,2Game Esports,6.0,Role-Adjusted
+spike,2Game Esports,6.0,Role-Adjusted
+rossy,LEVIATµN,9.33,Role-Adjusted
+Lukxo,LOUD,8.98,Role-Adjusted
+brawk,NRG Esports,8.66,Role-Adjusted
+MAGNUM,BBL Esports,8.38,Role-Adjusted
+ara,GIANTX,7.84,Role-Adjusted
+Flickless,GIANTX,7.84,Role-Adjusted
+Serial,Team Liquid,8.8,Role-Adjusted
+Cyvoph,Team Vitality,9.45,Role-Adjusted
+Ash,Gen.G,11.84,Role-Adjusted
+Suggest,Gen.G,11.84,Role-Adjusted
+Patmen,Paper Rex,8.64,Role-Adjusted
+CrazyGuy,Rex Regum Qeon,9.96,Role-Adjusted
+Killua,TALON,6.68,Role-Adjusted
+Thyy,TALON,6.68,Role-Adjusted
+PatrickWHO,Global Esports,7.79,Role-Adjusted
+2GE,Team Secret,7.538921008315308,Team Strength
+ANGE1,Natus Vincere,7.35787147792527,Team Strength
+Adverso,KR Esports,11.157458732620931,Team Strength
+Akame,Detonation FocusMe,10.71780762717739,Team Strength
+Art,Detonation FocusMe,9.983367752400634,Team Strength
+Artzin,MIBR,10.91743515392374,Team Strength
+Asuna,100 Thieves,10.38902424908526,Team Strength
+AtaKaptan,FUT Esports,10.214388168275837,Team Strength
+Avez,Karmine Corp,9.948715157068158,Team Strength
+Avova,Apeks,7.683760632627336,Team Strength
+BeYN,DRX,11.105596890834178,Team Strength
+BerserX,BOOM Esports,8.412937616273206,Team Strength
+Boaster,FNATIC,10.146262206978989,Team Strength
+Boo,Team Heretics,8.901713761456408,Team Strength
+Boostio,100 Thieves,8.654350079242565,Team Strength
+Buzz,T1,14.008458025785089,Team Strength
+C0M,LEVIATµN,9.553760566783401,Team Strength
+CLZ,Zeta Division,6.927878843248935,Team Strength
+Carpe,T1,10.150738799970945,Team Strength
+Cauanzin,LOUD,10.530389466913816,Team Strength
+Chronicle,FNATIC,10.319422716724345,Team Strength
+Click,Gentle Mates,10.889131820796557,Team Strength
+Cloud,GIANTX,9.957298180304358,Team Strength
+Cortezia,MIBR,10.994853841877223,Team Strength
+Crashies,FNATIC,9.92919414837025,Team Strength
+Crws,TALON,8.271533810459546,Team Strength
+Cryocells,100 Thieves,10.920268213599586,Team Strength
+Dambi,Nongshim RedForce,11.61154799712482,Team Strength
+Demon1,LEVIATµN,10.360113012921214,Team Strength
+Dep,Zeta Division,8.149963173381678,Team Strength
+Derke,Team Vitality,14.170934679721487,Team Strength
+Derrek,Evil Geniuses,9.682505915326413,Team Strength
+Deryeon,Global Esports,8.670296432939297,Team Strength
+Dos9,BOOM Esports,7.4941112495437725,Team Strength
+Elite,Karmine Corp,9.18030870839565,Team Strength
+Estrella,Rex Regum Qeon,10.982091337646064,Team Strength
+Famouz,BOOM Esports,8.580408431883988,Team Strength
+Filu,KOI,8.203825408672714,Team Strength
+Flashback,DRX,11.305229996920175,Team Strength
+Flyuh,KOI,7.222084330132744,Team Strength
+Foxy9,Gen.G,12.375388284733585,Team Strength
+Francis,Nongshim RedForce,11.641630699873522,Team Strength
+Free1ng,DRX,12.542449790518832,Team Strength
+Gobera,2Game Esports,7.471027434419043,Team Strength
+Governor,TALON,8.756357720698636,Team Strength
+Grubinho,KOI,7.434364904515061,Team Strength
+Gyen,Detonation FocusMe,10.465002031651307,Team Strength
+HYUNMIN,DRX,12.168411267839135,Team Strength
+INVY,Team Secret,7.58373076708684,Team Strength
+Ivy,Nongshim RedForce,12.080292463013894,Team Strength
+Jamppi,BBL Esports,10.356048793702746,Team Strength
+Jawgemo,G2 Esports,14.907378725500086,Team Strength
+Jemkin,Rex Regum Qeon,13.054613308372826,Team Strength
+JessieVash,Team Secret,8.865561442248296,Team Strength
+Jinboong,Detonation FocusMe,10.649458391711352,Team Strength
+Jinggg,Paper Rex,10.29610172910176,Team Strength
+JitboyS,TALON,9.266379715746204,Team Strength
+JohnQT,Sentinels,8.781289212969696,Team Strength
+JonahP,G2 Esports,14.010157747476356,Team Strength
+Jremy,Team Secret,8.068038260880188,Team Strength
+Kaajak,FNATIC,12.432325415764442,Team Strength
+Kada,Gentle Mates,10.584020833676167,Team Strength
+Kamo,Team Liquid,11.680926532259633,Team Strength
+Kamyk,Team Liquid,10.248913055247836,Team Strength
+Karon,Gen.G,13.330650752480084,Team Strength
+Keiko,Team Liquid,11.972995669810658,Team Strength
+KellyS,Global Esports,9.469421070036102,Team Strength
+Keznit,KR Esports,11.915445726322083,Team Strength
+Khalil,FURIA,8.285750321174206,Team Strength
+Kicks,Team Vitality,11.275052356001947,Team Strength
+Koalanoob,Natus Vincere,7.928630122479859,Team Strength
+Kr1stal,Global Esports,9.448821814269218,Team Strength
+Kushy,Rex Regum Qeon,11.605017156452131,Team Strength
+Leaf,G2 Esports,14.668850218352748,Team Strength
+Less,Team Vitality,11.93313903069025,Team Strength
+LewN,BBL Esports,10.09294980331548,Team Strength
+MOLSI,Apeks,7.213031853613242,Team Strength
+MaKo,DRX,10.53586050985134,Team Strength
+Margaret,Nongshim RedForce,10.99788398380514,Team Strength
+Marteen,Karmine Corp,10.021309464123814,Team Strength
+Mazino,KR Esports,11.737747363044777,Team Strength
+Meiy,Detonation FocusMe,12.641155113191672,Team Strength
+Melser,KR Esports,12.98230646584734,Team Strength
+Meteor,T1,13.772911536803765,Team Strength
+Mindfreak,Paper Rex,9.062856811479218,Team Strength
+Miniboo,Team Heretics,10.14467194810048,Team Strength
+Minny,Gentle Mates,10.692832816538097,Team Strength
+Mitch,Cloud9,8.736114669019006,Team Strength
+Monyet,Rex Regum Qeon,11.029789990769963,Team Strength
+MrFalin,FUT Esports,9.895425069434332,Team Strength
+Munchkin,Gen.G,12.6358735060472,Team Strength
+N4RRATE,Sentinels,9.64007422883379,Team Strength
+Nats,Team Liquid,12.942234661882502,Team Strength
+NaturE,Evil Geniuses,9.47470640539734,Team Strength
+NcSlasher,BOOM Esports,7.284999041943282,Team Strength
+NeT,Cloud9,9.354995818155592,Team Strength
+OXY,Cloud9,10.685364419766719,Team Strength
+PROFEK,BBL Esports,10.550160622426292,Team Strength
+PaTiTek,Team Liquid,8.976271790895188,Team Strength
+Papi,Global Esports,9.245087946925715,Team Strength
+Persia,Nongshim RedForce,11.709237007557345,Team Strength
+Primmie,TALON,10.735159219754367,Team Strength
+Purp0,GIANTX,10.369599512287543,Team Strength
+Riens,Team Heretics,9.903996063561772,Team Strength
+RobbieBK,Gentle Mates,8.764837582512122,Team Strength
+RunneR,GIANTX,8.897249636827048,Team Strength
+Ruxic,Natus Vincere,8.23188808588317,Team Strength
+SUYGETSU,Karmine Corp,9.866950567291717,Team Strength
+Saadhak,Karmine Corp,9.527695280429253,Team Strength
+Sayf,Team Vitality,10.956512565938144,Team Strength
+Shao,Natus Vincere,8.642870519868552,Team Strength
+Sheydos,KOI,7.117528226332498,Team Strength
+Shiro,BOOM Esports,7.284999041943282,Team Strength
+Shyy,KR Esports,13.272335167290056,Team Strength
+Sociablee,BBL Esports,11.287384589394364,Team Strength
+Something,Paper Rex,10.079267457871424,Team Strength
+Soulcas,KOI,7.977966119511144,Team Strength
+Stax,T1,11.418866813126382,Team Strength
+SugarZ3ro,Zeta Division,7.538921008315308,Team Strength
+Supamen,Evil Geniuses,9.81350995419474,Team Strength
+Sylvan,T1,11.746226714268264,Team Strength
+Syouta,Zeta Division,7.674708156107834,Team Strength
+T3xture,Gen.G,13.482043283621273,Team Strength
+Trent,G2 Esports,15.0,Team Strength
+Trexx,Team Vitality,11.827444613666863,Team Strength
+Udotan,Global Esports,9.63159503539379,Team Strength
+Vakk,BBL Esports,9.66431807786087,Team Strength
+Valyn,G2 Esports,13.811968337396383,Team Strength
+Verno,NRG Esports,9.146744570161456,Team Strength
+Westside,GIANTX,8.551941059892737,Team Strength
+Wild0reoo,Team Secret,7.284999041943282,Team Strength
+Wo0t,Team Heretics,9.703591548559654,Team Strength
+Xdll,Zeta Division,7.222084330132744,Team Strength
+Xenom,MIBR,11.273571855277478,Team Strength
+Xeppaa,Cloud9,10.342043490318687,Team Strength
+Xeus,FUT Esports,12.973418973254871,Team Strength
+Xffero,Rex Regum Qeon,10.837869894197027,Team Strength
+Yay,Evil Geniuses,9.13590285659994,Team Strength
+Yetujey,FUT Esports,12.177378210860425,Team Strength
+Yoman,Gen.G,12.662880882534887,Team Strength
+Zander,100 Thieves,9.30123898841307,Team Strength
+Zekken,Sentinels,9.753518227912977,Team Strength
+Zellsis,Sentinels,8.727866684665022,Team Strength
+Zyppan,Gentle Mates,9.543745469883081,Team Strength
+alfajer,FNATIC,11.384208116355552,Team Strength
+aspas,MIBR,14.086480204364612,Team Strength
+ban,TALON,9.381069732858215,Team Strength
+bang,Sentinels,9.098360150507677,Team Strength
+batujnax,Apeks,8.047316147726217,Team Strength
+benjyfishy,Team Heretics,8.946368595294219,Team Strength
+d4v41,Paper Rex,9.62301201215759,Team Strength
+dgzin,LOUD,12.301318157838839,Team Strength
+eeiu,100 Thieves,10.891356977435542,Team Strength
+ethan,NRG Esports,9.83428990518765,Team Strength
+f0rsaken,Paper Rex,10.06725122534074,Team Strength
+finesse,NRG Esports,8.315998268510228,Team Strength
+florescent,Apeks,9.50783465130695,Team Strength
+havoc,FURIA,7.765232921302853,Team Strength
+heat,FURIA,7.448396243120289,Team Strength
+hiro,Natus Vincere,7.7195179148793684,Team Strength
+hype,Apeks,7.683760632627336,Team Strength
+iZu,T1,13.239347949754062,Team Strength
+icy,Evil Geniuses,9.8360968574479,Team Strength
+kingg,LEVIATµN,10.748607748875568,Team Strength
+lz,2Game Esports,6.995772417145199,Team Strength
+mada,NRG Esports,13.178958538915596,Team Strength
+mwzera,FURIA,6.995772417145199,Team Strength
+natank,LEVIATµN,9.883529354279538,Team Strength
+nzr,MIBR,10.424093863075186,Team Strength
+oderus,Apeks,7.968831176302137,Team Strength
+pancada,LOUD,11.180162865410942,Team Strength
+pryze,2Game Esports,6.226311912987545,Team Strength
+qRaxs,FUT Esports,10.415334920545988,Team Strength
+raafa,FURIA,7.0636659910414625,Team Strength
+s0m,NRG Esports,10.018599035733434,Team Strength
+silentzz,2Game Esports,6.70156693026139,Team Strength
+tex,LEVIATµN,10.224591593402256,Team Strength
+tomaszy,GIANTX,9.28872584401082,Team Strength
+tuyz,LOUD,9.794723862514369,Team Strength
+v1c,Cloud9,9.682505915326413,Team Strength
+v1nny,LOUD,9.573500170389297,Team Strength
+zap,2Game Esports,6.0,Team Strength
+Askia,2Game Esports,6.0,Team Strength
+PxS,2Game Esports,6.0,Team Strength
+spike,2Game Esports,6.0,Team Strength
+rossy,LEVIATµN,9.15,Team Strength
+Lukxo,LOUD,9.68,Team Strength
+brawk,NRG Esports,9.1,Team Strength
+MAGNUM,BBL Esports,9.39,Team Strength
+ara,GIANTX,8.41,Team Strength
+Flickless,GIANTX,8.41,Team Strength
+Serial,Team Liquid,10.16,Team Strength
+Cyvoph,Team Vitality,11.03,Team Strength
+Ash,Gen.G,11.9,Team Strength
+Suggest,Gen.G,11.9,Team Strength
+Patmen,Paper Rex,8.83,Team Strength
+CrazyGuy,Rex Regum Qeon,10.5,Team Strength
+Killua,TALON,8.28,Team Strength
+Thyy,TALON,8.28,Team Strength
+PatrickWHO,Global Esports,8.29,Team Strength
+2GE,Team Secret,8.79447897052792,Variance-Aware
+ANGE1,Natus Vincere,7.318672733497015,Variance-Aware
+Adverso,KR Esports,10.044262051754055,Variance-Aware
+Akame,Detonation FocusMe,9.404988171712235,Variance-Aware
+Art,Detonation FocusMe,8.478377934262875,Variance-Aware
+Artzin,MIBR,8.964977730892507,Variance-Aware
+Asuna,100 Thieves,10.442302184688948,Variance-Aware
+AtaKaptan,FUT Esports,8.739743653719891,Variance-Aware
+Avez,Karmine Corp,9.747193909115428,Variance-Aware
+Avova,Apeks,9.392556481592946,Variance-Aware
+BeYN,DRX,8.908665970573686,Variance-Aware
+BerserX,BOOM Esports,10.412228932246162,Variance-Aware
+Boaster,FNATIC,8.805596585908852,Variance-Aware
+Boo,Team Heretics,6.648501058597075,Variance-Aware
+Boostio,100 Thieves,7.489914753758701,Variance-Aware
+Buzz,T1,14.381947164087709,Variance-Aware
+C0M,LEVIATµN,8.596699872344638,Variance-Aware
+CLZ,Zeta Division,6.727609257249264,Variance-Aware
+Carpe,T1,8.318266226483217,Variance-Aware
+Cauanzin,LOUD,9.420603534975212,Variance-Aware
+Chronicle,FNATIC,9.835974891430947,Variance-Aware
+Click,Gentle Mates,9.626017130563618,Variance-Aware
+Cloud,GIANTX,10.377641567320241,Variance-Aware
+Cortezia,MIBR,9.130706597693795,Variance-Aware
+Crashies,FNATIC,9.70988164057011,Variance-Aware
+Crws,TALON,6.0,Variance-Aware
+Cryocells,100 Thieves,11.456303843527145,Variance-Aware
+Dambi,Nongshim RedForce,11.776344986717623,Variance-Aware
+Demon1,LEVIATµN,10.57448596874782,Variance-Aware
+Dep,Zeta Division,10.14181197376078,Variance-Aware
+Derke,Team Vitality,14.180976703430508,Variance-Aware
+Derrek,Evil Geniuses,8.957431669428992,Variance-Aware
+Deryeon,Global Esports,8.778252727436003,Variance-Aware
+Dos9,BOOM Esports,8.042250548511369,Variance-Aware
+Elite,Karmine Corp,9.566953999102278,Variance-Aware
+Estrella,Rex Regum Qeon,11.374736752300223,Variance-Aware
+Famouz,BOOM Esports,10.030948987963004,Variance-Aware
+Filu,KOI,10.201220141322075,Variance-Aware
+Flashback,DRX,9.338075719507621,Variance-Aware
+Flyuh,KOI,8.649755356683476,Variance-Aware
+Foxy9,Gen.G,12.08555400068447,Variance-Aware
+Francis,Nongshim RedForce,11.596980216195718,Variance-Aware
+Free1ng,DRX,11.585726267346844,Variance-Aware
+Gobera,2Game Esports,7.80339848824486,Variance-Aware
+Governor,TALON,6.619634104797824,Variance-Aware
+Grubinho,KOI,8.787624752574093,Variance-Aware
+Gyen,Detonation FocusMe,8.926673362037361,Variance-Aware
+HYUNMIN,DRX,11.500481334288578,Variance-Aware
+INVY,Team Secret,9.182370474036517,Variance-Aware
+Ivy,Nongshim RedForce,12.169878825898556,Variance-Aware
+Jamppi,BBL Esports,9.682613489881298,Variance-Aware
+Jawgemo,G2 Esports,15.0,Variance-Aware
+Jemkin,Rex Regum Qeon,14.307290942919701,Variance-Aware
+JessieVash,Team Secret,11.399849923132356,Variance-Aware
+Jinboong,Detonation FocusMe,9.252318154493349,Variance-Aware
+Jinggg,Paper Rex,9.884907880951989,Variance-Aware
+JitboyS,TALON,7.311896301890684,Variance-Aware
+JohnQT,Sentinels,7.22342369850705,Variance-Aware
+JonahP,G2 Esports,13.864969828982154,Variance-Aware
+Jremy,Team Secret,8.82320009178701,Variance-Aware
+Kaajak,FNATIC,12.255060726127553,Variance-Aware
+Kada,Gentle Mates,10.419689954430151,Variance-Aware
+Kamo,Team Liquid,10.57939643780676,Variance-Aware
+Kamyk,Team Liquid,8.780873832595729,Variance-Aware
+Karon,Gen.G,13.793118715568383,Variance-Aware
+Keiko,Team Liquid,11.23003861351102,Variance-Aware
+KellyS,Global Esports,9.090155439075376,Variance-Aware
+Keznit,KR Esports,11.115232473807602,Variance-Aware
+Khalil,FURIA,9.98250738236925,Variance-Aware
+Kicks,Team Vitality,9.36364151933868,Variance-Aware
+Koalanoob,Natus Vincere,9.57322128825881,Variance-Aware
+Kr1stal,Global Esports,9.791123524239989,Variance-Aware
+Kushy,Rex Regum Qeon,12.038448480619303,Variance-Aware
+Leaf,G2 Esports,14.614790161141118,Variance-Aware
+Less,Team Vitality,10.722099167701872,Variance-Aware
+LewN,BBL Esports,9.375783259099611,Variance-Aware
+MOLSI,Apeks,7.869153123715077,Variance-Aware
+MaKo,DRX,8.42940695152729,Variance-Aware
+Margaret,Nongshim RedForce,10.264025673569302,Variance-Aware
+Marteen,Karmine Corp,11.058744714094779,Variance-Aware
+Mazino,KR Esports,11.080715811134569,Variance-Aware
+Meiy,Detonation FocusMe,12.476061405385893,Variance-Aware
+Melser,KR Esports,12.502535302646582,Variance-Aware
+Meteor,T1,13.814982245430008,Variance-Aware
+Mindfreak,Paper Rex,8.086699025190885,Variance-Aware
+Miniboo,Team Heretics,9.130079146810383,Variance-Aware
+Minny,Gentle Mates,9.402845060541853,Variance-Aware
+Mitch,Cloud9,7.589538785266401,Variance-Aware
+Monyet,Rex Regum Qeon,11.102386170789446,Variance-Aware
+MrFalin,FUT Esports,8.273031064287593,Variance-Aware
+Munchkin,Gen.G,12.554807671779509,Variance-Aware
+N4RRATE,Sentinels,8.692028106470941,Variance-Aware
+Nats,Team Liquid,12.788722861055517,Variance-Aware
+NaturE,Evil Geniuses,8.383349438214566,Variance-Aware
+NcSlasher,BOOM Esports,8.076509015289142,Variance-Aware
+NeT,Cloud9,9.407933175916497,Variance-Aware
+OXY,Cloud9,12.028177442277029,Variance-Aware
+PROFEK,BBL Esports,10.53955184868068,Variance-Aware
+PaTiTek,Team Liquid,6.254961573402836,Variance-Aware
+Papi,Global Esports,8.594541966029444,Variance-Aware
+Persia,Nongshim RedForce,10.988249112123734,Variance-Aware
+Primmie,TALON,9.866984642625614,Variance-Aware
+Purp0,GIANTX,11.32775804071669,Variance-Aware
+Riens,Team Heretics,8.491201430690483,Variance-Aware
+RobbieBK,Gentle Mates,6.568715010923375,Variance-Aware
+RunneR,GIANTX,8.31924170538763,Variance-Aware
+Ruxic,Natus Vincere,9.646555055488891,Variance-Aware
+SUYGETSU,Karmine Corp,10.6143194305668,Variance-Aware
+Saadhak,Karmine Corp,10.115454124588377,Variance-Aware
+Sayf,Team Vitality,8.661745703844419,Variance-Aware
+Shao,Natus Vincere,10.382301957450894,Variance-Aware
+Sheydos,KOI,8.349934409321504,Variance-Aware
+Shiro,BOOM Esports,8.076509015289142,Variance-Aware
+Shyy,KR Esports,14.354348554862824,Variance-Aware
+Sociablee,BBL Esports,11.1636077452389,Variance-Aware
+Something,Paper Rex,9.437266694564928,Variance-Aware
+Soulcas,KOI,9.037892827590253,Variance-Aware
+Stax,T1,10.111509274585035,Variance-Aware
+SugarZ3ro,Zeta Division,8.79447897052792,Variance-Aware
+Supamen,Evil Geniuses,10.213240489614735,Variance-Aware
+Sylvan,T1,11.175780648743485,Variance-Aware
+Syouta,Zeta Division,9.01428917057773,Variance-Aware
+T3xture,Gen.G,14.834737792074296,Variance-Aware
+Trent,G2 Esports,15.0,Variance-Aware
+Trexx,Team Vitality,10.06724400470075,Variance-Aware
+Udotan,Global Esports,9.973915667981368,Variance-Aware
+Vakk,BBL Esports,8.43111666856371,Variance-Aware
+Valyn,G2 Esports,13.879652440287677,Variance-Aware
+Verno,NRG Esports,8.48745685128209,Variance-Aware
+Westside,GIANTX,8.467013808320436,Variance-Aware
+Wild0reoo,Team Secret,8.076509015289142,Variance-Aware
+Wo0t,Team Heretics,7.884961061372955,Variance-Aware
+Xdll,Zeta Division,8.649755356683476,Variance-Aware
+Xenom,MIBR,10.012981005967886,Variance-Aware
+Xeppaa,Cloud9,9.659192341576306,Variance-Aware
+Xeus,FUT Esports,13.172199283939506,Variance-Aware
+Xffero,Rex Regum Qeon,10.976491028812701,Variance-Aware
+Yay,Evil Geniuses,8.2882084444422,Variance-Aware
+Yetujey,FUT Esports,12.275464906541073,Variance-Aware
+Yoman,Gen.G,11.630778077594393,Variance-Aware
+Zander,100 Thieves,9.193442462148385,Variance-Aware
+Zekken,Sentinels,8.681001602095506,Variance-Aware
+Zellsis,Sentinels,6.929760809868148,Variance-Aware
+Zyppan,Gentle Mates,7.696276804553885,Variance-Aware
+alfajer,FNATIC,11.609754308779616,Variance-Aware
+aspas,MIBR,14.446662387325981,Variance-Aware
+ban,TALON,7.929539228643549,Variance-Aware
+bang,Sentinels,8.381953016173401,Variance-Aware
+batujnax,Apeks,10.045015911821006,Variance-Aware
+benjyfishy,Team Heretics,6.7268712719014285,Variance-Aware
+d4v41,Paper Rex,8.662758423036365,Variance-Aware
+dgzin,LOUD,12.921661293335948,Variance-Aware
+eeiu,100 Thieves,12.269475681634473,Variance-Aware
+ethan,NRG Esports,10.105901781418074,Variance-Aware
+f0rsaken,Paper Rex,9.588392660274323,Variance-Aware
+finesse,NRG Esports,7.292218219353601,Variance-Aware
+florescent,Apeks,11.944127309938752,Variance-Aware
+havoc,FURIA,9.477050399164106,Variance-Aware
+heat,FURIA,8.892179787583297,Variance-Aware
+hiro,Natus Vincere,8.378700410049957,Variance-Aware
+hype,Apeks,9.392556481592946,Variance-Aware
+iZu,T1,12.292459058342239,Variance-Aware
+icy,Evil Geniuses,9.242912894249109,Variance-Aware
+kingg,LEVIATµN,11.032459703131332,Variance-Aware
+lz,2Game Esports,7.940076783833881,Variance-Aware
+mada,NRG Esports,15.0,Variance-Aware
+mwzera,FURIA,7.940076783833881,Variance-Aware
+natank,LEVIATµN,10.216485777259138,Variance-Aware
+nzr,MIBR,8.186736918377722,Variance-Aware
+oderus,Apeks,9.91231745974428,Variance-Aware
+pancada,LOUD,11.810444632099694,Variance-Aware
+pryze,2Game Esports,6.0,Variance-Aware
+qRaxs,FUT Esports,8.878211543692561,Variance-Aware
+raafa,FURIA,8.050326774340036,Variance-Aware
+s0m,NRG Esports,10.018900876340167,Variance-Aware
+silentzz,2Game Esports,6.372936047605422,Variance-Aware
+tex,LEVIATµN,11.159451493394489,Variance-Aware
+tomaszy,GIANTX,8.639404669386037,Variance-Aware
+tuyz,LOUD,8.619567473578645,Variance-Aware
+v1c,Cloud9,9.263758931708992,Variance-Aware
+v1nny,LOUD,7.867884051991142,Variance-Aware
+zap,2Game Esports,6.0,Variance-Aware
+Askia,2Game Esports,6.0,Variance-Aware
+PxS,2Game Esports,6.0,Variance-Aware
+spike,2Game Esports,6.0,Variance-Aware
+rossy,LEVIATµN,9.32,Variance-Aware
+Lukxo,LOUD,9.13,Variance-Aware
+brawk,NRG Esports,9.18,Variance-Aware
+MAGNUM,BBL Esports,8.84,Variance-Aware
+ara,GIANTX,8.43,Variance-Aware
+Flickless,GIANTX,8.43,Variance-Aware
+Serial,Team Liquid,8.93,Variance-Aware
+Cyvoph,Team Vitality,9.6,Variance-Aware
+Ash,Gen.G,11.98,Variance-Aware
+Suggest,Gen.G,11.98,Variance-Aware
+Patmen,Paper Rex,8.13,Variance-Aware
+CrazyGuy,Rex Regum Qeon,10.96,Variance-Aware
+Killua,TALON,6.55,Variance-Aware
+Thyy,TALON,6.55,Variance-Aware
+PatrickWHO,Global Esports,8.25,Variance-Aware
