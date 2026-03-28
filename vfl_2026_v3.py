@@ -115,6 +115,10 @@ def load_manual_prices():
     df = _read_csv_safe(path)
     df["Team"] = df["Team"].apply(_normalize_team_name)
     df["Player_lower"] = df["Player"].str.lower()
+    # Handle both old format (Player,Team,Region,Position,Price) and
+    # new format (Player,Team,Region,Role,Position,Price)
+    if "Role" not in df.columns and "Position" in df.columns:
+        df["Role"] = df["Position"]  # old format: Position was the VFL position
     return df
 
 
@@ -240,15 +244,15 @@ def compute_weighted_ppm(event_list, year_weights):
 
 
 def get_pickrate_signal(avg_pickpct):
-    """Change 4: Pickrate-Weighted Sentiment signal."""
+    """Change 4: Pickrate-Weighted Sentiment signal (boosted weight)."""
     if avg_pickpct > 30:
-        return 0.15   # premium: managers wanted them
+        return 0.22   # strong premium: managers wanted them
     elif avg_pickpct > 20:
-        return 0.05   # slight premium
+        return 0.10   # moderate premium
     elif avg_pickpct < 8:
-        return -0.15  # discount: managers avoided them
+        return -0.22  # strong discount: managers avoided them
     elif avg_pickpct < 15:
-        return -0.05  # slight discount
+        return -0.10  # moderate discount
     return 0.0
 
 
@@ -287,6 +291,18 @@ def generate_v3_prices(all_data, manual_df, pickrate_dict, team_pop,
     played = all_data[all_data["P?"] == 1]
     global_mean_ppm = played["PPM"].mean()
 
+    # Compute per-team average PPM for newcomer handling
+    team_avg_ppm = {}
+    for team_name, grp in played.groupby("Team"):
+        team_avg_ppm[team_name] = grp["PPM"].mean()
+
+    # Hyped newcomers: tier 2 players with strong reputation but 0 VCT data
+    # Boost factor applied on top of team average PPM
+    HYPED_NEWCOMERS = {
+        "sayonara": 1.15,   # highly rumored tier 2 player on Team Vitality
+        "jerrwin": 1.15,    # highly rumored tier 2 player on Sentinels
+    }
+
     avg_tw = np.mean(list(team_wr.values())) if team_wr else 0.5
     avg_opp = np.mean(list(schedule_opp_strength.values())) if schedule_opp_strength else 0.5
 
@@ -322,9 +338,15 @@ def generate_v3_prices(all_data, manual_df, pickrate_dict, team_pop,
         weighted_ppm = compute_weighted_ppm(dampened_events, year_weights)
 
         # Bayesian shrinkage for low sample — stronger for fewer games
-        shrinkage_games = 6
-        weight_factor = games_total / (games_total + shrinkage_games)
-        weighted_ppm = weight_factor * weighted_ppm + (1 - weight_factor) * global_mean_ppm
+        # For 0-game newcomers: use team avg PPM instead of global mean
+        if games_total == 0:
+            fallback_ppm = team_avg_ppm.get(team, global_mean_ppm)
+            hype_mult = HYPED_NEWCOMERS.get(pl, 1.0)
+            weighted_ppm = fallback_ppm * hype_mult
+        else:
+            shrinkage_games = 6
+            weight_factor = games_total / (games_total + shrinkage_games)
+            weighted_ppm = weight_factor * weighted_ppm + (1 - weight_factor) * global_mean_ppm
 
         # --- Step e: Role adjustment ---
         # Applied AFTER S-curve as a VP-level tweak (see below), not here.
@@ -345,7 +367,7 @@ def generate_v3_prices(all_data, manual_df, pickrate_dict, team_pop,
         avg_pickpct = pick_info.get("avg_pickpct", 0.0)
         pickrate_signal = get_pickrate_signal(avg_pickpct)
         # Weight increases as 2026 data decreases
-        pickrate_weight = max(0.05, 0.25 - games_2026 / 40)
+        pickrate_weight = max(0.10, 0.40 - games_2026 / 40)
         pickrate_adj = pickrate_signal * pickrate_weight * weighted_ppm
 
         # --- Step i: Team brand popularity (5%) ---
