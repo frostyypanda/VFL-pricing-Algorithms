@@ -89,6 +89,14 @@ SANTIAGO_SWISS_TEAMS = [
     "G2 Esports", "NRG Esports", "Xi Lai Gaming", "EDward Gaming",
 ]
 
+# China teams play in inflated region — avoid for team building
+CHINA_DISCOUNT = 0.15  # multiply expected pts by this factor (near-zero)
+# Extended China team list (including name variants from CSVs)
+CHINA_TEAMS_INTL = set(CHINA_TEAMS) | {
+    "EDward Gaming", "EDWard Gaming", "Xi Lai Gaming",
+    "All Gamers", "TYLOO",
+}
+
 # Role slot configs
 KICKOFF_ROLE_SLOTS = {"D": 2, "C": 2, "I": 2, "S": 2}
 KICKOFF_WC_SLOTS = 3
@@ -525,6 +533,10 @@ def build_kickoff_team(player_pool_with_prices, player_historical_games,
 
         expected = estimate_expected_best_n(hist_games, KICKOFF_BEST_N, n_games)
 
+        # Discount China players — inflated regional stats
+        if team in CHINA_TEAMS_INTL:
+            expected *= CHINA_DISCOUNT
+
         players.append({
             "Player": player,
             "Team": team,
@@ -855,6 +867,7 @@ def compute_santiago_expected_pts(player_pool, historical_games, n_games=3,
     result = {}
     for _, row in player_pool.iterrows():
         player = row["Player"]
+        team = row["Team"]
         pl = player.lower()
         hist = historical_games.get(pl, [])
 
@@ -865,15 +878,20 @@ def compute_santiago_expected_pts(player_pool, historical_games, n_games=3,
         if tournament_games and player in tournament_games and tournament_weight > 0:
             tourn_pts = [g["pts"] for g in tournament_games[player]]
             if tourn_pts:
-                # Use tournament PPM to estimate best-2
                 tourn_avg = np.mean(tourn_pts)
-                # Expected best 2 ~ avg * 1.3 (top games are above average)
                 tourn_expected = tourn_avg * min(n_games, len(tourn_pts)) * 0.85
                 tourn_expected = max(tourn_expected, sum(sorted(tourn_pts, reverse=True)[:n_best]))
 
-                result[player] = (1 - tournament_weight) * hist_expected + tournament_weight * tourn_expected
+                final = (1 - tournament_weight) * hist_expected + tournament_weight * tourn_expected
+                # Discount China players — inflated regional stats
+                if team in CHINA_TEAMS_INTL:
+                    final *= CHINA_DISCOUNT
+                result[player] = final
                 continue
 
+        # Discount China players
+        if team in CHINA_TEAMS_INTL:
+            hist_expected *= CHINA_DISCOUNT
         result[player] = hist_expected
     return result
 
