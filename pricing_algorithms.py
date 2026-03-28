@@ -41,10 +41,15 @@ GAME_ORDER = {
 }
 
 # Target quantile breakpoints for distribution-aware pricing
+# Tuned for CLAUDE.md criteria: median ~9.0, healthy spread, multiple archetypes
 TARGET_QUANTILES = np.array([0.0, 0.05, 0.10, 0.20, 0.30, 0.40, 0.50,
                               0.60, 0.70, 0.80, 0.90, 0.95, 1.0])
 TARGET_VPS =      np.array([6.0, 6.3,  6.5,  7.2,  8.0,  8.6,  9.0,
                               9.5, 10.2, 11.0, 12.5, 13.5, 15.0])
+
+# Uncertainty thresholds
+LOW_GAMES_THRESHOLD = 3      # < 3 games = high uncertainty
+NEW_PLAYER_THRESHOLD = 0     # 0 games in training = new player
 
 # --- Data Loading ---
 
@@ -61,7 +66,6 @@ def load_all_data():
         df["Year"] = year
         frames.append(df)
     combined = pd.concat(frames, ignore_index=True)
-    # Filter out China teams
     combined = combined[~combined["Team"].isin(CHINA_TEAMS)].copy()
     return combined
 
@@ -103,30 +107,30 @@ def get_stage1_players(df):
 # --- Feature Engineering ---
 
 
-def compute_ema(values, alpha=0.3):
-    """Compute exponential moving average over a sequence of values.
-    More recent values (end of array) get higher weight."""
-    if len(values) == 0:
-        return 0.0
-    weights = np.array([(1 - alpha) ** i for i in range(len(values))])[::-1]
-    # Most recent value gets weight alpha, previous gets alpha*(1-alpha), etc.
-    # Actually: standard EMA from oldest to newest
-    weights = np.array([(1 - alpha) ** (len(values) - 1 - i) for i in range(len(values))])
-    return np.average(values, weights=weights)
-
-
 def shrink_estimate(player_val, n_games, pop_mean, shrinkage_games=4):
     """Bayesian shrinkage toward population mean for small samples."""
     weight = n_games / (n_games + shrinkage_games)
     return weight * player_val + (1 - weight) * pop_mean
 
 
-def compute_player_features(training_df):
-    """Compute per-player features from training data.
+def detect_new_players_on_team(training_df, stage1_players):
+    """Detect how many new players each team has in Stage 1 vs training data.
 
-    Returns DataFrame indexed by Player with feature columns.
+    Returns dict: team -> number of new players (0-5).
     """
-    # Sort chronologically
+    trained_by_team = training_df.groupby("Team")["Player"].apply(set).to_dict()
+    stage1_by_team = stage1_players.groupby("Team")["Player"].apply(set).to_dict()
+
+    team_new_counts = {}
+    for team, s1_players in stage1_by_team.items():
+        trained_players = trained_by_team.get(team, set())
+        new_count = len(s1_players - trained_players)
+        team_new_counts[team] = new_count
+    return team_new_counts
+
+
+def compute_player_features(training_df):
+    """Compute per-player features from training data."""
     df = training_df.copy()
     df["_stage_ord"] = df["Stage"].map(STAGE_ORDER).fillna(99)
     df["_game_ord"] = df["Game"].map(GAME_ORDER).fillna(99)
@@ -136,7 +140,7 @@ def compute_player_features(training_df):
 
     records = []
     for player, grp in df.groupby("Player"):
-        team = grp["Team"].iloc[-1]  # most recent team
+        team = grp["Team"].iloc[-1]
         games = len(grp)
         ppm_vals = grp["PPM"].values
         pts_vals = grp["Pts"].values
@@ -144,7 +148,7 @@ def compute_player_features(training_df):
         ppts_vals = grp["P.Pts"].values
         year_vals = grp["Year"].values
 
-        # Apply year discount: 2024 games get 0.5 weight
+        # Year discount: 2024 games get 0.5 weight
         year_weights = np.where(year_vals == 2024, 0.5, 1.0)
 
         # EMA with year discount
@@ -160,14 +164,12 @@ def compute_player_features(training_df):
         # Shrink toward population mean
         ema_ppm = shrink_estimate(ema_ppm, games, pop_mean_ppm)
 
-        # Basic stats
         avg_ppm = np.mean(ppm_vals)
         std_ppm = np.std(ppm_vals) if games > 1 else 0.0
         avg_pts = np.mean(pts_vals)
         avg_tpts = np.mean(tpts_vals)
         avg_ppts = np.mean(ppts_vals)
 
-        # Win rate
         wl = grp["W/L"].values
         wins = np.sum(wl == "W")
         win_rate = wins / games if games > 0 else 0.5
@@ -179,12 +181,15 @@ def compute_player_features(training_df):
         high_kills = grp[kill_cols].sum().sum()
         kill_profile = high_kills / total_maps if total_maps > 0 else 0.0
 
-        # Rating bonus rate
         rating_bonuses = grp[["TOP3", "TOP2", "TOP1", "1.5R2", "1.75R2", "2.0R2"]].sum().sum()
         rating_bonus_rate = rating_bonuses / games if games > 0 else 0.0
 
-        # Personal-to-total ratio (proxy for role)
         ppts_ratio = avg_ppts / (avg_pts + 1e-9)
+
+        # Uncertainty assessment
+        uncertainty_reasons = []
+        if games < LOW_GAMES_THRESHOLD:
+            uncertainty_reasons.append(f"few games ({games})")
 
         records.append({
             "Player": player,
@@ -200,6 +205,7 @@ def compute_player_features(training_df):
             "kill_profile": kill_profile,
             "rating_bonus_rate": rating_bonus_rate,
             "ppts_ratio": ppts_ratio,
+            "uncertainty_reasons": uncertainty_reasons,
         })
 
     features = pd.DataFrame(records)
@@ -228,7 +234,7 @@ def _linear_map(values, target_min=VP_MIN, target_max=VP_MAX):
     return np.clip(scaled, target_min, target_max)
 
 
-def algo_baseline_ema(features):
+def algo_baseline_ema(features, **kwargs):
     """Algorithm 1: Baseline EMA pricing.
     Linear map of EMA PPM to [6, 15] VP."""
     prices = features.copy()
@@ -236,19 +242,17 @@ def algo_baseline_ema(features):
     return prices[["Player", "Team", "predicted_vp"]]
 
 
-def algo_distribution_aware(features):
+def algo_distribution_aware(features, **kwargs):
     """Algorithm 2: Distribution-aware pricing.
     Rank players by EMA PPM, then map percentiles to target distribution."""
     prices = features.copy()
-    # Percentile rank (0 to 1)
     ranks = prices["ema_ppm"].rank(pct=True).values
-    # Interpolate target VP from quantile breakpoints
     predicted = np.interp(ranks, TARGET_QUANTILES, TARGET_VPS)
     prices["predicted_vp"] = np.clip(predicted, VP_MIN, VP_MAX)
     return prices[["Player", "Team", "predicted_vp"]]
 
 
-def algo_role_adjusted(features, role_data=None):
+def algo_role_adjusted(features, role_data=None, **kwargs):
     """Algorithm 3: Role-adjusted pricing.
     Proxy roles from scoring patterns, adjust PPM before pricing."""
     prices = features.copy()
@@ -257,18 +261,10 @@ def algo_role_adjusted(features, role_data=None):
         # TODO: use actual role data when available
         pass
 
-    # Proxy role classification based on scoring patterns
-    # Duelist-like: high kill profile + high ppts ratio
-    # Support-like: low kill profile + low ppts ratio
     kill_pctl = prices["kill_profile"].rank(pct=True)
     ppts_pctl = prices["ppts_ratio"].rank(pct=True)
-    role_score = (kill_pctl + ppts_pctl) / 2  # 0=most support-like, 1=most duelist-like
+    role_score = (kill_pctl + ppts_pctl) / 2
 
-    # Adjustment: duelists get discounted (they score high naturally),
-    # supports get boosted (their PPM understates their value)
-    # Duelist (role_score > 0.7): -7% PPM adjustment
-    # Support (role_score < 0.3): +5% PPM adjustment
-    # Middle: no adjustment
     adjustment = np.where(
         role_score > 0.7, 0.93,
         np.where(role_score < 0.3, 1.05, 1.0)
@@ -278,49 +274,55 @@ def algo_role_adjusted(features, role_data=None):
     return prices[["Player", "Team", "predicted_vp"]]
 
 
-def algo_team_strength(features, team_win_rates):
+def algo_team_strength(features, team_win_rates=None, team_new_counts=None, **kwargs):
     """Algorithm 4: Team strength multiplier.
-    Decompose into personal + team components, predict each separately."""
+    Decompose into personal + team components, predict each separately.
+
+    New player discount on team strength factor:
+    - 1 new player on team: team factor *= 0.67
+    - 2 new players: team factor *= 0.33
+    - 3+ new players: ignore team strength entirely (factor = 0)
+    """
+    if team_win_rates is None:
+        team_win_rates = {}
+    if team_new_counts is None:
+        team_new_counts = {}
+
     prices = features.copy()
-
-    # Average T.Pts per game by team win rate (from training data analysis):
-    # ~30% WR teams: ~1.0 T.Pts/game, ~50%: ~2.5, ~70%: ~3.5
-    # Linear approximation: expected_tpts = 1.0 + 4.0 * team_wr
     prices["team_wr"] = prices["Team"].map(team_win_rates).fillna(0.5)
-    expected_tpts_per_game = 1.0 + 4.0 * prices["team_wr"]
 
-    # Personal component from EMA (subtract average T.Pts contribution)
-    pop_avg_tpts = features["avg_tpts"].mean()
-    personal_ema = prices["ema_ppm"]  # PPM includes both components
+    # Apply new-player discount to team strength
+    def team_strength_factor(team):
+        new_count = team_new_counts.get(team, 0)
+        if new_count >= 3:
+            return 0.0
+        elif new_count == 2:
+            return 0.33
+        elif new_count == 1:
+            return 0.67
+        return 1.0
 
-    # Estimate maps per game from training data (typically 2-2.5)
-    avg_maps = 2.3
+    prices["team_factor"] = prices["Team"].apply(team_strength_factor)
 
-    # Recompose: adjust the team component based on actual team strength
-    # If a player's team is stronger/weaker than average, shift their expected PPM
     avg_team_wr = prices["team_wr"].mean()
-    tpts_adjustment = (prices["team_wr"] - avg_team_wr) * 4.0 / avg_maps
-    adjusted_ppm = personal_ema + tpts_adjustment
+    avg_maps = 2.3
+    # Team strength adjustment, discounted by new player factor
+    tpts_adjustment = (prices["team_wr"] - avg_team_wr) * 4.0 / avg_maps * prices["team_factor"]
+    adjusted_ppm = prices["ema_ppm"] + tpts_adjustment
 
     prices["predicted_vp"] = _linear_map(adjusted_ppm.values)
     return prices[["Player", "Team", "predicted_vp"]]
 
 
-def algo_variance_aware(features, consistency_premium=0.10):
+def algo_variance_aware(features, consistency_premium=0.10, **kwargs):
     """Algorithm 5: Variance-aware pricing.
     Consistent players get a premium, volatile players get a discount."""
     prices = features.copy()
 
-    # Coefficient of variation
     cv = prices["std_ppm"] / (prices["avg_ppm"].abs() + 1e-9)
-    # Normalize CV to [0, 1] range for adjustment
-    cv_norm = cv.rank(pct=True)  # 0=most consistent, 1=most volatile
+    cv_norm = cv.rank(pct=True)
 
-    # Start from baseline EMA price
     base_vp = _linear_map(prices["ema_ppm"].values)
-
-    # Adjust: consistent (low CV) gets premium, volatile (high CV) gets discount
-    # Max adjustment: +/- consistency_premium * VP
     adjustment_factor = 1 + consistency_premium * (1 - 2 * cv_norm)
     adjusted_vp = base_vp * adjustment_factor
 
@@ -328,38 +330,123 @@ def algo_variance_aware(features, consistency_premium=0.10):
     return prices[["Player", "Team", "predicted_vp"]]
 
 
-# --- Handle Missing Players ---
+# --- Handle Missing Players + Uncertainty ---
 
 
-def fill_missing_players(predictions, stage1_players, features, default_vp=9.0):
+def fill_missing_players(predictions, stage1_players, features, team_win_rates=None,
+                         team_new_counts=None, default_vp=9.0):
     """Add predictions for players in Stage 1 who aren't in training data.
 
-    Strategy: use team average minus 1 VP, or default_vp if no teammates.
+    For new players:
+    - Use team context (team avg VP - 1) as baseline
+    - Consider team new-player count for team strength discount
+    - Mark as HIGH UNCERTAINTY
     """
+    if team_win_rates is None:
+        team_win_rates = {}
+    if team_new_counts is None:
+        team_new_counts = {}
+
     predicted_players = set(predictions["Player"])
     missing = stage1_players[~stage1_players["Player"].isin(predicted_players)]
 
     if len(missing) == 0:
         return predictions
 
-    # Team average VP from predictions
     team_avg = predictions.groupby("Team")["predicted_vp"].mean().to_dict()
 
     new_rows = []
     for _, row in missing.iterrows():
-        team_vp = team_avg.get(row["Team"])
+        team = row["Team"]
+        team_vp = team_avg.get(team)
         if team_vp is not None:
             vp = max(VP_MIN, team_vp - 1.0)
         else:
             vp = default_vp
+
+        reasons = ["new player (no training data)"]
+        new_count = team_new_counts.get(team, 0)
+        if new_count >= 2:
+            reasons.append(f"team has {new_count} new players")
+
         new_rows.append({
             "Player": row["Player"],
-            "Team": row["Team"],
+            "Team": team,
             "predicted_vp": round(vp, 2),
+            "uncertainty": "HIGH",
+            "uncertainty_reasons": "; ".join(reasons),
         })
 
     if new_rows:
-        predictions = pd.concat([predictions, pd.DataFrame(new_rows)], ignore_index=True)
+        new_df = pd.DataFrame(new_rows)
+        predictions = pd.concat([predictions, new_df], ignore_index=True)
+    return predictions
+
+
+def add_uncertainty_flags(predictions, features):
+    """Add uncertainty flags to all predictions.
+
+    HIGH uncertainty:
+    - New players (not in training data)
+    - Players with < 3 games in training
+    - Players on teams with 3+ new players
+
+    MEDIUM uncertainty:
+    - Players with 3-5 games
+    - Players who recently changed teams (team in training != team in Stage 1)
+
+    LOW uncertainty:
+    - Players with 6+ games on same team
+    """
+    features_dict = {}
+    for _, row in features.iterrows():
+        features_dict[row["Player"]] = row
+
+    uncertainties = []
+    uncertainty_reasons_list = []
+
+    for _, row in predictions.iterrows():
+        player = row["Player"]
+
+        # Already flagged as HIGH (new player from fill_missing_players)
+        if "uncertainty" in predictions.columns and row.get("uncertainty") == "HIGH":
+            uncertainties.append("HIGH")
+            uncertainty_reasons_list.append(row.get("uncertainty_reasons", "new player"))
+            continue
+
+        feat = features_dict.get(player)
+        if feat is None:
+            uncertainties.append("HIGH")
+            uncertainty_reasons_list.append("no training data")
+            continue
+
+        reasons = list(feat.get("uncertainty_reasons", []))
+        games = feat["games_played"]
+
+        # Check if team changed
+        if feat["Team"] != row["Team"]:
+            reasons.append("team change detected")
+
+        if games < LOW_GAMES_THRESHOLD:
+            uncertainties.append("HIGH")
+            if not reasons:
+                reasons.append(f"only {games} games")
+            uncertainty_reasons_list.append("; ".join(reasons))
+        elif games <= 5:
+            uncertainties.append("MEDIUM")
+            reasons.append(f"{games} games (limited sample)")
+            uncertainty_reasons_list.append("; ".join(reasons))
+        else:
+            if reasons:
+                uncertainties.append("MEDIUM")
+                uncertainty_reasons_list.append("; ".join(reasons))
+            else:
+                uncertainties.append("LOW")
+                uncertainty_reasons_list.append("")
+
+    predictions = predictions.copy()
+    predictions["uncertainty"] = uncertainties
+    predictions["uncertainty_reasons"] = uncertainty_reasons_list
     return predictions
 
 
@@ -370,7 +457,7 @@ def run_all_algorithms():
     """Run all 5 pricing algorithms and return results.
 
     Returns:
-        dict mapping algorithm name -> DataFrame with Player, Team, predicted_vp
+        dict mapping algorithm name -> DataFrame with Player, Team, predicted_vp, uncertainty
         features: player features DataFrame
         validation: actual VP prices DataFrame
         stage1_results: all Stage 1 played rows
@@ -389,23 +476,35 @@ def run_all_algorithms():
     print("Computing features...")
     features = compute_player_features(training)
     team_wr = compute_team_win_rates(training)
+    team_new_counts = detect_new_players_on_team(training, stage1_players)
     print(f"Features computed for {len(features)} players")
+
+    # Report new player counts per team
+    teams_with_new = {t: c for t, c in team_new_counts.items() if c > 0}
+    if teams_with_new:
+        print(f"Teams with new players: {teams_with_new}")
     print()
 
-    # Run all algorithms
-    algorithms = {
-        "Baseline EMA": algo_baseline_ema(features),
-        "Distribution-Aware": algo_distribution_aware(features),
-        "Role-Adjusted": algo_role_adjusted(features),
-        "Team Strength": algo_team_strength(features, team_wr),
-        "Variance-Aware": algo_variance_aware(features),
+    algo_kwargs = {
+        "team_win_rates": team_wr,
+        "team_new_counts": team_new_counts,
     }
 
-    # Fill in missing players for each algorithm
+    algorithms = {
+        "Baseline EMA": algo_baseline_ema(features, **algo_kwargs),
+        "Distribution-Aware": algo_distribution_aware(features, **algo_kwargs),
+        "Role-Adjusted": algo_role_adjusted(features, **algo_kwargs),
+        "Team Strength": algo_team_strength(features, **algo_kwargs),
+        "Variance-Aware": algo_variance_aware(features, **algo_kwargs),
+    }
+
+    # Fill in missing players and add uncertainty flags
     for name in algorithms:
         algorithms[name] = fill_missing_players(
-            algorithms[name], stage1_players, features
+            algorithms[name], stage1_players, features,
+            team_win_rates=team_wr, team_new_counts=team_new_counts,
         )
+        algorithms[name] = add_uncertainty_flags(algorithms[name], features)
 
     return algorithms, features, validation, stage1_results
 
@@ -414,7 +513,6 @@ def main():
     algorithms, features, validation, _ = run_all_algorithms()
 
     for name, preds in algorithms.items():
-        # Merge with validation to compute quick accuracy
         merged = preds.merge(validation, on="Player", how="inner", suffixes=("", "_actual"))
         if len(merged) == 0:
             print(f"\n=== {name} === (no overlap with validation)")
@@ -429,6 +527,18 @@ def main():
         print(f"  MAE: {mae:.3f}  Correlation: {corr:.3f}")
         print(f"  VP range: {preds['predicted_vp'].min():.1f} - {preds['predicted_vp'].max():.1f}")
         print(f"  VP mean: {preds['predicted_vp'].mean():.2f}  median: {preds['predicted_vp'].median():.2f}")
+
+        # Uncertainty breakdown
+        unc = preds["uncertainty"].value_counts()
+        print(f"  Uncertainty: {unc.to_dict()}")
+
+        # Show HIGH uncertainty players
+        high_unc = preds[preds["uncertainty"] == "HIGH"]
+        if len(high_unc) > 0:
+            print(f"  HIGH uncertainty players ({len(high_unc)}):")
+            for _, row in high_unc.iterrows():
+                print(f"    {row['Player']:<18} {row['Team']:<22} {row['predicted_vp']:>6.1f} VP  "
+                      f"({row['uncertainty_reasons']})")
 
         # Distribution buckets
         buckets = pd.cut(preds["predicted_vp"], bins=range(5, 17), right=False)
