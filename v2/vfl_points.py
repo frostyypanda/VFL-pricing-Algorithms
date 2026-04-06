@@ -65,6 +65,7 @@ def compute_match_points(match):
     map_scores = match["map_scores"]
     per_map = match["per_map"]
     agg = match["aggregate"]
+    multikills = match.get("multikills", {})
 
     all_ratings = []
     for side in ["team1", "team2"]:
@@ -76,7 +77,7 @@ def compute_match_points(match):
 
         for p_agg in agg[side]:
             name = p_agg["name"]
-            total = 0.0
+            total = 0
 
             for map_idx, ms in enumerate(map_scores):
                 if map_idx >= len(per_map):
@@ -91,13 +92,17 @@ def compute_match_points(match):
                 total += map_team_pts(won, sw, sl)
 
             total += rating_bonuses(p_agg["rating"], all_ratings)
-            n_maps = len(map_scores)
-            total += _estimate_multikills(p_agg["kills"], n_maps)
+
+            # Exact multi-kill bonuses from Performance tab
+            mk = multikills.get(name, {"4k": 0, "5k": 0})
+            total += mk["4k"] * 1   # +1 per 4K round
+            total += mk["5k"] * 3   # +3 per 5K (ace)
 
             results[name] = {
-                "pts": round(total, 1), "team": team_name,
+                "pts": total, "team": team_name,
                 "rating": p_agg["rating"], "kills": p_agg["kills"],
-                "deaths": p_agg["deaths"], "maps": n_maps,
+                "deaths": p_agg["deaths"], "maps": len(map_scores),
+                "4k": mk["4k"], "5k": mk["5k"],
             }
     return results
 
@@ -110,17 +115,3 @@ def _find_kills(map_data, side, name):
     return 0
 
 
-def _estimate_multikills(total_kills, n_maps):
-    """Rough estimate of multi-kill bonus (4K/5K rounds).
-
-    Based on historical data: ~0.3 bonus pts per map for avg player,
-    scaling with kills.
-    """
-    kills_per_map = total_kills / max(n_maps, 1)
-    if kills_per_map >= 20:
-        return n_maps * 0.8
-    if kills_per_map >= 15:
-        return n_maps * 0.4
-    if kills_per_map >= 10:
-        return n_maps * 0.2
-    return 0

@@ -127,8 +127,55 @@ def _get_stat_float(stats, idx):
     return 0.0
 
 
+def fetch_performance(match_id):
+    """Fetch the Performance tab for a match."""
+    url = f"https://www.vlr.gg/{match_id}/?game=all&tab=performance"
+    resp = requests.get(url, headers=HEADERS, timeout=30)
+    resp.raise_for_status()
+    return BeautifulSoup(resp.text, "html.parser")
+
+
+def parse_multikills(soup):
+    """Parse 4K and 5K counts from the Performance tab.
+
+    Returns dict of {player_name: {"4k": int, "5k": int}}.
+    """
+    result = {}
+    all_game = soup.select_one('div.vm-stats-game[data-game-id="all"]')
+    if not all_game:
+        return result
+    tables = all_game.select("table.wf-table-inset.mod-adv-stats")
+    for table in tables:
+        for row in table.select("tr"):
+            cells = row.select("td")
+            if len(cells) < 6:
+                continue
+            team_div = cells[0].select_one(".team")
+            if not team_div:
+                continue
+            tag = team_div.select_one(".team-tag")
+            tag_text = tag.get_text(strip=True) if tag else ""
+            name = team_div.get_text(strip=True).replace(tag_text, "").strip()
+            fk = _parse_multikill_cell(cells[4])  # 4K column (index 4)
+            ace = _parse_multikill_cell(cells[5])  # 5K column (index 5)
+            result[name] = {"4k": fk, "5k": ace}
+    return result
+
+
+def _parse_multikill_cell(cell):
+    """Parse a multi-kill cell value. Returns int."""
+    sq = cell.select_one("div.stats-sq")
+    if not sq or "mod-egg" in sq.get("class", []):
+        return 0
+    text = sq.get_text(strip=True)
+    try:
+        return int(text)
+    except ValueError:
+        return 0
+
+
 def scrape_all_w1():
-    """Scrape all W1 matches. Returns list of match dicts."""
+    """Scrape all W1 matches (overview + performance). Returns list."""
     matches = []
     all_ids = []
     for region, ids in W1_MATCHES.items():
@@ -142,11 +189,16 @@ def scrape_all_w1():
         map_scores = parse_map_scores(soup)
         per_map = parse_per_map_stats(soup)
         agg = parse_all_maps_stats(soup)
+
+        time.sleep(1.0)
+        perf_soup = fetch_performance(mid)
+        multikills = parse_multikills(perf_soup)
+
         matches.append({
             "match_id": mid, "region": region,
             "team1": team1, "team2": team2,
             "map_scores": map_scores, "per_map": per_map,
-            "aggregate": agg,
+            "aggregate": agg, "multikills": multikills,
         })
         if i < len(all_ids) - 1:
             time.sleep(1.5)
