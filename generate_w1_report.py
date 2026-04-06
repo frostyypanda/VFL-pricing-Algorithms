@@ -472,8 +472,8 @@ def write_excel(ep, ep_updated, w1_pts, gw1_team, opt_plan,
                 user_gw1, user_plan, v1_plan, v1_ep, prices):
     """Write everything to a multi-sheet Excel file."""
     wb = Workbook()
-    _write_gw1_sheet(wb, gw1_team, "GW1 Optimal Team")
-    _write_gw1_sheet(wb, user_gw1, "GW1 User Team")
+    _write_gw1_sheet(wb, gw1_team, "GW1 Optimal Team", w1_pts)
+    _write_gw1_sheet(wb, user_gw1, "GW1 User Team", w1_pts)
     _write_w1_results_sheet(wb, w1_pts, ep)
     _write_transfer_sheet(wb, opt_plan, "Transfers (v2 Optimal)")
     _write_transfer_sheet(wb, user_plan, "Transfers (v2 User)")
@@ -501,16 +501,26 @@ def _style_header(ws, row, ncols):
         cell.alignment = Alignment(horizontal="center")
 
 
-def _write_gw1_sheet(wb, team_data, title):
+def _write_gw1_sheet(wb, team_data, title, w1_pts):
     ws = wb.create_sheet(title)
     headers = ["Slot", "Player", "Team", "Region", "Role", "VP",
-               "Exp Pts", "With IGL", "IGL?"]
+               "Exp Pts", "Actual Pts", "Diff", "With IGL", "IGL?"]
     for c, h in enumerate(headers, 1):
         ws.cell(row=1, column=c, value=h)
     _style_header(ws, 1, len(headers))
 
+    green = PatternFill(start_color="C6EFCE", fill_type="solid")
+    red = PatternFill(start_color="FFC7CE", fill_type="solid")
+    igl_fill = PatternFill(start_color="FFF2CC", fill_type="solid")
+    actual_total = 0
+
     for r, p in enumerate(team_data["players"], 2):
         gw_pts = p.get("GW1", 0)
+        actual = w1_pts.get(p["Player"], {}).get("actual_pts", "")
+        diff = actual - gw_pts if isinstance(actual, (int, float)) else ""
+        if isinstance(actual, (int, float)):
+            actual_total += actual
+
         ws.cell(row=r, column=1, value=p["Slot"])
         ws.cell(row=r, column=2, value=p["Player"])
         ws.cell(row=r, column=3, value=p["Team"])
@@ -518,20 +528,25 @@ def _write_gw1_sheet(wb, team_data, title):
         ws.cell(row=r, column=5, value=p["Role"])
         ws.cell(row=r, column=6, value=p["VP"])
         ws.cell(row=r, column=7, value=round(gw_pts, 1))
-        ws.cell(row=r, column=8, value=round(gw_pts * (2 if p["IGL"] else 1), 1))
-        ws.cell(row=r, column=9, value="IGL" if p["IGL"] else "")
+        ws.cell(row=r, column=8, value=actual if actual != "" else "N/A")
+        ws.cell(row=r, column=9, value=round(diff, 1) if diff != "" else "")
+        ws.cell(row=r, column=10, value=round(
+            gw_pts * (2 if p["IGL"] else 1), 1))
+        ws.cell(row=r, column=11, value="IGL" if p["IGL"] else "")
 
         if p["IGL"]:
             for c in range(1, len(headers) + 1):
-                ws.cell(row=r, column=c).fill = PatternFill(
-                    start_color="FFF2CC", fill_type="solid"
-                )
+                ws.cell(row=r, column=c).fill = igl_fill
+        elif isinstance(diff, (int, float)):
+            ws.cell(row=r, column=9).fill = green if diff >= 2 else (
+                red if diff <= -2 else PatternFill())
 
     summary_row = len(team_data["players"]) + 3
     ws.cell(row=summary_row, column=1, value="TOTAL")
     ws.cell(row=summary_row, column=1).font = Font(bold=True)
     ws.cell(row=summary_row, column=6, value=team_data["total_vp"])
-    ws.cell(row=summary_row, column=8, value=round(team_data["total_pts"], 1))
+    ws.cell(row=summary_row, column=8, value=actual_total)
+    ws.cell(row=summary_row, column=10, value=round(team_data["total_pts"], 1))
 
     for col in range(1, len(headers) + 1):
         ws.column_dimensions[get_column_letter(col)].width = 15
