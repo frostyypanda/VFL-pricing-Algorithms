@@ -263,144 +263,188 @@ def build_user_gw1(ep, prices):
 
 
 def compute_transfer_plan(ep, prices, gw1_team):
-    """Compute GW2-6 transfer plan using ILP for each GW."""
-    current = gw1_team.copy()
-    current["slots"] = {p["Player"]: p["Slot"] for p in current["players"]}
+    """Compute GW2-6 transfer plan using slot-locked ILP."""
+    # Build slot roster: list of {slot, player, ...} dicts
+    roster = []
+    for p in gw1_team["players"]:
+        roster.append({
+            "slot": p["Slot"], "Player": p["Player"], "Team": p["Team"],
+            "Region": p["Region"], "Role": p["Role"],
+            "VP": p["VP"],
+        })
     plan = [gw1_team]
-
     for gw in range(2, 7):
-        result = _optimize_single_gw_transfers(
-            ep, prices, current, gw
-        )
+        result = _optimize_slot_locked(ep, prices, roster, gw)
         plan.append(result)
-        current = result
+        roster = result["roster"]
     return plan
 
 
-def _optimize_single_gw_transfers(ep, prices, current, gw):
-    """ILP: optimize transfers for a single GW."""
+def _slot_role(slot):
+    """D1->D, I2->I, W3->None (any role)."""
+    ch = slot[0]
+    return ch if ch in "DICS" else None
+
+
+def _optimize_slot_locked(ep, prices, roster, gw):
+    """ILP where each slot either keeps its player or swaps 1-for-1.
+
+    Slots are FIXED. Players stay in their slot unless transferred out.
+    A transfer replaces one specific slot with a role-eligible player.
+    """
     gw_col = f"GW{gw}"
-    current_names = {p["Player"] for p in current["players"]}
-    current_slots = current.get("slots", {})
-    current_vp = current["total_vp"]
-
-    all_players = ep.to_dict("records")
-    n = len(all_players)
-
-    prob = LpProblem(f"GW{gw}_Transfer", LpMaximize)
-    x = [LpVariable(f"x_{i}", cat="Binary") for i in range(n)]
-    igl = [LpVariable(f"igl_{i}", cat="Binary") for i in range(n)]
-    tin = [LpVariable(f"tin_{i}", cat="Binary") for i in range(n)]
-
-    # Slot assignment variables
-    sd = [LpVariable(f"sd_{i}", cat="Binary") for i in range(n)]
-    si = [LpVariable(f"si_{i}", cat="Binary") for i in range(n)]
-    sc = [LpVariable(f"sc_{i}", cat="Binary") for i in range(n)]
-    ss = [LpVariable(f"ss_{i}", cat="Binary") for i in range(n)]
-    sw = [LpVariable(f"sw_{i}", cat="Binary") for i in range(n)]
-
-    # AMER look-ahead bonus: incentivize bringing in AMER players
-    # early so they're available for GW6 (AMER-only week)
     amer_bonus = {4: 2.0, 5: 5.0}.get(gw, 0.0)
-    pts = []
-    for p in all_players:
-        base = p[gw_col]
-        if amer_bonus > 0 and p.get("Region") == "AMER":
+
+    all_p = ep.to_dict("records")
+    p_idx = {r["Player"]: i for i, r in enumerate(all_p)}
+    n_all = len(all_p)
+    slots = [r["slot"] for r in roster]
+    n_slots = len(slots)
+    roster_names = {r["Player"] for r in roster}
+
+    def ep_val(j):
+        base = all_p[j][gw_col]
+        if amer_bonus > 0 and all_p[j].get("Region") == "AMER":
             base += amer_bonus
-        pts.append(base)
-    prob += lpSum(x[i] * pts[i] + igl[i] * pts[i] for i in range(n))
+        return base
 
-    prob += lpSum(x[i] for i in range(n)) == SQUAD_SIZE
-    prob += lpSum(
-        x[i] * prices.get(all_players[i]["Player"], 9.0) for i in range(n)
-    ) <= BUDGET
-    prob += lpSum(igl[i] for i in range(n)) == 1
-    prob += lpSum(tin[i] for i in range(n)) <= MAX_TRANSFERS
+    prob = LpProblem(f"GW{gw}_SlotLock", LpMaximize)
+    out = [LpVariable(f"out_{s}", cat="Binary") for s in range(n_slots)]
+    inp = [[LpVariable(f"in_{s}_{j}", cat="Binary")
+            for j in range(n_all)] for s in range(n_slots)]
+    igl = [LpVariable(f"igl_{s}", cat="Binary") for s in range(n_slots)]
+    slot_ep = [LpVariable(f"sep_{s}", lowBound=0) for s in range(n_slots)]
+    igl_ep = [LpVariable(f"iep_{s}", lowBound=0) for s in range(n_slots)]
+    BIG_M = 30.0
 
-    for t in set(p["Team"] for p in all_players):
-        prob += lpSum(
-            x[i] for i in range(n) if all_players[i]["Team"] == t
-        ) <= 2
+    # Objective: sum of slot EP + IGL bonus
+    prob += lpSum(slot_ep[s] + igl_ep[s] for s in range(n_slots))
 
-    for i in range(n):
-        prob += sd[i] + si[i] + sc[i] + ss[i] + sw[i] == x[i]
-        prob += igl[i] <= x[i]
-        pname = all_players[i]["Player"]
-        if pname not in current_names:
-            prob += tin[i] >= x[i]
-        if all_players[i]["Role"] != "D": prob += sd[i] == 0
-        if all_players[i]["Role"] != "I": prob += si[i] == 0
-        if all_players[i]["Role"] != "C": prob += sc[i] == 0
-        if all_players[i]["Role"] != "S": prob += ss[i] == 0
+    for s in range(n_slots):
+        cur_idx = p_idx.get(roster[s]["Player"])
+        cur_ep = ep_val(cur_idx) if cur_idx is not None else 0
 
-    prob += lpSum(sd[i] for i in range(n)) == 2
-    prob += lpSum(si[i] for i in range(n)) == 2
-    prob += lpSum(sc[i] for i in range(n)) == 2
-    prob += lpSum(ss[i] for i in range(n)) == 2
-    prob += lpSum(sw[i] for i in range(n)) == 3
+        # slot_ep = kept_player_ep + transferred_in_player_ep
+        prob += slot_ep[s] == (
+            (1 - out[s]) * cur_ep
+            + lpSum(inp[s][j] * ep_val(j) for j in range(n_all))
+        )
+        # Exactly one player in if transferred out
+        prob += lpSum(inp[s][j] for j in range(n_all)) == out[s]
 
-    # Position lock: transfers must match outgoing slot type
-    _add_position_lock(prob, all_players, x, tin, sd, si, sc, ss, sw,
-                       current_names, current_slots, n)
+        # Role eligibility for this slot
+        required = _slot_role(slots[s])
+        for j in range(n_all):
+            if required and all_p[j]["Role"] != required:
+                prob += inp[s][j] == 0
+            if all_p[j]["Player"] in roster_names:
+                prob += inp[s][j] == 0
+
+        # IGL linearization: igl_ep[s] = igl[s] * slot_ep[s]
+        prob += igl_ep[s] <= slot_ep[s]
+        prob += igl_ep[s] <= BIG_M * igl[s]
+        prob += igl_ep[s] >= slot_ep[s] - BIG_M * (1 - igl[s])
+
+    # Exactly 1 IGL
+    prob += lpSum(igl[s] for s in range(n_slots)) == 1
+
+    # Max 3 transfers
+    prob += lpSum(out[s] for s in range(n_slots)) <= MAX_TRANSFERS
+
+    # Each outside player can only be added to one slot
+    for j in range(n_all):
+        prob += lpSum(inp[s][j] for s in range(n_slots)) <= 1
+
+    # Budget: total VP of resulting team <= 100
+    budget_terms = []
+    for s in range(n_slots):
+        cur_vp = roster[s]["VP"]
+        budget_terms.append((1 - out[s]) * cur_vp)
+        for j in range(n_all):
+            budget_terms.append(
+                inp[s][j] * prices.get(all_p[j]["Player"], 9.0)
+            )
+    prob += lpSum(budget_terms) <= BUDGET
+
+    # Max 2 per team: for each VCT team, count players on resulting roster
+    all_teams = set(r["Team"] for r in roster)
+    all_teams |= set(p["Team"] for p in all_p)
+    for team in all_teams:
+        team_count = []
+        for s in range(n_slots):
+            if roster[s]["Team"] == team:
+                team_count.append(1 - out[s])
+            for j in range(n_all):
+                if all_p[j]["Team"] == team:
+                    team_count.append(inp[s][j])
+        if team_count:
+            prob += lpSum(team_count) <= 2
 
     prob.solve(PULP_CBC_CMD(msg=0, timeLimit=60))
 
-    return _extract_gw_result(all_players, x, igl, tin, sd, si, sc, ss, sw,
-                              prices, gw_col, gw, current_names)
+    return _extract_slot_result(roster, slots, out, inp, igl, slot_ep,
+                                all_p, prices, gw_col, gw)
 
 
-def _add_position_lock(prob, players, x, tin, sd, si, sc, ss, sw,
-                       current_names, current_slots, n):
-    """Enforce position-locked transfers."""
-    for i in range(n):
-        pname = players[i]["Player"]
-        if pname in current_names:
-            slot = current_slots.get(pname, "W1")
-            slot_type = slot[0]
-            if slot_type == "D": prob += sd[i] >= x[i]
-            elif slot_type == "I": prob += si[i] >= x[i]
-            elif slot_type == "C": prob += sc[i] >= x[i]
-            elif slot_type == "S": prob += ss[i] >= x[i]
-            elif slot_type == "W": prob += sw[i] >= x[i]
-
-
-def _extract_gw_result(players, x, igl, tin, sd, si, sc, ss, sw,
-                       prices, gw_col, gw, prev_names):
+def _extract_slot_result(roster, slots, out, inp, igl, slot_ep,
+                         all_p, prices, gw_col, gw):
+    """Extract result from slot-locked ILP."""
+    new_roster = []
     team = []
-    igl_name = None
     transfers = []
-    new_names = set()
+    igl_name = None
 
-    for i, p in enumerate(players):
-        if value(x[i]) < 0.5:
-            continue
-        slot = _get_slot(sd, si, sc, ss, sw, i)
-        is_igl = value(igl[i]) > 0.5
-        is_transfer = value(tin[i]) > 0.5
-        if is_igl:
-            igl_name = p["Player"]
-        if is_transfer:
-            transfers.append({"in": p["Player"], "slot": slot})
-        new_names.add(p["Player"])
-        team.append({
-            "Player": p["Player"], "Team": p["Team"], "Region": p["Region"],
-            "Role": p["Role"], "Slot": slot,
-            "VP": prices.get(p["Player"], 9.0),
-            gw_col: p[gw_col], "IGL": is_igl,
-        })
+    for s in range(len(slots)):
+        is_igl = value(igl[s]) > 0.5
+        if value(out[s]) > 0.5:
+            # Find who came in
+            for j in range(len(all_p)):
+                if value(inp[s][j]) > 0.5:
+                    p = all_p[j]
+                    transfers.append({
+                        "out": roster[s]["Player"],
+                        "in": p["Player"],
+                        "slot": slots[s],
+                    })
+                    entry = {
+                        "slot": slots[s], "Player": p["Player"],
+                        "Team": p["Team"], "Region": p["Region"],
+                        "Role": p["Role"],
+                        "VP": prices.get(p["Player"], 9.0),
+                    }
+                    new_roster.append(entry)
+                    team.append({
+                        **entry, "Slot": slots[s],
+                        gw_col: p[gw_col], "IGL": is_igl,
+                    })
+                    if is_igl:
+                        igl_name = p["Player"]
+                    break
+        else:
+            r = roster[s]
+            new_roster.append(dict(r))
+            p_data = next(
+                (p for p in all_p if p["Player"] == r["Player"]), None
+            )
+            ep_gw = p_data[gw_col] if p_data else 0
+            team.append({
+                "Player": r["Player"], "Team": r["Team"],
+                "Region": r["Region"], "Role": r["Role"],
+                "Slot": slots[s], "VP": r["VP"],
+                gw_col: ep_gw, "IGL": is_igl,
+            })
+            if is_igl:
+                igl_name = r["Player"]
 
-    dropped = prev_names - new_names
-    for t in transfers:
-        t["out"] = dropped.pop() if dropped else "?"
-
-    team.sort(key=lambda t: "DICSW".index(t["Slot"][0]))
     total_vp = sum(t["VP"] for t in team)
-    pts_col = gw_col
-    total_pts = sum(t[pts_col] * (2 if t["IGL"] else 1) for t in team)
-    slots = {t["Player"]: t["Slot"] for t in team}
+    total_pts = sum(
+        t[gw_col] * (2 if t["IGL"] else 1) for t in team
+    )
     return {
         "players": team, "total_vp": total_vp, "total_pts": total_pts,
-        "igl": igl_name, "transfers": transfers, "slots": slots, "gw": gw,
+        "igl": igl_name, "transfers": transfers,
+        "slots": {t["Player"]: t["Slot"] for t in team},
+        "roster": new_roster, "gw": gw,
     }
 
 

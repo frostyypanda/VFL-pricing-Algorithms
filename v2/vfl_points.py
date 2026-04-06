@@ -21,16 +21,16 @@ def kill_bracket_pts(kills):
 
 
 def map_team_pts(winner, score_w, score_l):
-    """Team points for a map. winner=True if this player's team won."""
-    margin = score_w - score_l if winner else score_l - score_w
+    """Team points for a map. Bonuses stack: win + 5+ + 10+."""
+    margin = score_w - score_l
     if winner:
-        base = 1
-        if margin >= 10:
-            return base + 2
+        pts = 1           # base map win
         if margin >= 5:
-            return base + 1
-        return base
-    if margin <= -10:
+            pts += 1      # 5+ bonus (stacks)
+        if margin >= 10:
+            pts += 2      # 10+ bonus (stacks with 5+)
+        return pts
+    if margin >= 10:      # loss by 10+
         return -1
     return 0
 
