@@ -1,4 +1,3 @@
 __pycache__/
 *.pyc
-scrape_log.txt
-2024 VFL TEST.csv
+.pytest_cache/

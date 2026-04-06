@@ -91,12 +91,12 @@
 
 ## Available Data
 
-### CSV Files
+### CSV Files (in `data/`)
 Three standardized CSV files (UTF-8, 36 identical columns) with per-game, per-player scoring data:
 
-- **`2024 VFL.csv`** — 2024 VCT season scraped from vlr.gg (20,057 rows, 218 players, 39 teams)
-- **`2025 VFL.csv`** — 2025 VCT season (18,255 rows, 301 players, 48 teams including China)
-- **`2026 VFL.csv`** — 2026 VCT season (18,701 rows, 250 players, 48 teams including China)
+- **`data/2024 VFL.csv`** — 2024 VCT season scraped from vlr.gg (20,057 rows, 218 players, 39 teams)
+- **`data/2025 VFL.csv`** — 2025 VCT season (18,255 rows, 301 players, 48 teams including China)
+- **`data/2026 VFL.csv`** — 2026 VCT season (18,701 rows, 250 players, 48 teams including China)
 
 ### CSV Columns (all files share identical format)
 | Column | Description |
@@ -229,7 +229,7 @@ Build pricing algorithms that generate better VFL player price lists for regular
 - New-player team strength discount: 1 new=0.67x, 2=0.33x, 3+=ignore
 - All players tagged with uncertainty (HIGH/MEDIUM/LOW) for manual review
 
-### Pickrate Data (`pickrate_data.csv`, `pickrate_summary.csv`)
+### Pickrate Data (`data/pickrate_data.csv`, `data/pickrate_summary.csv`)
 Historical VFL manager pick data from 5 events:
 - **Event 1**: 2025 Toronto (Masters 2) — 60 players, 3 gameweeks
 - **Event 2**: 2025 Stage 2 — 183 players, 5 gameweeks

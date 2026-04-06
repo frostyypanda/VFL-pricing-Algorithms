@@ -1,0 +1,473 @@
+
+============================================================
+Stage: Kickoff (3 event(s))
+============================================================
+  [Kickoff] Fetching match list for champions-tour-2024-americas-kickoff...
+  [Kickoff] Found 19 matches for Americas
+  [Kickoff] Scraping match 1/19: 295605
+  [Kickoff] Scraping match 2/19: 295606
+  [Kickoff] Scraping match 3/19: 295610
+  [Kickoff] Scraping match 4/19: 295611
+  [Kickoff] Scraping match 5/19: 295615
+  [Kickoff] Scraping match 6/19: 295608
+  [Kickoff] Scraping match 7/19: 295613
+  [Kickoff] Scraping match 8/19: 295607
+  [Kickoff] Scraping match 9/19: 295612
+  [Kickoff] Scraping match 10/19: 295617
+  [Kickoff] Scraping match 11/19: 295609
+  [Kickoff] Scraping match 12/19: 295614
+  [Kickoff] Scraping match 13/19: 295619
+  [Kickoff] Scraping match 14/19: 307572
+  [Kickoff] Scraping match 15/19: 307573
+  [Kickoff] Scraping match 16/19: 307574
+  [Kickoff] Scraping match 17/19: 303087
+  [Kickoff] Scraping match 18/19: 303088
+  [Kickoff] Scraping match 19/19: 303086
+  -> 190 player-game rows collected
+  [Kickoff] Fetching match list for champions-tour-2024-emea-kickoff...
+  [Kickoff] Found 19 matches for EMEA
+  [Kickoff] Scraping match 1/19: 297401
+  [Kickoff] Scraping match 2/19: 297402
+  [Kickoff] Scraping match 3/19: 297406
+  [Kickoff] Scraping match 4/19: 297407
+  [Kickoff] Scraping match 5/19: 297412
+  [Kickoff] Scraping match 6/19: 297403
+  [Kickoff] Scraping match 7/19: 297404
+  [Kickoff] Scraping match 8/19: 297408
+  [Kickoff] Scraping match 9/19: 297409
+  [Kickoff] Scraping match 10/19: 297414
+  [Kickoff] Scraping match 11/19: 297416
+  [Kickoff] Scraping match 12/19: 297405
+  [Kickoff] Scraping match 13/19: 297410
+  [Kickoff] Scraping match 14/19: 307567
+  [Kickoff] Scraping match 15/19: 307565
+  [Kickoff] Scraping match 16/19: 307564
+  [Kickoff] Scraping match 17/19: 303093
+  [Kickoff] Scraping match 18/19: 303094
+  [Kickoff] Scraping match 19/19: 303095
+  -> 190 player-game rows collected
+  [Kickoff] Fetching match list for champions-tour-2024-pacific-kickoff...
+  [Kickoff] Found 19 matches for Pacific
+  [Kickoff] Scraping match 1/19: 296735
+  [Kickoff] Scraping match 2/19: 296745
+  [Kickoff] Scraping match 3/19: 296730
+  [Kickoff] Scraping match 4/19: 296731
+  [Kickoff] Scraping match 5/19: 296736
+  [Kickoff] Scraping match 6/19: 296747
+  [Kickoff] Scraping match 7/19: 296738
+  [Kickoff] Scraping match 8/19: 296737
+  [Kickoff] Scraping match 9/19: 296733
+  [Kickoff] Scraping match 10/19: 296732
+  [Kickoff] Scraping match 11/19: 296749
+  [Kickoff] Scraping match 12/19: 296734
+  [Kickoff] Scraping match 13/19: 296739
+  [Kickoff] Scraping match 14/19: 297254
+  [Kickoff] Scraping match 15/19: 297253
+  [Kickoff] Scraping match 16/19: 297255
+  [Kickoff] Scraping match 17/19: 297256
+  [Kickoff] Scraping match 18/19: 297257
+  [Kickoff] Scraping match 19/19: 297258
+  -> 190 player-game rows collected
+
+============================================================
+Stage: Madrid (1 event(s))
+============================================================
+  [Madrid] Fetching match list for champions-tour-2024-masters-madrid...
+  [Madrid] Found 17 matches for International
+  [Madrid] Scraping match 1/17: 312765
+  [Madrid] Scraping match 2/17: 312766
+  [Madrid] Scraping match 3/17: 312767
+  [Madrid] Scraping match 4/17: 312768
+  [Madrid] Scraping match 5/17: 312798
+  [Madrid] Scraping match 6/17: 312797
+  [Madrid] Scraping match 7/17: 312800
+  [Madrid] Scraping match 8/17: 312799
+  [Madrid] Scraping match 9/17: 312803
+  [Madrid] Scraping match 10/17: 312802
+  [Madrid] Scraping match 11/17: 312777
+  [Madrid] Scraping match 12/17: 312776
+  [Madrid] Scraping match 13/17: 312778
+  [Madrid] Scraping match 14/17: 312780
+  [Madrid] Scraping match 15/17: 312781
+  [Madrid] Scraping match 16/17: 321373
+  [Madrid] Scraping match 17/17: 312779
+  -> 160 player-game rows collected
+
+============================================================
+Stage: Stage 1 (3 event(s))
+============================================================
+  [Stage 1] Fetching match list for champions-tour-2024-americas-stage-1...
+  [Stage 1] Found 38 matches for Americas
+  [Stage 1] Scraping match 1/38: 314622
+  [Stage 1] Scraping match 2/38: 314623
+  [Stage 1] Scraping match 3/38: 314624
+  [Stage 1] Scraping match 4/38: 314625
+  [Stage 1] Scraping match 5/38: 314626
+  [Stage 1] Scraping match 6/38: 314628
+  [Stage 1] Scraping match 7/38: 314629
+  [Stage 1] Scraping match 8/38: 314630
+  [Stage 1] Scraping match 9/38: 314631
+  [Stage 1] Scraping match 10/38: 314632
+  [Stage 1] Scraping match 11/38: 314634
+  [Stage 1] Scraping match 12/38: 314635
+  [Stage 1] Scraping match 13/38: 314636
+  [Stage 1] Scraping match 14/38: 314637
+  [Stage 1] Scraping match 15/38: 314638
+  [Stage 1] Scraping match 16/38: 314639
+  [Stage 1] Scraping match 17/38: 314640
+  [Stage 1] Scraping match 18/38: 314641
+  [Stage 1] Scraping match 19/38: 314642
+  [Stage 1] Scraping match 20/38: 314643
+  [Stage 1] Scraping match 21/38: 314644
+  [Stage 1] Scraping match 22/38: 314645
+  [Stage 1] Scraping match 23/38: 314646
+  [Stage 1] Scraping match 24/38: 314647
+  [Stage 1] Scraping match 25/38: 314648
+  [Stage 1] Scraping match 26/38: 314650
+  [Stage 1] Scraping match 27/38: 314651
+  [Stage 1] Scraping match 28/38: 314652
+  [Stage 1] Scraping match 29/38: 314653
+  [Stage 1] Scraping match 30/38: 314654
+  [Stage 1] Scraping match 31/38: 337407
+  [Stage 1] Scraping match 32/38: 337408
+  [Stage 1] Scraping match 33/38: 337409
+  [Stage 1] Scraping match 34/38: 337410
+  [Stage 1] Scraping match 35/38: 337411
+  [Stage 1] Scraping match 36/38: 337413
+  [Stage 1] Scraping match 37/38: 337414
+  [Stage 1] Scraping match 38/38: 337412
+  -> 380 player-game rows collected
+  [Stage 1] Fetching match list for champions-tour-2024-emea-stage-1...
+  [Stage 1] Found 38 matches for EMEA
+  [Stage 1] Scraping match 1/38: 318911
+  [Stage 1] Scraping match 2/38: 318913
+  [Stage 1] Scraping match 3/38: 318914
+  [Stage 1] Scraping match 4/38: 318915
+  [Stage 1] Scraping match 5/38: 318916
+  [Stage 1] Scraping match 6/38: 318917
+  [Stage 1] Scraping match 7/38: 318918
+  [Stage 1] Scraping match 8/38: 318919
+  [Stage 1] Scraping match 9/38: 318920
+  [Stage 1] Scraping match 10/38: 318921
+  [Stage 1] Scraping match 11/38: 318922
+  [Stage 1] Scraping match 12/38: 318923
+  [Stage 1] Scraping match 13/38: 318924
+  [Stage 1] Scraping match 14/38: 318925
+  [Stage 1] Scraping match 15/38: 318926
+  [Stage 1] Scraping match 16/38: 318927
+  [Stage 1] Scraping match 17/38: 318928
+  [Stage 1] Scraping match 18/38: 318929
+  [Stage 1] Scraping match 19/38: 318930
+  [Stage 1] Scraping match 20/38: 318931
+  [Stage 1] Scraping match 21/38: 318932
+  [Stage 1] Scraping match 22/38: 318933
+  [Stage 1] Scraping match 23/38: 318934
+  [Stage 1] Scraping match 24/38: 318935
+  [Stage 1] Scraping match 25/38: 318936
+  [Stage 1] Scraping match 26/38: 318937
+  [Stage 1] Scraping match 27/38: 318938
+  [Stage 1] Scraping match 28/38: 318939
+  [Stage 1] Scraping match 29/38: 318940
+  [Stage 1] Scraping match 30/38: 318941
+  [Stage 1] Scraping match 31/38: 341816
+  [Stage 1] Scraping match 32/38: 341817
+  [Stage 1] Scraping match 33/38: 341818
+  [Stage 1] Scraping match 34/38: 341819
+  [Stage 1] Scraping match 35/38: 341820
+  [Stage 1] Scraping match 36/38: 341822
+  [Stage 1] Scraping match 37/38: 341823
+  [Stage 1] Scraping match 38/38: 341821
+  -> 380 player-game rows collected
+  [Stage 1] Fetching match list for champions-tour-2024-pacific-stage-1...
+  [Stage 1] Found 38 matches for Pacific
+  [Stage 1] Scraping match 1/38: 314301
+  [Stage 1] Scraping match 2/38: 314302
+  [Stage 1] Scraping match 3/38: 314303
+  [Stage 1] Scraping match 4/38: 314304
+  [Stage 1] Scraping match 5/38: 314305
+  [Stage 1] Scraping match 6/38: 314306
+  [Stage 1] Scraping match 7/38: 314307
+  [Stage 1] Scraping match 8/38: 314308
+  [Stage 1] Scraping match 9/38: 314309
+  [Stage 1] Scraping match 10/38: 314310
+  [Stage 1] Scraping match 11/38: 314311
+  [Stage 1] Scraping match 12/38: 314312
+  [Stage 1] Scraping match 13/38: 314313
+  [Stage 1] Scraping match 14/38: 314314
+  [Stage 1] Scraping match 15/38: 314315
+  [Stage 1] Scraping match 16/38: 314316
+  [Stage 1] Scraping match 17/38: 314317
+  [Stage 1] Scraping match 18/38: 314318
+  [Stage 1] Scraping match 19/38: 314319
+  [Stage 1] Scraping match 20/38: 314320
+  [Stage 1] Scraping match 21/38: 314321
+  [Stage 1] Scraping match 22/38: 314322
+  [Stage 1] Scraping match 23/38: 314323
+  [Stage 1] Scraping match 24/38: 314324
+  [Stage 1] Scraping match 25/38: 314325
+  [Stage 1] Scraping match 26/38: 314326
+  [Stage 1] Scraping match 27/38: 314327
+  [Stage 1] Scraping match 28/38: 314328
+  [Stage 1] Scraping match 29/38: 314329
+  [Stage 1] Scraping match 30/38: 314330
+  [Stage 1] Scraping match 31/38: 329907
+  [Stage 1] Scraping match 32/38: 329908
+  [Stage 1] Scraping match 33/38: 329909
+  [Stage 1] Scraping match 34/38: 329910
+  [Stage 1] Scraping match 35/38: 329912
+  [Stage 1] Scraping match 36/38: 329911
+  [Stage 1] Scraping match 37/38: 329913
+  [Stage 1] Scraping match 38/38: 329914
+  -> 384 player-game rows collected
+
+============================================================
+Stage: Shanghai (1 event(s))
+============================================================
+  [Shanghai] Fetching match list for champions-tour-2024-masters-shanghai...
+  [Shanghai] Found 25 matches for International
+  [Shanghai] Scraping match 1/25: 348063
+  [Shanghai] Scraping match 2/25: 348061
+  [Shanghai] Scraping match 3/25: 348064
+  [Shanghai] Scraping match 4/25: 348059
+  [Shanghai] Scraping match 5/25: 348458
+  [Shanghai] Scraping match 6/25: 348457
+  [Shanghai] Scraping match 7/25: 348459
+  [Shanghai] Scraping match 8/25: 348460
+  [Shanghai] Scraping match 9/25: 348462
+  [Shanghai] Scraping match 10/25: 348461
+  [Shanghai] Scraping match 11/25: 348465
+  [Shanghai] Scraping match 12/25: 348466
+  [Shanghai] Scraping match 13/25: 348463
+  [Shanghai] Scraping match 14/25: 348464
+  [Shanghai] Scraping match 15/25: 348468
+  [Shanghai] Scraping match 16/25: 348467
+  [Shanghai] Scraping match 17/25: 348470
+  [Shanghai] Scraping match 18/25: 348469
+  [Shanghai] Scraping match 19/25: 348471
+  [Shanghai] Scraping match 20/25: 348472
+  [Shanghai] Scraping match 21/25: 348473
+  [Shanghai] Scraping match 22/25: 348474
+  [Shanghai] Scraping match 23/25: 348475
+  [Shanghai] Scraping match 24/25: 359463
+  [Shanghai] Scraping match 25/25: 348476
+  -> 240 player-game rows collected
+
+============================================================
+Stage: Stage 2 (3 event(s))
+============================================================
+  [Stage 2] Fetching match list for champions-tour-2024-americas-stage-2...
+  [Stage 2] Found 33 matches for Americas
+  [Stage 2] Scraping match 1/33: 353177
+  [Stage 2] Scraping match 2/33: 353178
+  [Stage 2] Scraping match 3/33: 353179
+  [Stage 2] Scraping match 4/33: 353180
+  [Stage 2] Scraping match 5/33: 353181
+  [Stage 2] Scraping match 6/33: 353182
+  [Stage 2] Scraping match 7/33: 353183
+  [Stage 2] Scraping match 8/33: 353184
+  [Stage 2] Scraping match 9/33: 353185
+  [Stage 2] Scraping match 10/33: 353186
+  [Stage 2] Scraping match 11/33: 353187
+  [Stage 2] Scraping match 12/33: 353188
+  [Stage 2] Scraping match 13/33: 353189
+  [Stage 2] Scraping match 14/33: 353190
+  [Stage 2] Scraping match 15/33: 353191
+  [Stage 2] Scraping match 16/33: 353192
+  [Stage 2] Scraping match 17/33: 353193
+  [Stage 2] Scraping match 18/33: 353194
+  [Stage 2] Scraping match 19/33: 353195
+  [Stage 2] Scraping match 20/33: 353196
+  [Stage 2] Scraping match 21/33: 353197
+  [Stage 2] Scraping match 22/33: 353198
+  [Stage 2] Scraping match 23/33: 353199
+  [Stage 2] Scraping match 24/33: 353200
+  [Stage 2] Scraping match 25/33: 353201
+  [Stage 2] Scraping match 26/33: 371266
+  [Stage 2] Scraping match 27/33: 371267
+  [Stage 2] Scraping match 28/33: 371268
+  [Stage 2] Scraping match 29/33: 371269
+  [Stage 2] Scraping match 30/33: 371270
+  [Stage 2] Scraping match 31/33: 371272
+  [Stage 2] Scraping match 32/33: 371273
+  [Stage 2] Scraping match 33/33: 371271
+  -> 330 player-game rows collected
+  [Stage 2] Fetching match list for champions-tour-2024-emea-stage-2...
+  [Stage 2] Found 33 matches for EMEA
+  [Stage 2] Scraping match 1/33: 353153
+  [Stage 2] Scraping match 2/33: 353154
+  [Stage 2] Scraping match 3/33: 353155
+  [Stage 2] Scraping match 4/33: 353157
+  [Stage 2] Scraping match 5/33: 353156
+  [Stage 2] Scraping match 6/33: 353159
+  [Stage 2] Scraping match 7/33: 353158
+  [Stage 2] Scraping match 8/33: 353202
+  [Stage 2] Scraping match 9/33: 353161
+  [Stage 2] Scraping match 10/33: 353160
+  [Stage 2] Scraping match 11/33: 353162
+  [Stage 2] Scraping match 12/33: 353163
+  [Stage 2] Scraping match 13/33: 353164
+  [Stage 2] Scraping match 14/33: 353165
+  [Stage 2] Scraping match 15/33: 353166
+  [Stage 2] Scraping match 16/33: 353167
+  [Stage 2] Scraping match 17/33: 353168
+  [Stage 2] Scraping match 18/33: 353169
+  [Stage 2] Scraping match 19/33: 353170
+  [Stage 2] Scraping match 20/33: 353171
+  [Stage 2] Scraping match 21/33: 353172
+  [Stage 2] Scraping match 22/33: 353173
+  [Stage 2] Scraping match 23/33: 353174
+  [Stage 2] Scraping match 24/33: 353175
+  [Stage 2] Scraping match 25/33: 353203
+  [Stage 2] Scraping match 26/33: 371278
+  [Stage 2] Scraping match 27/33: 371279
+  [Stage 2] Scraping match 28/33: 371280
+  [Stage 2] Scraping match 29/33: 371281
+  [Stage 2] Scraping match 30/33: 371282
+  [Stage 2] Scraping match 31/33: 371284
+  [Stage 2] Scraping match 32/33: 371285
+  [Stage 2] Scraping match 33/33: 371283
+  -> 330 player-game rows collected
+  [Stage 2] Fetching match list for champions-tour-2024-pacific-stage-2...
+  [Stage 2] Found 33 matches for Pacific
+  [Stage 2] Scraping match 1/33: 314340
+  [Stage 2] Scraping match 2/33: 314341
+  [Stage 2] Scraping match 3/33: 314342
+  [Stage 2] Scraping match 4/33: 314343
+  [Stage 2] Scraping match 5/33: 314344
+  [Stage 2] Scraping match 6/33: 314345
+  [Stage 2] Scraping match 7/33: 314346
+  [Stage 2] Scraping match 8/33: 314347
+  [Stage 2] Scraping match 9/33: 314348
+  [Stage 2] Scraping match 10/33: 314349
+  [Stage 2] Scraping match 11/33: 314350
+  [Stage 2] Scraping match 12/33: 314351
+  [Stage 2] Scraping match 13/33: 314352
+  [Stage 2] Scraping match 14/33: 314353
+  [Stage 2] Scraping match 15/33: 314354
+  [Stage 2] Scraping match 16/33: 314355
+  [Stage 2] Scraping match 17/33: 314356
+  [Stage 2] Scraping match 18/33: 314357
+  [Stage 2] Scraping match 19/33: 314358
+  [Stage 2] Scraping match 20/33: 314359
+  [Stage 2] Scraping match 21/33: 314360
+  [Stage 2] Scraping match 22/33: 314361
+  [Stage 2] Scraping match 23/33: 314362
+  [Stage 2] Scraping match 24/33: 314363
+  [Stage 2] Scraping match 25/33: 314364
+  [Stage 2] Scraping match 26/33: 365316
+  [Stage 2] Scraping match 27/33: 365317
+  [Stage 2] Scraping match 28/33: 365318
+  [Stage 2] Scraping match 29/33: 365319
+  [Stage 2] Scraping match 30/33: 365320
+  [Stage 2] Scraping match 31/33: 365322
+  [Stage 2] Scraping match 32/33: 365323
+  [Stage 2] Scraping match 33/33: 365321
+  -> 330 player-game rows collected
+
+============================================================
+Stage: Champions (1 event(s))
+============================================================
+  [Champions] Fetching match list for champions-tour-2024-champions...
+  [Champions] Found 34 matches for International
+  [Champions] Scraping match 1/34: 378662
+  [Champions] Scraping match 2/34: 378663
+  [Champions] Scraping match 3/34: 378657
+  [Champions] Scraping match 4/34: 378656
+  [Champions] Scraping match 5/34: 378667
+  [Champions] Scraping match 6/34: 378669
+  [Champions] Scraping match 7/34: 378674
+  [Champions] Scraping match 8/34: 378673
+  [Champions] Scraping match 9/34: 378664
+  [Champions] Scraping match 10/34: 378658
+  [Champions] Scraping match 11/34: 378670
+  [Champions] Scraping match 12/34: 378675
+  [Champions] Scraping match 13/34: 378665
+  [Champions] Scraping match 14/34: 378659
+  [Champions] Scraping match 15/34: 378671
+  [Champions] Scraping match 16/34: 378676
+  [Champions] Scraping match 17/34: 378666
+  [Champions] Scraping match 18/34: 378660
+  [Champions] Scraping match 19/34: 378672
+  [Champions] Scraping match 20/34: 378677
+  [Champions] Scraping match 21/34: 378822
+  [Champions] Scraping match 22/34: 378823
+  [Champions] Scraping match 23/34: 378824
+  [Champions] Scraping match 24/34: 378825
+  [Champions] Scraping match 25/34: 378831
+  [Champions] Scraping match 26/34: 378832
+  [Champions] Scraping match 27/34: 378826
+  [Champions] Scraping match 28/34: 378827
+  [Champions] Scraping match 29/34: 378834
+  [Champions] Scraping match 30/34: 378833
+  [Champions] Scraping match 31/34: 378828
+  [Champions] Scraping match 32/34: 378835
+  [Champions] Scraping match 33/34: 378836
+  [Champions] Scraping match 34/34: 378829
+  -> 340 player-game rows collected
+
+============================================================
+Total rows before filling slots: 3444
+Total rows after filling slots: 20057
+
+Wrote 20057 rows to C:\Users\Kei\VFL-pricing-Algorithms\2024 VFL.csv
+
+Summary:
+  Unique players: 218
+  Unique teams: 39
+  Stages: ['Kickoff', 'Madrid', 'Stage 1', 'Shanghai', 'Stage 2', 'Champions']
+  Avg points (played games): 6.6
+tional] Scraping match 21/34: 378822
+  [Stage 2/Pacific] Scraping match 23/33: 314362
+  [Stage 2/EMEA] Scraping match 24/33: 353175
+  [Champions/International] Scraping match 22/34: 378823
+  [Stage 2/Pacific] Scraping match 24/33: 314363
+  [Stage 2/EMEA] Scraping match 25/33: 353203
+  [Champions/International] Scraping match 23/34: 378824
+  [Stage 2/Pacific] Scraping match 25/33: 314364
+  [Stage 2/EMEA] Scraping match 26/33: 371278
+  [Champions/International] Scraping match 24/34: 378825
+  [Stage 2/Pacific] Scraping match 26/33: 365316
+  [Stage 2/EMEA] Scraping match 27/33: 371279
+  [Champions/International] Scraping match 25/34: 378831
+  [Stage 2/Pacific] Scraping match 27/33: 365317
+  [Stage 2/EMEA] Scraping match 28/33: 371280
+  [Champions/International] Scraping match 26/34: 378832
+  [Stage 2/Pacific] Scraping match 28/33: 365318
+  [Stage 2/EMEA] Scraping match 29/33: 371281
+  [Champions/International] Scraping match 27/34: 378826
+  [Stage 2/Pacific] Scraping match 29/33: 365319
+  [Stage 2/EMEA] Scraping match 30/33: 371282
+  [Champions/International] Scraping match 28/34: 378827
+  [Stage 2/Pacific] Scraping match 30/33: 365320
+  [Stage 2/EMEA] Scraping match 31/33: 371284
+  [Champions/International] Scraping match 29/34: 378834
+  [Stage 2/Pacific] Scraping match 31/33: 365322
+  [Stage 2/EMEA] Scraping match 32/33: 371285
+  [Champions/International] Scraping match 30/34: 378833
+  [Stage 2/Pacific] Scraping match 32/33: 365323
+  [Stage 2/EMEA] Scraping match 33/33: 371283
+  [Champions/International] Scraping match 31/34: 378828
+  [Stage 2/EMEA] Done: 330 rows
+  [Stage 2/EMEA] collected 330 rows (total so far: 2774)
+  [Stage 2/Pacific] Scraping match 33/33: 365321
+  [Champions/International] Scraping match 32/34: 378835
+  [Stage 2/Pacific] Done: 330 rows
+  [Stage 2/Pacific] collected 330 rows (total so far: 3104)
+  [Champions/International] Scraping match 33/34: 378836
+  [Champions/International] Scraping match 34/34: 378829
+  [Champions/International] Done: 340 rows
+  [Champions/International] collected 340 rows (total so far: 3444)
+
+============================================================
+Total rows before filling slots: 3444
+Total rows after filling slots: 20057
+
+Wrote 20057 rows to C:\Users\Kei\VFL-pricing-Algorithms\2024 VFL.csv
+
+Summary:
+  Unique players: 218
+  Unique teams: 39
+  Stages: ['Champions', 'Kickoff', 'Madrid', 'Shanghai', 'Stage 1', 'Stage 2']
+  Avg points (played games): 6.1
+
+Completed in 5.2 minutes
