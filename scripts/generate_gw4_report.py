@@ -16,7 +16,7 @@ import json
 if sys.platform == "win32":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import numpy as np
 import pandas as pd
@@ -26,7 +26,7 @@ from v2.data_loader import load_all_data, load_manual_prices
 from v2.expected_points import calibrate, compute_expected_pts
 from v2.constants import BUDGET, SQUAD_SIZE, MAX_TRANSFERS
 
-DIR = os.path.dirname(os.path.abspath(__file__))
+DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # User's two current rosters heading into GW4 (post-GW3).
 TEAM_1 = [

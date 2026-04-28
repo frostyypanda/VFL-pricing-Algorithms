@@ -1,4 +1,4 @@
-"""Scrape GW4 matches: AMER W3 + EMEA W4 + PAC W4. Writes data/w4_vlr_results.json."""
+"""Scrape GW2 matches: AM W1 + EMEA W2 + PAC W2. Writes data/w2_vlr_results.json."""
 import sys
 import os
 import io
@@ -8,7 +8,7 @@ import time
 if sys.platform == "win32":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from v2.vlr_scraper import (
     fetch_match, fetch_performance, parse_match_header, parse_map_scores,
@@ -16,11 +16,11 @@ from v2.vlr_scraper import (
 )
 from v2.vfl_points import compute_match_points
 
-# GW4 in VFL = AMER W3 + EMEA W4 + PAC W4 (verified via vlr.gg, 2026-04-27)
-GW4_MATCHES = {
-    "AMER": [645486, 645487, 645488, 645489, 645490, 645491],
-    "EMEA": [644728, 644729, 644730, 644731, 644732, 644733],
-    "PAC":  [644671, 644672, 644673, 644674, 644675, 644676],
+# GW2 in VFL = AM W1 + EMEA W2 + PAC W2
+GW2_MATCHES = {
+    "AMER": [645474, 645475, 645476, 645477, 645478, 645479],
+    "EMEA": [644716, 644717, 644718, 644719, 644720, 644721],
+    "PAC":  [644658, 644659, 644660, 644661, 644662, 644663],
 }
 
 
@@ -43,7 +43,7 @@ def scrape_match_full(region, mid):
 
 
 def main():
-    all_ids = [(r, mid) for r, ids in GW4_MATCHES.items() for mid in ids]
+    all_ids = [(r, mid) for r, ids in GW2_MATCHES.items() for mid in ids]
     matches = []
     for i, (region, mid) in enumerate(all_ids):
         print(f"[{i+1}/{len(all_ids)}]", end=" ")
@@ -60,7 +60,7 @@ def main():
                 **d, "region": m["region"], "match_id": m["match_id"],
             }
 
-    out_path = os.path.join("data", "w4_vlr_results.json")
+    out_path = os.path.join("data", "w2_vlr_results.json")
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump({"matches": matches, "player_points": player_points},
                   f, indent=2, ensure_ascii=False)
