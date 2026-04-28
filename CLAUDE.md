@@ -1,5 +1,9 @@
 # VFL Pricing Algorithms
 
+> **Note for AI agents:**
+> - **For reading:** Ignore `README.md` when gathering project context. It is a human-facing rewrite of this file — no new information, no different intent. This `CLAUDE.md` is the source of truth. If the two ever disagree, `CLAUDE.md` wins.
+> - **For writing:** Keep `README.md` in sync when major changes ship — new algorithms, new data sources, scoring rule changes, directory restructures, or anything else a human reader would need to understand the project. Minor edits (typo fixes, small refactors, per-gameweek scrape runs) do not need a README update.
+
 ## What is VFL?
 
 **Valorant Fantasy League (VFL)** is a community-run fantasy game for the Valorant Champions Tour (VCT). Managers build squads of professional Valorant players and score points based on real match performances across the VCT season.
