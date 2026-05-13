@@ -1,0 +1,9 @@
+year,stage,v2_baseline,v3_b_floor_only,v3_continuity_only,v3_full,v3_region_q_only,v3_role_eb_only,v3_star_cap_only,v3_team_form_only,best
+2024,Stage 1,0.428,0.412,0.411,0.401,0.386,0.412,0.412,0.4,v2_baseline
+2024,Stage 2,0.529,0.516,0.523,0.223,0.453,0.521,0.499,0.268,v2_baseline
+2025,Kickoff,0.249,0.188,0.135,-0.109,0.181,0.189,0.164,-0.09,v2_baseline
+2025,Stage 1,0.534,0.54,0.538,0.352,0.511,0.546,0.544,0.385,v3_role_eb_only
+2025,Stage 2,0.562,0.555,0.542,0.388,0.486,0.56,0.522,0.467,v2_baseline
+2026,Kickoff,0.356,0.335,0.322,0.194,0.342,0.335,0.324,0.231,v2_baseline
+2026,Santiago,0.32,0.312,0.226,0.27,0.312,0.279,0.312,0.291,v2_baseline
+2026,Stage 1,0.383,0.387,0.375,0.235,0.362,0.377,0.41,0.249,v3_star_cap_only

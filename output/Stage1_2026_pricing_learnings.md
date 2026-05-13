@@ -33,7 +33,7 @@ Between the two algorithms, **Algo2 beats Algo1** on every metric except slightl
 
 **Observations:**
 1. **All models price PAC players best** — PAC had the most stable rosters and the most pre-Stage 1 played games to learn from.
-2. **AMER is brutal for the algorithms.** Algo1 hits r=0.039 (near zero) on AMER players. Algo2 isn't much better at r=0.147. Manual's r=0.374 is also its weakest cohort. AMER started this season's competitive calendar at Stage 1 (no Kickoff/Santiago equivalent), so prior data is thinner and roster turnover hits hardest there.
+2. **AMER is brutal for the algorithms.** Algo1 hits r=0.039 (near zero) on AMER players. Algo2 isn't much better at r=0.147. Manual's r=0.374 is also its weakest cohort. **Correction (2026-05-14):** an earlier version of this doc said AMER lacked Kickoff/Santiago data — that was wrong. AMER has 239 Kickoff played rows + 45 Santiago rows. Mean pre-Stage-1 game count for AMER players is 24.2 — comparable to EMEA (24.9) and PAC (27.4). The real driver is **roster churn**: 4 AMER teams (ENVY, Evil Geniuses, FURIA, G2 Esports) have 100% new starting fives vs their 2025 squads. The historical data exists for those players, but they're now on different teams playing different roles/comps, so team-context features mislead.
 3. **Algo2 collapses on green players (r=0.049).** Empirical Bayes shrinks them too hard toward the population mean, washing out the predictive signal that's actually there. This is the single most actionable failure mode.
 4. **Veterans is where Algo2 closes the gap to Manual** (0.453 vs 0.620) — when prior data is plentiful, the EB+Ridge+EMA ensemble is competitive.
 
@@ -114,11 +114,12 @@ Algo1's pickrate component is a dead weight (it correlates with last-season hype
 
 For players priced >12 VP, require *both* high historical PPM **and** consistent recent (≤1 stage prior) performance. JohnQT and skuba both had strong 2024-2025 baselines but soft Santiago/Kickoff signals — a simple "recent-vs-historical-ratio < 0.85 → cap price at 11.0" guardrail would have caught both.
 
-### 5.5 Region-specific calibration (especially AMER)
+### 5.5 Roster-stability / team-change feature (root cause of AMER cohort failure)
 
-AMER's lower r across all models is partially structural (AMER pool has more roster movement) and partially data-thinness (one fewer pre-stage event). Two options:
+AMER's lower r is driven by roster churn, not data thinness (verified: AMER has comparable pre-Stage 1 data depth). The actionable signal:
 
-- Lower the prior for AMER-only players so the model relies more on whatever data it does have, less on the population prior.
+- For each player, compute `team_continuity` = fraction of their prior games played on their *current* team.
+- When `team_continuity < 0.3` (player moved teams recently), reduce confidence in their historical PPM (shrink harder toward role+region prior, less toward their personal mean).
 - Separately calibrate the quantile mapping for AMER vs the global pool, since AMER's PPM distribution shape may differ.
 
 ### 5.6 What NOT to add
