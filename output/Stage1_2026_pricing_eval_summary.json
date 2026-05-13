@@ -1,0 +1,87 @@
+{
+  "overall": [
+    {
+      "label": "Manual",
+      "n": 159,
+      "pearson_r": 0.572,
+      "spearman_rho": 0.5299,
+      "mae": 2.6251,
+      "mean": 9.2547,
+      "median": 8.5,
+      "min": 5.0,
+      "max": 15.0,
+      "n_unique": 21,
+      "top11_sum": 155.0
+    },
+    {
+      "label": "Algo1_Combined",
+      "n": 167,
+      "pearson_r": 0.3428,
+      "spearman_rho": 0.3412,
+      "mae": 3.4951,
+      "mean": 10.2096,
+      "median": 10.0,
+      "min": 6.0,
+      "max": 15.0,
+      "n_unique": 19,
+      "top11_sum": 160.0
+    },
+    {
+      "label": "Algo2_v2",
+      "n": 159,
+      "pearson_r": 0.389,
+      "spearman_rho": 0.372,
+      "mae": 2.7678,
+      "mean": 9.1069,
+      "median": 8.5,
+      "min": 5.0,
+      "max": 15.0,
+      "n_unique": 20,
+      "top11_sum": 160.5
+    }
+  ],
+  "factors": [
+    {
+      "cohort": "rookies (0 prior games)",
+      "Manual": "n=1 (skip)",
+      "Algo1_Combined": "n=1 (skip)",
+      "Algo2_v2": "n=1 (skip)",
+      "n_total": 1
+    },
+    {
+      "cohort": "green (1-10 prior games)",
+      "Manual": "r=+0.346 (n=48)",
+      "Algo1_Combined": "r=+0.181 (n=53)",
+      "Algo2_v2": "r=+0.049 (n=48)",
+      "n_total": 48
+    },
+    {
+      "cohort": "veterans (30+ prior games)",
+      "Manual": "r=+0.620 (n=57)",
+      "Algo1_Combined": "r=+0.314 (n=58)",
+      "Algo2_v2": "r=+0.453 (n=57)",
+      "n_total": 57
+    },
+    {
+      "cohort": "AMER",
+      "Manual": "r=+0.374 (n=50)",
+      "Algo1_Combined": "r=+0.039 (n=50)",
+      "Algo2_v2": "r=+0.147 (n=50)",
+      "n_total": 50
+    },
+    {
+      "cohort": "EMEA",
+      "Manual": "r=+0.598 (n=55)",
+      "Algo1_Combined": "r=+0.403 (n=55)",
+      "Algo2_v2": "r=+0.311 (n=55)",
+      "n_total": 55
+    },
+    {
+      "cohort": "PAC",
+      "Manual": "r=+0.704 (n=54)",
+      "Algo1_Combined": "r=+0.483 (n=54)",
+      "Algo2_v2": "r=+0.604 (n=54)",
+      "n_total": 54
+    }
+  ]
+}

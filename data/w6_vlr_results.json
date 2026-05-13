@@ -1,0 +1,2310 @@
+{
+  "matches": [
+    {
+      "match_id": 645498,
+      "region": "AMER",
+      "team1": "KRÜ Esports",
+      "team2": "Evil Geniuses",
+      "map_scores": [
+        {
+          "score1": 11,
+          "score2": 13,
+          "team1_won": false
+        },
+        {
+          "score1": 13,
+          "score2": 11,
+          "team1_won": true
+        },
+        {
+          "score1": 13,
+          "score2": 6,
+          "team1_won": true
+        }
+      ],
+      "per_map": [
+        {
+          "team1": [
+            {
+              "name": "Less",
+              "kills": 26
+            },
+            {
+              "name": "saadhak",
+              "kills": 15
+            },
+            {
+              "name": "mwzera",
+              "kills": 12
+            },
+            {
+              "name": "Dantedeu5",
+              "kills": 14
+            },
+            {
+              "name": "silentzz",
+              "kills": 15
+            }
+          ],
+          "team2": [
+            {
+              "name": "dgzin",
+              "kills": 24
+            },
+            {
+              "name": "Paincakes",
+              "kills": 16
+            },
+            {
+              "name": "zerona",
+              "kills": 16
+            },
+            {
+              "name": "bao",
+              "kills": 18
+            },
+            {
+              "name": "supamen",
+              "kills": 11
+            }
+          ]
+        },
+        {
+          "team1": [
+            {
+              "name": "mwzera",
+              "kills": 17
+            },
+            {
+              "name": "Less",
+              "kills": 23
+            },
+            {
+              "name": "silentzz",
+              "kills": 14
+            },
+            {
+              "name": "saadhak",
+              "kills": 17
+            },
+            {
+              "name": "Dantedeu5",
+              "kills": 16
+            }
+          ],
+          "team2": [
+            {
+              "name": "dgzin",
+              "kills": 19
+            },
+            {
+              "name": "Paincakes",
+              "kills": 16
+            },
+            {
+              "name": "zerona",
+              "kills": 18
+            },
+            {
+              "name": "bao",
+              "kills": 12
+            },
+            {
+              "name": "supamen",
+              "kills": 10
+            }
+          ]
+        },
+        {
+          "team1": [
+            {
+              "name": "saadhak",
+              "kills": 18
+            },
+            {
+              "name": "silentzz",
+              "kills": 13
+            },
+            {
+              "name": "mwzera",
+              "kills": 14
+            },
+            {
+              "name": "Dantedeu5",
+              "kills": 18
+            },
+            {
+              "name": "Less",
+              "kills": 14
+            }
+          ],
+          "team2": [
+            {
+              "name": "bao",
+              "kills": 12
+            },
+            {
+              "name": "dgzin",
+              "kills": 16
+            },
+            {
+              "name": "zerona",
+              "kills": 15
+            },
+            {
+              "name": "Paincakes",
+              "kills": 10
+            },
+            {
+              "name": "supamen",
+              "kills": 7
+            }
+          ]
+        }
+      ],
+      "aggregate": {
+        "team1": [
+          {
+            "name": "Less",
+            "rating": 1.35,
+            "kills": 63,
+            "deaths": 40,
+            "assists": 17
+          },
+          {
+            "name": "mwzera",
+            "rating": 1.1,
+            "kills": 43,
+            "deaths": 41,
+            "assists": 24
+          },
+          {
+            "name": "saadhak",
+            "rating": 1.05,
+            "kills": 50,
+            "deaths": 47,
+            "assists": 31
+          },
+          {
+            "name": "silentzz",
+            "rating": 0.93,
+            "kills": 42,
+            "deaths": 43,
+            "assists": 14
+          },
+          {
+            "name": "Dantedeu5",
+            "rating": 0.92,
+            "kills": 48,
+            "deaths": 49,
+            "assists": 18
+          }
+        ],
+        "team2": [
+          {
+            "name": "dgzin",
+            "rating": 1.12,
+            "kills": 59,
+            "deaths": 48,
+            "assists": 7
+          },
+          {
+            "name": "Paincakes",
+            "rating": 0.98,
+            "kills": 42,
+            "deaths": 49,
+            "assists": 26
+          },
+          {
+            "name": "zerona",
+            "rating": 0.96,
+            "kills": 49,
+            "deaths": 52,
+            "assists": 15
+          },
+          {
+            "name": "bao",
+            "rating": 0.88,
+            "kills": 42,
+            "deaths": 48,
+            "assists": 19
+          },
+          {
+            "name": "supamen",
+            "rating": 0.66,
+            "kills": 28,
+            "deaths": 49,
+            "assists": 18
+          }
+        ]
+      },
+      "multikills": {
+        "saadhak": {
+          "4k": 1,
+          "5k": 0
+        },
+        "mwzera": {
+          "4k": 1,
+          "5k": 0
+        },
+        "Less": {
+          "4k": 1,
+          "5k": 0
+        },
+        "silentzz": {
+          "4k": 0,
+          "5k": 0
+        },
+        "Dantedeu5": {
+          "4k": 0,
+          "5k": 0
+        },
+        "supamen": {
+          "4k": 0,
+          "5k": 0
+        },
+        "Paincakes": {
+          "4k": 0,
+          "5k": 0
+        },
+        "dgzin": {
+          "4k": 2,
+          "5k": 0
+        },
+        "zerona": {
+          "4k": 0,
+          "5k": 0
+        },
+        "bao": {
+          "4k": 0,
+          "5k": 0
+        }
+      }
+    },
+    {
+      "match_id": 645499,
+      "region": "AMER",
+      "team1": "FURIA",
+      "team2": "100 Thieves",
+      "map_scores": [
+        {
+          "score1": 13,
+          "score2": 9,
+          "team1_won": true
+        },
+        {
+          "score1": 8,
+          "score2": 13,
+          "team1_won": false
+        },
+        {
+          "score1": 6,
+          "score2": 13,
+          "team1_won": false
+        }
+      ],
+      "per_map": [
+        {
+          "team1": [
+            {
+              "name": "artzin",
+              "kills": 20
+            },
+            {
+              "name": "eeiu",
+              "kills": 18
+            },
+            {
+              "name": "koalanoob",
+              "kills": 15
+            },
+            {
+              "name": "alym",
+              "kills": 21
+            },
+            {
+              "name": "nerve",
+              "kills": 9
+            }
+          ],
+          "team2": [
+            {
+              "name": "Cryocells",
+              "kills": 22
+            },
+            {
+              "name": "Timotino",
+              "kills": 14
+            },
+            {
+              "name": "Asuna",
+              "kills": 16
+            },
+            {
+              "name": "bang",
+              "kills": 12
+            },
+            {
+              "name": "vora",
+              "kills": 9
+            }
+          ]
+        },
+        {
+          "team1": [
+            {
+              "name": "eeiu",
+              "kills": 17
+            },
+            {
+              "name": "artzin",
+              "kills": 16
+            },
+            {
+              "name": "alym",
+              "kills": 16
+            },
+            {
+              "name": "nerve",
+              "kills": 9
+            },
+            {
+              "name": "koalanoob",
+              "kills": 8
+            }
+          ],
+          "team2": [
+            {
+              "name": "vora",
+              "kills": 22
+            },
+            {
+              "name": "Timotino",
+              "kills": 18
+            },
+            {
+              "name": "Cryocells",
+              "kills": 20
+            },
+            {
+              "name": "bang",
+              "kills": 11
+            },
+            {
+              "name": "Asuna",
+              "kills": 10
+            }
+          ]
+        },
+        {
+          "team1": [
+            {
+              "name": "nerve",
+              "kills": 14
+            },
+            {
+              "name": "eeiu",
+              "kills": 12
+            },
+            {
+              "name": "alym",
+              "kills": 13
+            },
+            {
+              "name": "koalanoob",
+              "kills": 11
+            },
+            {
+              "name": "artzin",
+              "kills": 8
+            }
+          ],
+          "team2": [
+            {
+              "name": "Asuna",
+              "kills": 18
+            },
+            {
+              "name": "vora",
+              "kills": 17
+            },
+            {
+              "name": "bang",
+              "kills": 13
+            },
+            {
+              "name": "Timotino",
+              "kills": 13
+            },
+            {
+              "name": "Cryocells",
+              "kills": 13
+            }
+          ]
+        }
+      ],
+      "aggregate": {
+        "team1": [
+          {
+            "name": "artzin",
+            "rating": 1.09,
+            "kills": 44,
+            "deaths": 44,
+            "assists": 9
+          },
+          {
+            "name": "eeiu",
+            "rating": 1.07,
+            "kills": 47,
+            "deaths": 44,
+            "assists": 10
+          },
+          {
+            "name": "alym",
+            "rating": 0.9,
+            "kills": 50,
+            "deaths": 52,
+            "assists": 11
+          },
+          {
+            "name": "nerve",
+            "rating": 0.83,
+            "kills": 32,
+            "deaths": 42,
+            "assists": 17
+          },
+          {
+            "name": "koalanoob",
+            "rating": 0.77,
+            "kills": 34,
+            "deaths": 46,
+            "assists": 16
+          }
+        ],
+        "team2": [
+          {
+            "name": "vora",
+            "rating": 1.15,
+            "kills": 48,
+            "deaths": 37,
+            "assists": 21
+          },
+          {
+            "name": "Cryocells",
+            "rating": 1.14,
+            "kills": 55,
+            "deaths": 41,
+            "assists": 11
+          },
+          {
+            "name": "Timotino",
+            "rating": 1.11,
+            "kills": 45,
+            "deaths": 41,
+            "assists": 24
+          },
+          {
+            "name": "Asuna",
+            "rating": 1.02,
+            "kills": 44,
+            "deaths": 46,
+            "assists": 26
+          },
+          {
+            "name": "bang",
+            "rating": 0.97,
+            "kills": 36,
+            "deaths": 42,
+            "assists": 29
+          }
+        ]
+      },
+      "multikills": {
+        "nerve": {
+          "4k": 0,
+          "5k": 0
+        },
+        "eeiu": {
+          "4k": 1,
+          "5k": 0
+        },
+        "koalanoob": {
+          "4k": 0,
+          "5k": 0
+        },
+        "artzin": {
+          "4k": 0,
+          "5k": 0
+        },
+        "alym": {
+          "4k": 1,
+          "5k": 1
+        },
+        "Asuna": {
+          "4k": 0,
+          "5k": 0
+        },
+        "bang": {
+          "4k": 0,
+          "5k": 0
+        },
+        "Cryocells": {
+          "4k": 1,
+          "5k": 1
+        },
+        "vora": {
+          "4k": 0,
+          "5k": 0
+        },
+        "Timotino": {
+          "4k": 1,
+          "5k": 0
+        }
+      }
+    },
+    {
+      "match_id": 645500,
+      "region": "AMER",
+      "team1": "G2 Esports",
+      "team2": "Cloud9",
+      "map_scores": [
+        {
+          "score1": 13,
+          "score2": 6,
+          "team1_won": true
+        },
+        {
+          "score1": 13,
+          "score2": 9,
+          "team1_won": true
+        }
+      ],
+      "per_map": [
+        {
+          "team1": [
+            {
+              "name": "trent",
+              "kills": 20
+            },
+            {
+              "name": "valyn",
+              "kills": 18
+            },
+            {
+              "name": "BABYBAY",
+              "kills": 16
+            },
+            {
+              "name": "leaf",
+              "kills": 12
+            },
+            {
+              "name": "jawgemo",
+              "kills": 11
+            }
+          ],
+          "team2": [
+            {
+              "name": "OXY",
+              "kills": 16
+            },
+            {
+              "name": "Jackk",
+              "kills": 12
+            },
+            {
+              "name": "Notexxd",
+              "kills": 12
+            },
+            {
+              "name": "Zellsis",
+              "kills": 11
+            },
+            {
+              "name": "Xeppaa",
+              "kills": 8
+            }
+          ]
+        },
+        {
+          "team1": [
+            {
+              "name": "BABYBAY",
+              "kills": 27
+            },
+            {
+              "name": "valyn",
+              "kills": 18
+            },
+            {
+              "name": "leaf",
+              "kills": 14
+            },
+            {
+              "name": "jawgemo",
+              "kills": 14
+            },
+            {
+              "name": "trent",
+              "kills": 12
+            }
+          ],
+          "team2": [
+            {
+              "name": "Notexxd",
+              "kills": 17
+            },
+            {
+              "name": "OXY",
+              "kills": 13
+            },
+            {
+              "name": "Jackk",
+              "kills": 11
+            },
+            {
+              "name": "Zellsis",
+              "kills": 16
+            },
+            {
+              "name": "Xeppaa",
+              "kills": 13
+            }
+          ]
+        }
+      ],
+      "aggregate": {
+        "team1": [
+          {
+            "name": "BABYBAY",
+            "rating": 1.47,
+            "kills": 43,
+            "deaths": 28,
+            "assists": 18
+          },
+          {
+            "name": "valyn",
+            "rating": 1.28,
+            "kills": 36,
+            "deaths": 24,
+            "assists": 16
+          },
+          {
+            "name": "trent",
+            "rating": 1.27,
+            "kills": 32,
+            "deaths": 23,
+            "assists": 14
+          },
+          {
+            "name": "leaf",
+            "rating": 0.94,
+            "kills": 26,
+            "deaths": 26,
+            "assists": 8
+          },
+          {
+            "name": "jawgemo",
+            "rating": 0.87,
+            "kills": 25,
+            "deaths": 28,
+            "assists": 13
+          }
+        ],
+        "team2": [
+          {
+            "name": "Notexxd",
+            "rating": 1.02,
+            "kills": 29,
+            "deaths": 29,
+            "assists": 16
+          },
+          {
+            "name": "OXY",
+            "rating": 0.94,
+            "kills": 29,
+            "deaths": 34,
+            "assists": 7
+          },
+          {
+            "name": "Jackk",
+            "rating": 0.82,
+            "kills": 23,
+            "deaths": 30,
+            "assists": 11
+          },
+          {
+            "name": "Zellsis",
+            "rating": 0.71,
+            "kills": 27,
+            "deaths": 34,
+            "assists": 10
+          },
+          {
+            "name": "Xeppaa",
+            "rating": 0.61,
+            "kills": 21,
+            "deaths": 35,
+            "assists": 9
+          }
+        ]
+      },
+      "multikills": {
+        "BABYBAY": {
+          "4k": 1,
+          "5k": 1
+        },
+        "valyn": {
+          "4k": 0,
+          "5k": 0
+        },
+        "jawgemo": {
+          "4k": 1,
+          "5k": 0
+        },
+        "leaf": {
+          "4k": 0,
+          "5k": 0
+        },
+        "trent": {
+          "4k": 0,
+          "5k": 0
+        },
+        "Zellsis": {
+          "4k": 0,
+          "5k": 0
+        },
+        "Xeppaa": {
+          "4k": 0,
+          "5k": 0
+        },
+        "OXY": {
+          "4k": 2,
+          "5k": 0
+        },
+        "Notexxd": {
+          "4k": 0,
+          "5k": 0
+        },
+        "Jackk": {
+          "4k": 0,
+          "5k": 0
+        }
+      }
+    },
+    {
+      "match_id": 645501,
+      "region": "AMER",
+      "team1": "ENVY",
+      "team2": "MIBR",
+      "map_scores": [
+        {
+          "score1": 13,
+          "score2": 1,
+          "team1_won": true
+        },
+        {
+          "score1": 13,
+          "score2": 3,
+          "team1_won": true
+        }
+      ],
+      "per_map": [
+        {
+          "team1": [
+            {
+              "name": "Rossy",
+              "kills": 16
+            },
+            {
+              "name": "Demon1",
+              "kills": 18
+            },
+            {
+              "name": "keznit",
+              "kills": 12
+            },
+            {
+              "name": "P0PPIN",
+              "kills": 10
+            },
+            {
+              "name": "Eggsterr",
+              "kills": 9
+            }
+          ],
+          "team2": [
+            {
+              "name": "aspas",
+              "kills": 13
+            },
+            {
+              "name": "zekken",
+              "kills": 10
+            },
+            {
+              "name": "Verno",
+              "kills": 8
+            },
+            {
+              "name": "Mazino",
+              "kills": 8
+            },
+            {
+              "name": "tex",
+              "kills": 5
+            }
+          ]
+        },
+        {
+          "team1": [
+            {
+              "name": "keznit",
+              "kills": 21
+            },
+            {
+              "name": "P0PPIN",
+              "kills": 16
+            },
+            {
+              "name": "Rossy",
+              "kills": 16
+            },
+            {
+              "name": "Demon1",
+              "kills": 12
+            },
+            {
+              "name": "Eggsterr",
+              "kills": 9
+            }
+          ],
+          "team2": [
+            {
+              "name": "Mazino",
+              "kills": 14
+            },
+            {
+              "name": "aspas",
+              "kills": 13
+            },
+            {
+              "name": "Verno",
+              "kills": 6
+            },
+            {
+              "name": "tex",
+              "kills": 10
+            },
+            {
+              "name": "zekken",
+              "kills": 7
+            }
+          ]
+        }
+      ],
+      "aggregate": {
+        "team1": [
+          {
+            "name": "Rossy",
+            "rating": 1.66,
+            "kills": 32,
+            "deaths": 15,
+            "assists": 14
+          },
+          {
+            "name": "keznit",
+            "rating": 1.6,
+            "kills": 33,
+            "deaths": 18,
+            "assists": 8
+          },
+          {
+            "name": "P0PPIN",
+            "rating": 1.37,
+            "kills": 26,
+            "deaths": 17,
+            "assists": 18
+          },
+          {
+            "name": "Demon1",
+            "rating": 1.1,
+            "kills": 30,
+            "deaths": 21,
+            "assists": 6
+          },
+          {
+            "name": "Eggsterr",
+            "rating": 0.59,
+            "kills": 18,
+            "deaths": 24,
+            "assists": 8
+          }
+        ],
+        "team2": [
+          {
+            "name": "aspas",
+            "rating": 1.12,
+            "kills": 26,
+            "deaths": 26,
+            "assists": 7
+          },
+          {
+            "name": "Mazino",
+            "rating": 0.83,
+            "kills": 22,
+            "deaths": 28,
+            "assists": 9
+          },
+          {
+            "name": "zekken",
+            "rating": 0.71,
+            "kills": 17,
+            "deaths": 28,
+            "assists": 5
+          },
+          {
+            "name": "Verno",
+            "rating": 0.63,
+            "kills": 14,
+            "deaths": 28,
+            "assists": 17
+          },
+          {
+            "name": "tex",
+            "rating": 0.45,
+            "kills": 15,
+            "deaths": 29,
+            "assists": 2
+          }
+        ]
+      },
+      "multikills": {
+        "Rossy": {
+          "4k": 0,
+          "5k": 0
+        },
+        "keznit": {
+          "4k": 1,
+          "5k": 0
+        },
+        "P0PPIN": {
+          "4k": 0,
+          "5k": 0
+        },
+        "Demon1": {
+          "4k": 0,
+          "5k": 0
+        },
+        "Eggsterr": {
+          "4k": 0,
+          "5k": 0
+        },
+        "tex": {
+          "4k": 0,
+          "5k": 0
+        },
+        "zekken": {
+          "4k": 0,
+          "5k": 0
+        },
+        "Mazino": {
+          "4k": 0,
+          "5k": 0
+        },
+        "aspas": {
+          "4k": 0,
+          "5k": 0
+        },
+        "Verno": {
+          "4k": 0,
+          "5k": 0
+        }
+      }
+    },
+    {
+      "match_id": 645502,
+      "region": "AMER",
+      "team1": "LOUD",
+      "team2": "LEVIATÁN",
+      "map_scores": [
+        {
+          "score1": 3,
+          "score2": 13,
+          "team1_won": false
+        },
+        {
+          "score1": 14,
+          "score2": 12,
+          "team1_won": true
+        },
+        {
+          "score1": 13,
+          "score2": 10,
+          "team1_won": true
+        }
+      ],
+      "per_map": [
+        {
+          "team1": [
+            {
+              "name": "Darker",
+              "kills": 12
+            },
+            {
+              "name": "Virtyy",
+              "kills": 14
+            },
+            {
+              "name": "erde",
+              "kills": 9
+            },
+            {
+              "name": "cauanzin",
+              "kills": 7
+            },
+            {
+              "name": "lukxo",
+              "kills": 6
+            }
+          ],
+          "team2": [
+            {
+              "name": "Neon",
+              "kills": 20
+            },
+            {
+              "name": "Sato",
+              "kills": 19
+            },
+            {
+              "name": "blowz",
+              "kills": 9
+            },
+            {
+              "name": "spike",
+              "kills": 15
+            },
+            {
+              "name": "kiNgg",
+              "kills": 10
+            }
+          ]
+        },
+        {
+          "team1": [
+            {
+              "name": "erde",
+              "kills": 27
+            },
+            {
+              "name": "lukxo",
+              "kills": 19
+            },
+            {
+              "name": "cauanzin",
+              "kills": 19
+            },
+            {
+              "name": "Darker",
+              "kills": 16
+            },
+            {
+              "name": "Virtyy",
+              "kills": 17
+            }
+          ],
+          "team2": [
+            {
+              "name": "Neon",
+              "kills": 23
+            },
+            {
+              "name": "spike",
+              "kills": 20
+            },
+            {
+              "name": "Sato",
+              "kills": 17
+            },
+            {
+              "name": "blowz",
+              "kills": 11
+            },
+            {
+              "name": "kiNgg",
+              "kills": 14
+            }
+          ]
+        },
+        {
+          "team1": [
+            {
+              "name": "erde",
+              "kills": 20
+            },
+            {
+              "name": "Darker",
+              "kills": 22
+            },
+            {
+              "name": "cauanzin",
+              "kills": 11
+            },
+            {
+              "name": "lukxo",
+              "kills": 11
+            },
+            {
+              "name": "Virtyy",
+              "kills": 14
+            }
+          ],
+          "team2": [
+            {
+              "name": "Sato",
+              "kills": 21
+            },
+            {
+              "name": "Neon",
+              "kills": 16
+            },
+            {
+              "name": "blowz",
+              "kills": 15
+            },
+            {
+              "name": "kiNgg",
+              "kills": 9
+            },
+            {
+              "name": "spike",
+              "kills": 16
+            }
+          ]
+        }
+      ],
+      "aggregate": {
+        "team1": [
+          {
+            "name": "erde",
+            "rating": 1.31,
+            "kills": 56,
+            "deaths": 44,
+            "assists": 29
+          },
+          {
+            "name": "Darker",
+            "rating": 1.13,
+            "kills": 50,
+            "deaths": 48,
+            "assists": 19
+          },
+          {
+            "name": "cauanzin",
+            "rating": 0.93,
+            "kills": 37,
+            "deaths": 46,
+            "assists": 26
+          },
+          {
+            "name": "Virtyy",
+            "rating": 0.91,
+            "kills": 45,
+            "deaths": 54,
+            "assists": 15
+          },
+          {
+            "name": "lukxo",
+            "rating": 0.86,
+            "kills": 36,
+            "deaths": 43,
+            "assists": 16
+          }
+        ],
+        "team2": [
+          {
+            "name": "Neon",
+            "rating": 1.33,
+            "kills": 59,
+            "deaths": 38,
+            "assists": 16
+          },
+          {
+            "name": "Sato",
+            "rating": 1.18,
+            "kills": 57,
+            "deaths": 48,
+            "assists": 24
+          },
+          {
+            "name": "spike",
+            "rating": 0.88,
+            "kills": 51,
+            "deaths": 53,
+            "assists": 16
+          },
+          {
+            "name": "blowz",
+            "rating": 0.88,
+            "kills": 35,
+            "deaths": 42,
+            "assists": 29
+          },
+          {
+            "name": "kiNgg",
+            "rating": 0.77,
+            "kills": 33,
+            "deaths": 43,
+            "assists": 21
+          }
+        ]
+      },
+      "multikills": {
+        "Virtyy": {
+          "4k": 0,
+          "5k": 0
+        },
+        "cauanzin": {
+          "4k": 0,
+          "5k": 0
+        },
+        "Darker": {
+          "4k": 0,
+          "5k": 0
+        },
+        "lukxo": {
+          "4k": 0,
+          "5k": 0
+        },
+        "erde": {
+          "4k": 1,
+          "5k": 0
+        },
+        "kiNgg": {
+          "4k": 0,
+          "5k": 0
+        },
+        "blowz": {
+          "4k": 0,
+          "5k": 0
+        },
+        "Sato": {
+          "4k": 1,
+          "5k": 0
+        },
+        "spike": {
+          "4k": 1,
+          "5k": 0
+        },
+        "Neon": {
+          "4k": 2,
+          "5k": 0
+        }
+      }
+    },
+    {
+      "match_id": 645503,
+      "region": "AMER",
+      "team1": "Sentinels",
+      "team2": "NRG",
+      "map_scores": [
+        {
+          "score1": 11,
+          "score2": 13,
+          "team1_won": false
+        },
+        {
+          "score1": 13,
+          "score2": 11,
+          "team1_won": true
+        },
+        {
+          "score1": 10,
+          "score2": 13,
+          "team1_won": false
+        }
+      ],
+      "per_map": [
+        {
+          "team1": [
+            {
+              "name": "Reduxx",
+              "kills": 23
+            },
+            {
+              "name": "JonahP",
+              "kills": 11
+            },
+            {
+              "name": "cortezia",
+              "kills": 16
+            },
+            {
+              "name": "johnqt",
+              "kills": 12
+            },
+            {
+              "name": "Jerrwin",
+              "kills": 12
+            }
+          ],
+          "team2": [
+            {
+              "name": "mada",
+              "kills": 22
+            },
+            {
+              "name": "keiko",
+              "kills": 20
+            },
+            {
+              "name": "skuba",
+              "kills": 16
+            },
+            {
+              "name": "brawk",
+              "kills": 12
+            },
+            {
+              "name": "Ethan",
+              "kills": 13
+            }
+          ]
+        },
+        {
+          "team1": [
+            {
+              "name": "cortezia",
+              "kills": 21
+            },
+            {
+              "name": "Reduxx",
+              "kills": 22
+            },
+            {
+              "name": "johnqt",
+              "kills": 13
+            },
+            {
+              "name": "JonahP",
+              "kills": 15
+            },
+            {
+              "name": "Jerrwin",
+              "kills": 16
+            }
+          ],
+          "team2": [
+            {
+              "name": "brawk",
+              "kills": 22
+            },
+            {
+              "name": "mada",
+              "kills": 18
+            },
+            {
+              "name": "skuba",
+              "kills": 13
+            },
+            {
+              "name": "keiko",
+              "kills": 16
+            },
+            {
+              "name": "Ethan",
+              "kills": 10
+            }
+          ]
+        },
+        {
+          "team1": [
+            {
+              "name": "cortezia",
+              "kills": 22
+            },
+            {
+              "name": "Reduxx",
+              "kills": 15
+            },
+            {
+              "name": "Jerrwin",
+              "kills": 16
+            },
+            {
+              "name": "johnqt",
+              "kills": 8
+            },
+            {
+              "name": "JonahP",
+              "kills": 14
+            }
+          ],
+          "team2": [
+            {
+              "name": "brawk",
+              "kills": 26
+            },
+            {
+              "name": "Ethan",
+              "kills": 19
+            },
+            {
+              "name": "mada",
+              "kills": 18
+            },
+            {
+              "name": "keiko",
+              "kills": 10
+            },
+            {
+              "name": "skuba",
+              "kills": 11
+            }
+          ]
+        }
+      ],
+      "aggregate": {
+        "team1": [
+          {
+            "name": "cortezia",
+            "rating": 1.16,
+            "kills": 59,
+            "deaths": 46,
+            "assists": 12
+          },
+          {
+            "name": "Reduxx",
+            "rating": 1.13,
+            "kills": 60,
+            "deaths": 53,
+            "assists": 10
+          },
+          {
+            "name": "JonahP",
+            "rating": 0.88,
+            "kills": 40,
+            "deaths": 48,
+            "assists": 18
+          },
+          {
+            "name": "johnqt",
+            "rating": 0.87,
+            "kills": 33,
+            "deaths": 44,
+            "assists": 26
+          },
+          {
+            "name": "Jerrwin",
+            "rating": 0.77,
+            "kills": 44,
+            "deaths": 55,
+            "assists": 9
+          }
+        ],
+        "team2": [
+          {
+            "name": "brawk",
+            "rating": 1.23,
+            "kills": 60,
+            "deaths": 43,
+            "assists": 28
+          },
+          {
+            "name": "mada",
+            "rating": 1.02,
+            "kills": 58,
+            "deaths": 52,
+            "assists": 14
+          },
+          {
+            "name": "Ethan",
+            "rating": 0.97,
+            "kills": 42,
+            "deaths": 47,
+            "assists": 28
+          },
+          {
+            "name": "keiko",
+            "rating": 0.89,
+            "kills": 46,
+            "deaths": 50,
+            "assists": 20
+          },
+          {
+            "name": "skuba",
+            "rating": 0.86,
+            "kills": 40,
+            "deaths": 44,
+            "assists": 8
+          }
+        ]
+      },
+      "multikills": {
+        "johnqt": {
+          "4k": 0,
+          "5k": 0
+        },
+        "JonahP": {
+          "4k": 0,
+          "5k": 0
+        },
+        "cortezia": {
+          "4k": 1,
+          "5k": 0
+        },
+        "Reduxx": {
+          "4k": 1,
+          "5k": 0
+        },
+        "Jerrwin": {
+          "4k": 0,
+          "5k": 0
+        },
+        "brawk": {
+          "4k": 1,
+          "5k": 0
+        },
+        "mada": {
+          "4k": 1,
+          "5k": 0
+        },
+        "skuba": {
+          "4k": 1,
+          "5k": 0
+        },
+        "Ethan": {
+          "4k": 0,
+          "5k": 0
+        },
+        "keiko": {
+          "4k": 0,
+          "5k": 0
+        }
+      }
+    }
+  ],
+  "player_points": {
+    "Less_645498": {
+      "pts": 15,
+      "team": "KRÜ Esports",
+      "rating": 1.35,
+      "kills": 63,
+      "deaths": 40,
+      "maps": 3,
+      "4k": 1,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645498
+    },
+    "mwzera_645498": {
+      "pts": 9,
+      "team": "KRÜ Esports",
+      "rating": 1.1,
+      "kills": 43,
+      "deaths": 41,
+      "maps": 3,
+      "4k": 1,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645498
+    },
+    "saadhak_645498": {
+      "pts": 10,
+      "team": "KRÜ Esports",
+      "rating": 1.05,
+      "kills": 50,
+      "deaths": 47,
+      "maps": 3,
+      "4k": 1,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645498
+    },
+    "silentzz_645498": {
+      "pts": 7,
+      "team": "KRÜ Esports",
+      "rating": 0.93,
+      "kills": 42,
+      "deaths": 43,
+      "maps": 3,
+      "4k": 0,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645498
+    },
+    "Dantedeu5_645498": {
+      "pts": 8,
+      "team": "KRÜ Esports",
+      "rating": 0.92,
+      "kills": 48,
+      "deaths": 49,
+      "maps": 3,
+      "4k": 0,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645498
+    },
+    "dgzin_645498": {
+      "pts": 12,
+      "team": "Evil Geniuses",
+      "rating": 1.12,
+      "kills": 59,
+      "deaths": 48,
+      "maps": 3,
+      "4k": 2,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645498
+    },
+    "Paincakes_645498": {
+      "pts": 6,
+      "team": "Evil Geniuses",
+      "rating": 0.98,
+      "kills": 42,
+      "deaths": 49,
+      "maps": 3,
+      "4k": 0,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645498
+    },
+    "zerona_645498": {
+      "pts": 7,
+      "team": "Evil Geniuses",
+      "rating": 0.96,
+      "kills": 49,
+      "deaths": 52,
+      "maps": 3,
+      "4k": 0,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645498
+    },
+    "bao_645498": {
+      "pts": 5,
+      "team": "Evil Geniuses",
+      "rating": 0.88,
+      "kills": 42,
+      "deaths": 48,
+      "maps": 3,
+      "4k": 0,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645498
+    },
+    "supamen_645498": {
+      "pts": 3,
+      "team": "Evil Geniuses",
+      "rating": 0.66,
+      "kills": 28,
+      "deaths": 49,
+      "maps": 3,
+      "4k": 0,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645498
+    },
+    "artzin_645499": {
+      "pts": 6,
+      "team": "FURIA",
+      "rating": 1.09,
+      "kills": 44,
+      "deaths": 44,
+      "maps": 3,
+      "4k": 0,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645499
+    },
+    "eeiu_645499": {
+      "pts": 7,
+      "team": "FURIA",
+      "rating": 1.07,
+      "kills": 47,
+      "deaths": 44,
+      "maps": 3,
+      "4k": 1,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645499
+    },
+    "alym_645499": {
+      "pts": 11,
+      "team": "FURIA",
+      "rating": 0.9,
+      "kills": 50,
+      "deaths": 52,
+      "maps": 3,
+      "4k": 1,
+      "5k": 1,
+      "region": "AMER",
+      "match_id": 645499
+    },
+    "nerve_645499": {
+      "pts": 2,
+      "team": "FURIA",
+      "rating": 0.83,
+      "kills": 32,
+      "deaths": 42,
+      "maps": 3,
+      "4k": 0,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645499
+    },
+    "koalanoob_645499": {
+      "pts": 4,
+      "team": "FURIA",
+      "rating": 0.77,
+      "kills": 34,
+      "deaths": 46,
+      "maps": 3,
+      "4k": 0,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645499
+    },
+    "vora_645499": {
+      "pts": 12,
+      "team": "100 Thieves",
+      "rating": 1.15,
+      "kills": 48,
+      "deaths": 37,
+      "maps": 3,
+      "4k": 0,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645499
+    },
+    "Cryocells_645499": {
+      "pts": 17,
+      "team": "100 Thieves",
+      "rating": 1.14,
+      "kills": 55,
+      "deaths": 41,
+      "maps": 3,
+      "4k": 1,
+      "5k": 1,
+      "region": "AMER",
+      "match_id": 645499
+    },
+    "Timotino_645499": {
+      "pts": 10,
+      "team": "100 Thieves",
+      "rating": 1.11,
+      "kills": 45,
+      "deaths": 41,
+      "maps": 3,
+      "4k": 1,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645499
+    },
+    "Asuna_645499": {
+      "pts": 9,
+      "team": "100 Thieves",
+      "rating": 1.02,
+      "kills": 44,
+      "deaths": 46,
+      "maps": 3,
+      "4k": 0,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645499
+    },
+    "bang_645499": {
+      "pts": 7,
+      "team": "100 Thieves",
+      "rating": 0.97,
+      "kills": 36,
+      "deaths": 42,
+      "maps": 3,
+      "4k": 0,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645499
+    },
+    "BABYBAY_645500": {
+      "pts": 16,
+      "team": "G2 Esports",
+      "rating": 1.47,
+      "kills": 43,
+      "deaths": 28,
+      "maps": 2,
+      "4k": 1,
+      "5k": 1,
+      "region": "AMER",
+      "match_id": 645500
+    },
+    "valyn_645500": {
+      "pts": 9,
+      "team": "G2 Esports",
+      "rating": 1.28,
+      "kills": 36,
+      "deaths": 24,
+      "maps": 2,
+      "4k": 0,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645500
+    },
+    "trent_645500": {
+      "pts": 8,
+      "team": "G2 Esports",
+      "rating": 1.27,
+      "kills": 32,
+      "deaths": 23,
+      "maps": 2,
+      "4k": 0,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645500
+    },
+    "leaf_645500": {
+      "pts": 5,
+      "team": "G2 Esports",
+      "rating": 0.94,
+      "kills": 26,
+      "deaths": 26,
+      "maps": 2,
+      "4k": 0,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645500
+    },
+    "jawgemo_645500": {
+      "pts": 6,
+      "team": "G2 Esports",
+      "rating": 0.87,
+      "kills": 25,
+      "deaths": 28,
+      "maps": 2,
+      "4k": 1,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645500
+    },
+    "Notexxd_645500": {
+      "pts": 3,
+      "team": "Cloud9",
+      "rating": 1.02,
+      "kills": 29,
+      "deaths": 29,
+      "maps": 2,
+      "4k": 0,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645500
+    },
+    "OXY_645500": {
+      "pts": 5,
+      "team": "Cloud9",
+      "rating": 0.94,
+      "kills": 29,
+      "deaths": 34,
+      "maps": 2,
+      "4k": 2,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645500
+    },
+    "Jackk_645500": {
+      "pts": 2,
+      "team": "Cloud9",
+      "rating": 0.82,
+      "kills": 23,
+      "deaths": 30,
+      "maps": 2,
+      "4k": 0,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645500
+    },
+    "Zellsis_645500": {
+      "pts": 3,
+      "team": "Cloud9",
+      "rating": 0.71,
+      "kills": 27,
+      "deaths": 34,
+      "maps": 2,
+      "4k": 0,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645500
+    },
+    "Xeppaa_645500": {
+      "pts": 1,
+      "team": "Cloud9",
+      "rating": 0.61,
+      "kills": 21,
+      "deaths": 35,
+      "maps": 2,
+      "4k": 0,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645500
+    },
+    "Rossy_645501": {
+      "pts": 16,
+      "team": "ENVY",
+      "rating": 1.66,
+      "kills": 32,
+      "deaths": 15,
+      "maps": 2,
+      "4k": 0,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645501
+    },
+    "keznit_645501": {
+      "pts": 16,
+      "team": "ENVY",
+      "rating": 1.6,
+      "kills": 33,
+      "deaths": 18,
+      "maps": 2,
+      "4k": 1,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645501
+    },
+    "P0PPIN_645501": {
+      "pts": 12,
+      "team": "ENVY",
+      "rating": 1.37,
+      "kills": 26,
+      "deaths": 17,
+      "maps": 2,
+      "4k": 0,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645501
+    },
+    "Demon1_645501": {
+      "pts": 11,
+      "team": "ENVY",
+      "rating": 1.1,
+      "kills": 30,
+      "deaths": 21,
+      "maps": 2,
+      "4k": 0,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645501
+    },
+    "Eggsterr_645501": {
+      "pts": 8,
+      "team": "ENVY",
+      "rating": 0.59,
+      "kills": 18,
+      "deaths": 24,
+      "maps": 2,
+      "4k": 0,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645501
+    },
+    "aspas_645501": {
+      "pts": 0,
+      "team": "MIBR",
+      "rating": 1.12,
+      "kills": 26,
+      "deaths": 26,
+      "maps": 2,
+      "4k": 0,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645501
+    },
+    "Mazino_645501": {
+      "pts": -1,
+      "team": "MIBR",
+      "rating": 0.83,
+      "kills": 22,
+      "deaths": 28,
+      "maps": 2,
+      "4k": 0,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645501
+    },
+    "zekken_645501": {
+      "pts": -1,
+      "team": "MIBR",
+      "rating": 0.71,
+      "kills": 17,
+      "deaths": 28,
+      "maps": 2,
+      "4k": 0,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645501
+    },
+    "Verno_645501": {
+      "pts": -2,
+      "team": "MIBR",
+      "rating": 0.63,
+      "kills": 14,
+      "deaths": 28,
+      "maps": 2,
+      "4k": 0,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645501
+    },
+    "tex_645501": {
+      "pts": -1,
+      "team": "MIBR",
+      "rating": 0.45,
+      "kills": 15,
+      "deaths": 29,
+      "maps": 2,
+      "4k": 0,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645501
+    },
+    "erde_645502": {
+      "pts": 11,
+      "team": "LOUD",
+      "rating": 1.31,
+      "kills": 56,
+      "deaths": 44,
+      "maps": 3,
+      "4k": 1,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645502
+    },
+    "Darker_645502": {
+      "pts": 7,
+      "team": "LOUD",
+      "rating": 1.13,
+      "kills": 50,
+      "deaths": 48,
+      "maps": 3,
+      "4k": 0,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645502
+    },
+    "cauanzin_645502": {
+      "pts": 4,
+      "team": "LOUD",
+      "rating": 0.93,
+      "kills": 37,
+      "deaths": 46,
+      "maps": 3,
+      "4k": 0,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645502
+    },
+    "Virtyy_645502": {
+      "pts": 5,
+      "team": "LOUD",
+      "rating": 0.91,
+      "kills": 45,
+      "deaths": 54,
+      "maps": 3,
+      "4k": 0,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645502
+    },
+    "lukxo_645502": {
+      "pts": 4,
+      "team": "LOUD",
+      "rating": 0.86,
+      "kills": 36,
+      "deaths": 43,
+      "maps": 3,
+      "4k": 0,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645502
+    },
+    "Neon_645502": {
+      "pts": 17,
+      "team": "LEVIATÁN",
+      "rating": 1.33,
+      "kills": 59,
+      "deaths": 38,
+      "maps": 3,
+      "4k": 2,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645502
+    },
+    "Sato_645502": {
+      "pts": 13,
+      "team": "LEVIATÁN",
+      "rating": 1.18,
+      "kills": 57,
+      "deaths": 48,
+      "maps": 3,
+      "4k": 1,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645502
+    },
+    "spike_645502": {
+      "pts": 12,
+      "team": "LEVIATÁN",
+      "rating": 0.88,
+      "kills": 51,
+      "deaths": 53,
+      "maps": 3,
+      "4k": 1,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645502
+    },
+    "blowz_645502": {
+      "pts": 7,
+      "team": "LEVIATÁN",
+      "rating": 0.88,
+      "kills": 35,
+      "deaths": 42,
+      "maps": 3,
+      "4k": 0,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645502
+    },
+    "kiNgg_645502": {
+      "pts": 6,
+      "team": "LEVIATÁN",
+      "rating": 0.77,
+      "kills": 33,
+      "deaths": 43,
+      "maps": 3,
+      "4k": 0,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645502
+    },
+    "cortezia_645503": {
+      "pts": 12,
+      "team": "Sentinels",
+      "rating": 1.16,
+      "kills": 59,
+      "deaths": 46,
+      "maps": 3,
+      "4k": 1,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645503
+    },
+    "Reduxx_645503": {
+      "pts": 11,
+      "team": "Sentinels",
+      "rating": 1.13,
+      "kills": 60,
+      "deaths": 53,
+      "maps": 3,
+      "4k": 1,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645503
+    },
+    "JonahP_645503": {
+      "pts": 5,
+      "team": "Sentinels",
+      "rating": 0.88,
+      "kills": 40,
+      "deaths": 48,
+      "maps": 3,
+      "4k": 0,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645503
+    },
+    "johnqt_645503": {
+      "pts": 3,
+      "team": "Sentinels",
+      "rating": 0.87,
+      "kills": 33,
+      "deaths": 44,
+      "maps": 3,
+      "4k": 0,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645503
+    },
+    "Jerrwin_645503": {
+      "pts": 6,
+      "team": "Sentinels",
+      "rating": 0.77,
+      "kills": 44,
+      "deaths": 55,
+      "maps": 3,
+      "4k": 0,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645503
+    },
+    "brawk_645503": {
+      "pts": 14,
+      "team": "NRG",
+      "rating": 1.23,
+      "kills": 60,
+      "deaths": 43,
+      "maps": 3,
+      "4k": 1,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645503
+    },
+    "mada_645503": {
+      "pts": 10,
+      "team": "NRG",
+      "rating": 1.02,
+      "kills": 58,
+      "deaths": 52,
+      "maps": 3,
+      "4k": 1,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645503
+    },
+    "Ethan_645503": {
+      "pts": 6,
+      "team": "NRG",
+      "rating": 0.97,
+      "kills": 42,
+      "deaths": 47,
+      "maps": 3,
+      "4k": 0,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645503
+    },
+    "keiko_645503": {
+      "pts": 8,
+      "team": "NRG",
+      "rating": 0.89,
+      "kills": 46,
+      "deaths": 50,
+      "maps": 3,
+      "4k": 0,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645503
+    },
+    "skuba_645503": {
+      "pts": 7,
+      "team": "NRG",
+      "rating": 0.86,
+      "kills": 40,
+      "deaths": 44,
+      "maps": 3,
+      "4k": 1,
+      "5k": 0,
+      "region": "AMER",
+      "match_id": 645503
+    }
+  }
+}
