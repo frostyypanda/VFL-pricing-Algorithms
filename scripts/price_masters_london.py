@@ -357,15 +357,12 @@ def compute_vp(df):
 
 def write_outputs(df, regional_factor, eb_params):
     df = df.sort_values(["Region", "Team", "SuggestedVP"], ascending=[True, True, False])
-    csv_cols = [
-        "Player", "Team", "Region", "Role",
-        "SuggestedVP", "Uncertainty", "UncertainFlag", "UncertaintyReason",
-        "N_Games", "N_Stage1", "N_Intl",
-        "BaseValue", "AdjValue", "RegionFactor",
-        "ObsMean", "Shrunk", "WeightedAvg", "RecentMean",
-    ]
+    simple = df.rename(columns={
+        "Player": "Name", "SuggestedVP": "Price",
+        "UncertainFlag": "HighUncertainty",
+    })[["Name", "Team", "Price", "HighUncertainty"]]
     csv_path = os.path.join(OUT, "Masters_London_2026_prices.csv")
-    df[csv_cols].to_csv(csv_path, index=False, encoding="utf-8-sig")
+    simple.to_csv(csv_path, index=False, encoding="utf-8-sig")
     print(f"\nWrote {csv_path}")
     _write_summary(df, regional_factor, eb_params)
 
